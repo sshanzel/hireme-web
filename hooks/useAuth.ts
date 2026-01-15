@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { LoginFormData } from "@/lib/validations/auth";
 
-interface LoginResponse {
+interface AuthResponse {
   user: {
     id: string;
     email: string;
@@ -11,8 +11,7 @@ interface LoginResponse {
   token: string;
 }
 
-async function loginRequest(data: LoginFormData): Promise<LoginResponse> {
-  // TODO: Replace with actual API endpoint
+async function loginRequest(data: LoginFormData): Promise<AuthResponse> {
   const response = await fetch("/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -27,12 +26,40 @@ async function loginRequest(data: LoginFormData): Promise<LoginResponse> {
   return response.json();
 }
 
+async function signupRequest(data: LoginFormData): Promise<AuthResponse> {
+  const response = await fetch("/api/auth/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Signup failed");
+  }
+
+  return response.json();
+}
+
 export function useLogin() {
   const { setUser } = useAuthContext();
 
   return useMutation({
     mutationFn: loginRequest,
     onSuccess: (data) => {
+      localStorage.setItem("token", data.token);
+      setUser(data.user);
+    },
+  });
+}
+
+export function useSignup() {
+  const { setUser } = useAuthContext();
+
+  return useMutation({
+    mutationFn: signupRequest,
+    onSuccess: (data) => {
+      localStorage.setItem("token", data.token);
       setUser(data.user);
     },
   });
