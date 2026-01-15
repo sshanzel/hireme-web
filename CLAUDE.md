@@ -25,3 +25,4 @@ When writing code, you MUST follow these principles:
 - Properly handle errors and exceptions to ensure the software's robustness.
 - Use exceptions rather than error codes for handling errors.
 - Consider security implications of the code. Implement security best practices to protect against vulnerabilities and attacks.
+- When writing TypeScript code, prefer using interface over type as much as possible. You don't have to prefix the interfaces with the letter `I`.
