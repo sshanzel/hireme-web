@@ -1,46 +1,11 @@
 'use client';
 
-import {useCallback, useState} from 'react';
-import {useMutation} from '@tanstack/react-query';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {useAuthContext} from '@/contexts/AuthContext';
+import {useFileUpload, CV_UPLOAD_CONFIG} from '@/hooks/useFileUpload';
 import {Upload, File, X, Loader2, CheckCircle, AlertCircle} from 'lucide-react';
 import {ExperienceList} from '@/components/ExperienceList';
-
-const ACCEPTED_FILE_TYPES = [
-  'application/pdf',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-];
-
-const ACCEPTED_EXTENSIONS = ['.pdf', '.doc', '.docx'];
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-
-interface FileValidationError {
-  type: 'size' | 'format';
-  message: string;
-}
-
-function validateFile(file: File): FileValidationError | null {
-  const extension = file.name.toLowerCase().slice(file.name.lastIndexOf('.'));
-
-  if (!ACCEPTED_FILE_TYPES.includes(file.type) && !ACCEPTED_EXTENSIONS.includes(extension)) {
-    return {
-      type: 'format',
-      message: 'Invalid file format. Please upload a PDF, DOC, or DOCX file.',
-    };
-  }
-
-  if (file.size > MAX_FILE_SIZE) {
-    return {
-      type: 'size',
-      message: `File size exceeds 5MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB.`,
-    };
-  }
-
-  return null;
-}
 
 async function uploadCV(file: File): Promise<{success: boolean}> {
   const token = localStorage.getItem('token');
@@ -65,69 +30,22 @@ async function uploadCV(file: File): Promise<{success: boolean}> {
 
 export function ProfileSection() {
   const {user} = useAuthContext();
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [validationError, setValidationError] = useState<FileValidationError | null>(null);
-  const [isDragOver, setIsDragOver] = useState(false);
 
-  const uploadMutation = useMutation({
-    mutationFn: uploadCV,
-    onSuccess: () => {
-      setSelectedFile(null);
-    },
+  const {
+    selectedFile,
+    validationError,
+    isDragOver,
+    removeFile,
+    handleInputChange,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop,
+    upload,
+    uploadMutation,
+  } = useFileUpload({
+    config: CV_UPLOAD_CONFIG,
+    uploadFn: uploadCV,
   });
-
-  const handleFileSelect = useCallback((file: File) => {
-    setValidationError(null);
-    uploadMutation.reset();
-
-    const error = validateFile(file);
-    if (error) {
-      setValidationError(error);
-      setSelectedFile(null);
-      return;
-    }
-
-    setSelectedFile(file);
-  }, [uploadMutation]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      handleFileSelect(file);
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-
-    const file = e.dataTransfer.files?.[0];
-    if (file) {
-      handleFileSelect(file);
-    }
-  };
-
-  const handleRemoveFile = () => {
-    setSelectedFile(null);
-    setValidationError(null);
-    uploadMutation.reset();
-  };
-
-  const handleUpload = () => {
-    if (selectedFile) {
-      uploadMutation.mutate(selectedFile);
-    }
-  };
 
   return (
     <div className="flex h-full flex-col gap-6 overflow-auto">
@@ -173,7 +91,7 @@ export function ProfileSection() {
               accept=".pdf,.doc,.docx"
               onChange={handleInputChange}
               className="absolute inset-0 cursor-pointer opacity-0"
-              disabled={uploadMutation.isPending}
+              disabled={uploadMutation?.isPending}
             />
 
             {!selectedFile && !validationError && (
@@ -208,18 +126,18 @@ export function ProfileSection() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={handleRemoveFile}
-                disabled={uploadMutation.isPending}
+                onClick={removeFile}
+                disabled={uploadMutation?.isPending}
               >
                 <X className="mr-2 h-4 w-4" />
                 Remove
               </Button>
               <Button
                 size="sm"
-                onClick={handleUpload}
-                disabled={uploadMutation.isPending}
+                onClick={upload}
+                disabled={uploadMutation?.isPending}
               >
-                {uploadMutation.isPending ? (
+                {uploadMutation?.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Uploading...
@@ -234,14 +152,14 @@ export function ProfileSection() {
             </div>
           )}
 
-          {uploadMutation.isSuccess && (
+          {uploadMutation?.isSuccess && (
             <div className="mt-4 flex items-center gap-2 rounded-lg bg-green-50 p-3 text-green-700 dark:bg-green-950 dark:text-green-300">
               <CheckCircle className="h-5 w-5" />
               <p className="text-sm">CV uploaded successfully! We&apos;re parsing your information.</p>
             </div>
           )}
 
-          {uploadMutation.isError && (
+          {uploadMutation?.isError && (
             <div className="mt-4 flex items-center gap-2 rounded-lg bg-destructive/10 p-3 text-destructive">
               <AlertCircle className="h-5 w-5" />
               <p className="text-sm">{uploadMutation.error.message}</p>
