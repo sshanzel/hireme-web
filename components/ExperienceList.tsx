@@ -4,8 +4,15 @@ import {useState} from 'react';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import {ExperienceForm} from '@/components/ExperienceForm';
-import {Briefcase, Plus, X, Pencil, Trash2, Loader2} from 'lucide-react';
+import {Briefcase, Plus, Pencil, Trash2, Loader2} from 'lucide-react';
 import type {Experience} from '@/types/experience';
 
 async function deleteExperience(id: string): Promise<void> {
@@ -142,7 +149,7 @@ function ExperienceItem({experience, onEdit, onDelete, isDeleting}: ExperienceIt
 
 export function ExperienceList() {
   const queryClient = useQueryClient();
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingExperience, setEditingExperience] = useState<Experience | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const experiences = MOCK_EXPERIENCES;
@@ -159,18 +166,18 @@ export function ExperienceList() {
   });
 
   const handleFormSuccess = () => {
-    setIsFormOpen(false);
+    setIsDialogOpen(false);
     setEditingExperience(null);
   };
 
-  const handleFormCancel = () => {
-    setIsFormOpen(false);
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
     setEditingExperience(null);
   };
 
   const handleEdit = (experience: Experience) => {
     setEditingExperience(experience);
-    setIsFormOpen(false);
+    setIsDialogOpen(true);
   };
 
   const handleDelete = (id: string) => {
@@ -180,66 +187,38 @@ export function ExperienceList() {
 
   const handleAddClick = () => {
     setEditingExperience(null);
-    setIsFormOpen(!isFormOpen);
+    setIsDialogOpen(true);
   };
 
-  const isShowingForm = isFormOpen || editingExperience !== null;
+  const isEditing = editingExperience !== null;
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div>
-            <CardTitle>Work Experience</CardTitle>
-            <CardDescription>Your professional history</CardDescription>
+    <>
+      <Card>
+        <CardHeader>
+          <div className="flex items-start justify-between">
+            <div>
+              <CardTitle>Work Experience</CardTitle>
+              <CardDescription>Your professional history</CardDescription>
+            </div>
+            <Button size="sm" onClick={handleAddClick}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add
+            </Button>
           </div>
-          <Button
-            variant={isFormOpen ? 'outline' : 'default'}
-            size="sm"
-            onClick={handleAddClick}
-            disabled={editingExperience !== null}
-          >
-            {isFormOpen ? (
-              <>
-                <X className="mr-2 h-4 w-4" />
-                Cancel
-              </>
-            ) : (
-              <>
-                <Plus className="mr-2 h-4 w-4" />
-                Add
-              </>
-            )}
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {isFormOpen && !editingExperience && (
-          <div className="rounded-lg border bg-muted/30 p-4">
-            <ExperienceForm onSuccess={handleFormSuccess} onCancel={handleFormCancel} />
-          </div>
-        )}
-
-        {experiences.length === 0 && !isShowingForm ? (
-          <div className="flex flex-col items-center justify-center py-8 text-center">
-            <Briefcase className="h-10 w-10 text-muted-foreground/50" />
-            <p className="mt-4 text-sm text-muted-foreground">No experiences yet.</p>
-            <p className="text-sm text-muted-foreground">
-              Upload your CV or add your work history manually.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {experiences.map((experience) =>
-              editingExperience?.id === experience.id ? (
-                <div key={experience.id} className="rounded-lg border bg-muted/30 p-4">
-                  <ExperienceForm
-                    experience={experience}
-                    onSuccess={handleFormSuccess}
-                    onCancel={handleFormCancel}
-                  />
-                </div>
-              ) : (
+        </CardHeader>
+        <CardContent>
+          {experiences.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <Briefcase className="h-10 w-10 text-muted-foreground/50" />
+              <p className="mt-4 text-sm text-muted-foreground">No experiences yet.</p>
+              <p className="text-sm text-muted-foreground">
+                Upload your CV or add your work history manually.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {experiences.map((experience) => (
                 <ExperienceItem
                   key={experience.id}
                   experience={experience}
@@ -247,11 +226,29 @@ export function ExperienceList() {
                   onDelete={() => handleDelete(experience.id)}
                   isDeleting={deletingId === experience.id}
                 />
-              )
-            )}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{isEditing ? 'Edit Experience' : 'Add Experience'}</DialogTitle>
+            <DialogDescription>
+              {isEditing
+                ? 'Update the details of your work experience.'
+                : 'Add a new work experience to your profile.'}
+            </DialogDescription>
+          </DialogHeader>
+          <ExperienceForm
+            experience={editingExperience ?? undefined}
+            onSuccess={handleFormSuccess}
+            onCancel={handleDialogClose}
+          />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
