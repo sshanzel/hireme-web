@@ -1,6 +1,7 @@
 'use client';
 
 import {AppLayout} from '@/components/AppLayout';
+import {PageHeader} from '@/components/PageHeader';
 import {useAuthContext} from '@/contexts/AuthContext';
 
 export default function HomePage() {
@@ -8,14 +9,10 @@ export default function HomePage() {
 
   return (
     <AppLayout>
-      <div>
-        <h1 className="text-2xl font-semibold">
-          Welcome, {user?.name || 'there'}!
-        </h1>
-        <p className="mt-2 text-muted-foreground">
-          Start preparing for your next interview.
-        </p>
-      </div>
+      <PageHeader
+        title={`Welcome, ${user?.name || 'there'}!`}
+        description="Start preparing for your next interview."
+      />
     </AppLayout>
   );
 }
