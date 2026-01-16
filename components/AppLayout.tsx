@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { Sidebar } from "@/components/Sidebar";
-import { useAuthContext } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
+import {ProtectedRoute} from '@/components/ProtectedRoute';
+import {Sidebar} from '@/components/Sidebar';
+import {useAuthContext} from '@/contexts/AuthContext';
+import {Button} from '@/components/ui/button';
 
 interface AppLayoutProps {
   children: React.ReactNode;
 }
 
-export function AppLayout({ children }: AppLayoutProps) {
-  const { user, logout } = useAuthContext();
+export function AppLayout({children}: AppLayoutProps) {
+  const {user, logout} = useAuthContext();
 
   return (
     <ProtectedRoute>

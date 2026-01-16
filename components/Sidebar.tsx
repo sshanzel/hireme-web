@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { LayoutDashboard, Settings } from "lucide-react";
-import { cn } from "@/lib/utils";
+import Link from 'next/link';
+import {usePathname} from 'next/navigation';
+import {LayoutDashboard, Settings} from 'lucide-react';
+import {cn} from '@/lib/utils';
 
 interface NavItem {
   label: string;
@@ -13,13 +13,13 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   {
-    label: "Dashboard",
-    href: "/",
+    label: 'Dashboard',
+    href: '/',
     icon: <LayoutDashboard className="h-5 w-5" />,
   },
   {
-    label: "Settings",
-    href: "/settings",
+    label: 'Settings',
+    href: '/settings',
     icon: <Settings className="h-5 w-5" />,
   },
 ];
@@ -42,10 +42,10 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                 isActive
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+                  : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
               )}
             >
               {item.icon}
