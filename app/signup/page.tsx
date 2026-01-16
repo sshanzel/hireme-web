@@ -3,12 +3,12 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { loginSchema, LoginFormData } from "@/lib/validations/auth";
-import { useLogin } from "@/hooks/useAuth";
+import Link from "next/link";
+import { signupSchema, SignupFormData } from "@/lib/validations/auth";
+import { useSignup } from "@/hooks/useAuth";
 import { GuestRoute } from "@/components/GuestRoute";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -26,24 +26,28 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-export default function LoginPage() {
+export default function SignupPage() {
   const router = useRouter();
-  const { mutate: login, isPending, error } = useLogin();
+  const { mutate: signup, isPending, error } = useSignup();
 
-  const form = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  const onSubmit = (data: LoginFormData) => {
-    login(data, {
-      onSuccess: () => {
-        router.push("/");
-      },
-    });
+  const onSubmit = (data: SignupFormData) => {
+    signup(
+      { email: data.email, password: data.password },
+      {
+        onSuccess: () => {
+          router.push("/");
+        },
+      }
+    );
   };
 
   return (
@@ -51,8 +55,8 @@ export default function LoginPage() {
       <div className="min-h-screen flex items-center justify-center bg-background px-4">
         <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Welcome back</CardTitle>
-          <CardDescription>Sign in to your account to continue</CardDescription>
+          <CardTitle className="text-2xl">Create an account</CardTitle>
+          <CardDescription>Get started with HireMe.dev</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -83,7 +87,24 @@ export default function LoginPage() {
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="Enter your password"
+                        placeholder="Create a password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Confirm your password"
                         {...field}
                       />
                     </FormControl>
@@ -95,16 +116,16 @@ export default function LoginPage() {
                 <p className="text-sm text-destructive">{error.message}</p>
               )}
               <Button type="submit" className="w-full" disabled={isPending}>
-                {isPending ? "Signing in..." : "Sign in"}
+                {isPending ? "Creating account..." : "Sign up"}
               </Button>
             </form>
           </Form>
         </CardContent>
         <CardFooter className="justify-center">
           <p className="text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
-            <Link href="/signup" className="text-primary hover:underline">
-              Sign up
+            Already have an account?{" "}
+            <Link href="/login" className="text-primary hover:underline">
+              Sign in
             </Link>
           </p>
         </CardFooter>
