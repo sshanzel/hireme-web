@@ -11,6 +11,12 @@ interface AuthResponse {
   token: string;
 }
 
+interface SignupData {
+  name: string;
+  email: string;
+  password: string;
+}
+
 async function loginRequest(data: LoginFormData): Promise<AuthResponse> {
   const response = await fetch("/api/auth/login", {
     method: "POST",
@@ -26,7 +32,7 @@ async function loginRequest(data: LoginFormData): Promise<AuthResponse> {
   return response.json();
 }
 
-async function signupRequest(data: LoginFormData): Promise<AuthResponse> {
+async function signupRequest(data: SignupData): Promise<AuthResponse> {
   const response = await fetch("/api/auth/signup", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

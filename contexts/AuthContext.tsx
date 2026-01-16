@@ -33,7 +33,7 @@ async function fetchCurrentUser(): Promise<User | null> {
   }
 
   const data = await response.json();
-  return data.user;
+  return data.user ?? null;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {

@@ -33,6 +33,7 @@ export default function SignupPage() {
   const form = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -41,7 +42,7 @@ export default function SignupPage() {
 
   const onSubmit = (data: SignupFormData) => {
     signup(
-      { email: data.email, password: data.password },
+      { name: data.name, email: data.email, password: data.password },
       {
         onSuccess: () => {
           router.push("/");
@@ -61,6 +62,19 @@ export default function SignupPage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Your name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="email"
