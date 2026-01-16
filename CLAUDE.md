@@ -26,3 +26,5 @@ When writing code, you MUST follow these principles:
 - Use exceptions rather than error codes for handling errors.
 - Consider security implications of the code. Implement security best practices to protect against vulnerabilities and attacks.
 - When writing TypeScript code, prefer using interface over type as much as possible. You don't have to prefix the interfaces with the letter `I`.
+- Always use React Query for fetching, never do raw calls with fetch.
+- Use arrow functions when declaring a function inside a component.
