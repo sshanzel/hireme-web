@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { createContext, useContext, ReactNode } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {createContext, useContext, ReactNode} from 'react';
+import {useQuery, useQueryClient} from '@tanstack/react-query';
 
 interface User {
   id: string;
@@ -20,39 +20,43 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 async function fetchCurrentUser(): Promise<User | null> {
-  const token = localStorage.getItem("token");
+  if (typeof window === 'undefined') return null;
+
+  const token = localStorage.getItem('token');
+
   if (!token) return null;
 
-  const response = await fetch("/api/auth/me", {
-    headers: { Authorization: `Bearer ${token}` },
+  const response = await fetch('/api/auth/me', {
+    headers: {Authorization: `Bearer ${token}`},
   });
 
   if (!response.ok) {
-    localStorage.removeItem("token");
+    localStorage.removeItem('token');
     return null;
   }
 
   const data = await response.json();
-  return data.user ?? null;
+
+  return data ?? null;
 }
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({children}: {children: ReactNode}) {
   const queryClient = useQueryClient();
 
-  const { data: user = null, isLoading } = useQuery({
-    queryKey: ["auth", "me"],
+  const {data: user = null, isLoading} = useQuery({
+    queryKey: ['auth', 'me'],
     queryFn: fetchCurrentUser,
     staleTime: Infinity,
     retry: false,
   });
 
   const setUser = (newUser: User | null) => {
-    queryClient.setQueryData(["auth", "me"], newUser);
+    queryClient.setQueryData(['auth', 'me'], newUser);
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    queryClient.setQueryData(["auth", "me"], null);
+    localStorage.removeItem('token');
+    queryClient.setQueryData(['auth', 'me'], null);
   };
 
   return (
@@ -73,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuthContext() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuthContext must be used within an AuthProvider");
+    throw new Error('useAuthContext must be used within an AuthProvider');
   }
   return context;
 }
