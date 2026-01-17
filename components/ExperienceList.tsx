@@ -12,8 +12,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import {ExperienceForm} from '@/components/ExperienceForm';
-import {Briefcase, Plus, Pencil, Trash2, Loader2} from 'lucide-react';
-import type {Experience} from '@/types/experience';
+import {Briefcase, Plus, Pencil, Trash2, Loader2, BookOpen, Sparkles} from 'lucide-react';
+import type {Experience, Story} from '@/types/experience';
 
 async function deleteExperience(id: string): Promise<void> {
   const token = localStorage.getItem('token');
@@ -40,6 +40,16 @@ const MOCK_EXPERIENCES: Experience[] = [
     endDate: null,
     description:
       'Led development of microservices architecture. Mentored junior developers and established coding standards.',
+    stories: [
+      {
+        id: 's1',
+        title: 'Led critical system migration',
+        context: 'Legacy monolith was causing frequent outages',
+        actions: 'Designed microservices architecture, led team of 4 engineers',
+        impact: 'Reduced downtime by 95%, improved deployment frequency from monthly to daily',
+        traits: ['Leadership', 'Technical Excellence'],
+      },
+    ],
   },
   {
     id: '2',
@@ -49,6 +59,7 @@ const MOCK_EXPERIENCES: Experience[] = [
     endDate: '2021-12',
     description:
       'Built customer-facing dashboard from scratch. Implemented CI/CD pipelines and reduced deployment time by 60%.',
+    stories: [],
   },
   {
     id: '3',
@@ -58,6 +69,7 @@ const MOCK_EXPERIENCES: Experience[] = [
     endDate: '2020-02',
     description:
       'Developed responsive web applications for clients. Collaborated with designers to implement pixel-perfect UIs.',
+    stories: [],
   },
 ];
 
@@ -80,8 +92,32 @@ interface ExperienceItemProps {
   isDeleting: boolean;
 }
 
+function StoryItem({story}: {story: Story}) {
+  return (
+    <div className="rounded-md border bg-muted/30 p-3">
+      <div className="flex items-start justify-between gap-2">
+        <h5 className="text-sm font-medium">{story.title}</h5>
+        <div className="flex flex-wrap gap-1">
+          {story.traits.map((trait) => (
+            <span
+              key={trait}
+              className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
+            >
+              {trait}
+            </span>
+          ))}
+        </div>
+      </div>
+      <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{story.impact}</p>
+    </div>
+  );
+}
+
 function ExperienceItem({experience, onEdit, onDelete, isDeleting}: ExperienceItemProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isStoriesExpanded, setIsStoriesExpanded] = useState(false);
+  const storiesCount = experience.stories.length;
+  const hasStories = storiesCount > 0;
 
   const handleDeleteClick = () => {
     setShowDeleteConfirm(true);
@@ -97,49 +133,93 @@ function ExperienceItem({experience, onEdit, onDelete, isDeleting}: ExperienceIt
   };
 
   return (
-    <div className="flex gap-4 rounded-lg border p-4">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
-        <Briefcase className="h-5 w-5 text-primary" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
-          <div>
-            <h4 className="font-medium">{experience.role}</h4>
-            <p className="text-sm text-muted-foreground">{experience.company}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">
-              {formatDateRange(experience.startDate, experience.endDate)}
-            </span>
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onEdit}>
-              <Pencil className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-destructive hover:text-destructive"
-              onClick={handleDeleteClick}
-              disabled={isDeleting}
-            >
-              {isDeleting ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Trash2 className="h-4 w-4" />
-              )}
-            </Button>
-          </div>
+    <div className="rounded-lg border">
+      <div className="flex gap-4 p-4">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
+          <Briefcase className="h-5 w-5 text-primary" />
         </div>
-        <p className="mt-2 text-sm">{experience.description}</p>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
+            <div>
+              <h4 className="font-medium">{experience.role}</h4>
+              <p className="text-sm text-muted-foreground">{experience.company}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">
+                {formatDateRange(experience.startDate, experience.endDate)}
+              </span>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onEdit}>
+                <Pencil className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-destructive hover:text-destructive"
+                onClick={handleDeleteClick}
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Trash2 className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+          </div>
+          <p className="mt-2 text-sm">{experience.description}</p>
 
-        {showDeleteConfirm && (
-          <div className="mt-3 flex items-center gap-2 rounded-lg bg-destructive/10 p-3">
-            <p className="flex-1 text-sm text-destructive">Delete this experience?</p>
-            <Button variant="ghost" size="sm" onClick={handleCancelDelete}>
-              Cancel
-            </Button>
-            <Button variant="destructive" size="sm" onClick={handleConfirmDelete}>
-              Delete
-            </Button>
+          {showDeleteConfirm && (
+            <div className="mt-3 flex items-center gap-2 rounded-lg bg-destructive/10 p-3">
+              <p className="flex-1 text-sm text-destructive">Delete this experience?</p>
+              <Button variant="ghost" size="sm" onClick={handleCancelDelete}>
+                Cancel
+              </Button>
+              <Button variant="destructive" size="sm" onClick={handleConfirmDelete}>
+                Delete
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="border-t px-4 py-3">
+        <button
+          type="button"
+          onClick={() => setIsStoriesExpanded(!isStoriesExpanded)}
+          className="flex w-full items-center justify-between text-left"
+        >
+          <div className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-medium">
+              Stories{' '}
+              <span className={hasStories ? 'text-primary' : 'text-muted-foreground'}>
+                ({storiesCount})
+              </span>
+            </span>
+          </div>
+          <span className="text-xs text-muted-foreground">
+            {isStoriesExpanded ? 'Hide' : 'Show'}
+          </span>
+        </button>
+
+        {isStoriesExpanded && (
+          <div className="mt-3 space-y-2">
+            {hasStories ? (
+              experience.stories.map((story) => <StoryItem key={story.id} story={story} />)
+            ) : (
+              <div className="rounded-md border border-dashed bg-muted/20 p-4 text-center">
+                <Sparkles className="mx-auto h-6 w-6 text-muted-foreground/50" />
+                <p className="mt-2 text-sm font-medium">No stories yet</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Stories help you remember specific achievements and answer interview questions
+                  like &quot;Tell me about a time when...&quot;
+                </p>
+                <Button variant="outline" size="sm" className="mt-3">
+                  <Plus className="mr-2 h-3 w-3" />
+                  Add a story
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </div>
