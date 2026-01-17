@@ -183,10 +183,10 @@ function ExperienceItem({experience, onEdit, onDelete, isDeleting}: ExperienceIt
       </div>
 
       <div className="border-t px-4 py-3">
-        <button
-          type="button"
+        <Button
+          variant="ghost"
           onClick={() => setIsStoriesExpanded(!isStoriesExpanded)}
-          className="flex w-full items-center justify-between text-left"
+          className="flex h-auto w-full items-center justify-between p-0 text-left hover:bg-transparent"
         >
           <div className="flex items-center gap-2">
             <BookOpen className="h-4 w-4 text-muted-foreground" />
@@ -200,7 +200,7 @@ function ExperienceItem({experience, onEdit, onDelete, isDeleting}: ExperienceIt
           <span className="text-xs text-muted-foreground">
             {isStoriesExpanded ? 'Hide' : 'Show'}
           </span>
-        </button>
+        </Button>
 
         {isStoriesExpanded && (
           <div className="mt-3 space-y-2">
