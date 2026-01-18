@@ -6,7 +6,7 @@ import {useQuery, useQueryClient} from '@tanstack/react-query';
 interface User {
   id: string;
   email: string;
-  name?: string;
+  name: string;
 }
 
 interface AuthContextType {
