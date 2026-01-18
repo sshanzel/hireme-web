@@ -4,7 +4,7 @@ import {useState, useRef, useEffect, useCallback} from 'react';
 import {Card} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
-import {Send, Bot, User} from 'lucide-react';
+import {Send, Bot, User, MessageSquare} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {useAuthContext} from '@/contexts/AuthContext';
 
@@ -14,16 +14,14 @@ interface Message {
   content: string;
 }
 
-const INITIAL_MESSAGES: Message[] = [
-  {
-    id: '1',
-    role: 'assistant',
-    content:
-      "Hi! I'm here to help you prepare for interviews. I can help you recall and structure stories from your work experience. What would you like to work on today?",
-  },
-];
-
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:4000';
+
+const STORY_PROMPTS = [
+  'I led a project that was behind schedule...',
+  'I had to convince my team to try a new approach...',
+  'I solved a tricky bug that no one else could figure out...',
+  'I had a disagreement with a coworker about...',
+];
 
 function MessageBubble({message}: {message: Message}) {
   const isUser = message.role === 'user';
@@ -52,7 +50,7 @@ function MessageBubble({message}: {message: Message}) {
 
 export function Chat() {
   const {user} = useAuthContext();
-  const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
@@ -134,16 +132,19 @@ export function Chat() {
     if (socketRef.current?.readyState === WebSocket.OPEN) {
       socketRef.current.send(JSON.stringify({data: input.trim()}));
     } else {
-      // Fallback if WebSocket is not connected
       console.warn('WebSocket not connected');
       setIsLoading(false);
     }
   };
 
+  const handlePromptClick = (prompt: string) => {
+    setInput(prompt);
+  };
+
   return (
     <Card className='flex h-full flex-col py-0'>
       <div className='flex items-center justify-between border-b px-4 py-3'>
-        <h3 className='text-sm font-medium'>Interview Coach</h3>
+        <h3 className='text-sm font-medium'>Tell us a story from your work/project!</h3>
         <div className='flex items-center gap-2'>
           <span
             className={cn(
@@ -157,24 +158,48 @@ export function Chat() {
         </div>
       </div>
       <div className='flex-1 overflow-y-auto p-4'>
-        <div className='space-y-4'>
-          {messages.map(message => (
-            <MessageBubble key={message.id} message={message} />
-          ))}
-          {isLoading && (
-            <div className='flex gap-3'>
-              <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted'>
-                <Bot className='h-4 w-4' />
-              </div>
-              <div className='flex items-center gap-1 rounded-lg bg-muted px-3 py-2'>
-                <span className='h-2 w-2 animate-bounce rounded-full bg-muted-foreground/50 [animation-delay:-0.3s]' />
-                <span className='h-2 w-2 animate-bounce rounded-full bg-muted-foreground/50 [animation-delay:-0.15s]' />
-                <span className='h-2 w-2 animate-bounce rounded-full bg-muted-foreground/50' />
-              </div>
+        {messages.length === 0 && !isLoading ? (
+          <div className='flex h-full flex-col items-center justify-center text-center'>
+            <div className='rounded-full bg-muted p-4'>
+              <MessageSquare className='h-8 w-8 text-muted-foreground' />
             </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
+            <h4 className='mt-4 font-medium'>Share a work story</h4>
+            <p className='mt-1 max-w-xs text-sm text-muted-foreground'>
+              Think of a challenge you faced, a win you achieved, or a lesson you learned.
+            </p>
+            <div className='mt-6 flex flex-wrap justify-center gap-2'>
+              {STORY_PROMPTS.map(prompt => (
+                <button
+                  key={prompt}
+                  type='button'
+                  onClick={() => handlePromptClick(prompt)}
+                  className='rounded-full border bg-background px-3 py-1.5 text-xs transition-colors hover:bg-muted'
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className='space-y-4'>
+            {messages.map(message => (
+              <MessageBubble key={message.id} message={message} />
+            ))}
+            {isLoading && (
+              <div className='flex gap-3'>
+                <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted'>
+                  <Bot className='h-4 w-4' />
+                </div>
+                <div className='flex items-center gap-1 rounded-lg bg-muted px-3 py-2'>
+                  <span className='h-2 w-2 animate-bounce rounded-full bg-muted-foreground/50 [animation-delay:-0.3s]' />
+                  <span className='h-2 w-2 animate-bounce rounded-full bg-muted-foreground/50 [animation-delay:-0.15s]' />
+                  <span className='h-2 w-2 animate-bounce rounded-full bg-muted-foreground/50' />
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className='border-t p-4'>
