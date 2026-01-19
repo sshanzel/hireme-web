@@ -56,6 +56,7 @@ export function Chat() {
   const [isConnected, setIsConnected] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<WebSocket | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
@@ -139,6 +140,11 @@ export function Chat() {
 
   const handlePromptClick = (prompt: string) => {
     setInput(prompt);
+    inputRef.current?.focus();
+  };
+
+  const handleEmptyStateClick = () => {
+    inputRef.current?.focus();
   };
 
   return (
@@ -159,7 +165,10 @@ export function Chat() {
       </div>
       <div className='flex-1 overflow-y-auto p-4'>
         {messages.length === 0 && !isLoading ? (
-          <div className='flex h-full flex-col items-center justify-center text-center'>
+          <div
+            className='flex h-full cursor-text flex-col items-center justify-center text-center'
+            onClick={handleEmptyStateClick}
+          >
             <div className='rounded-full bg-muted p-4'>
               <MessageSquare className='h-8 w-8 text-muted-foreground' />
             </div>
@@ -205,6 +214,7 @@ export function Chat() {
       <form onSubmit={handleSubmit} className='border-t p-4'>
         <div className='flex gap-2'>
           <Textarea
+            ref={inputRef}
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => {
