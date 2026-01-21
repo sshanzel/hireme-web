@@ -2,6 +2,7 @@
 
 import {ProtectedRoute} from '@/components/ProtectedRoute';
 import {Sidebar} from '@/components/Sidebar';
+import {CVUploadOverlay} from '@/components/CVUploadOverlay';
 import {useAuthContext} from '@/contexts/AuthContext';
 import {Button} from '@/components/ui/button';
 
@@ -14,6 +15,7 @@ export function AppLayout({children}: AppLayoutProps) {
 
   return (
     <ProtectedRoute>
+      <CVUploadOverlay />
       <div className="flex h-screen bg-background">
         <Sidebar />
         <div className="flex flex-1 flex-col overflow-hidden">
