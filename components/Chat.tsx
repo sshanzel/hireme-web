@@ -4,13 +4,14 @@ import {useState, useRef, useEffect, useCallback} from 'react';
 import {Card} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
-import {Send, Bot, User, MessageSquare} from 'lucide-react';
+import {Send, Bot, User, MessageSquare, AlertCircle} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {useAuthContext} from '@/contexts/AuthContext';
+import {useWebSocket} from '@/hooks/useWebSocket';
 
 interface Message {
   id: string;
-  role: 'user' | 'assistant';
+  role: 'user' | 'assistant' | 'error';
   content: string;
 }
 
@@ -25,21 +26,32 @@ const STORY_PROMPTS = [
 
 function MessageBubble({message}: {message: Message}) {
   const isUser = message.role === 'user';
+  const isError = message.role === 'error';
 
   return (
     <div className={cn('flex gap-3', isUser && 'flex-row-reverse')}>
       <div
         className={cn(
           'flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
-          isUser ? 'bg-primary text-primary-foreground' : 'bg-muted'
+          isUser && 'bg-primary text-primary-foreground',
+          isError && 'bg-destructive/10 text-destructive',
+          !isUser && !isError && 'bg-muted'
         )}
       >
-        {isUser ? <User className='h-4 w-4' /> : <Bot className='h-4 w-4' />}
+        {isUser ? (
+          <User className='h-4 w-4' />
+        ) : isError ? (
+          <AlertCircle className='h-4 w-4' />
+        ) : (
+          <Bot className='h-4 w-4' />
+        )}
       </div>
       <div
         className={cn(
           'max-w-[80%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm',
-          isUser ? 'bg-primary text-primary-foreground' : 'bg-muted'
+          isUser && 'bg-primary text-primary-foreground',
+          isError && 'bg-destructive/10 text-destructive',
+          !isUser && !isError && 'bg-muted'
         )}
       >
         {message.content}
@@ -52,11 +64,43 @@ export function Chat() {
   const {user} = useAuthContext();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
+  const [title, setTitle] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const socketRef = useRef<WebSocket | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  const {isConnected, send} = useWebSocket({
+    url: `${WS_URL}/ws/story-event?uid=${user?.id}`,
+    enabled: !!user,
+    onResponse: message => {
+      setMessages(prev => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: message.data.content,
+        },
+      ]);
+      if (message.data.title) {
+        setTitle(message.data.title);
+      }
+      setIsLoading(false);
+    },
+    onError: message => {
+      setMessages(prev => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          role: 'error',
+          content: message.error,
+        },
+      ]);
+      setIsLoading(false);
+    },
+    onConnectionError: () => {
+      setIsLoading(false);
+    },
+  });
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
@@ -65,55 +109,6 @@ export function Chat() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
-
-  useEffect(() => {
-    if (!user) return;
-
-    const ws = new WebSocket(`${WS_URL}/ws/story-event?uid=${user.id}`);
-
-    ws.onopen = () => {
-      console.log('WebSocket connected');
-      setIsConnected(true);
-    };
-
-    ws.onmessage = event => {
-      const message = JSON.parse(event.data);
-      console.log('Received:', message);
-
-      // TODO: Adjust based on your API response structure
-      if (message.data) {
-        const assistantMessage: Message = {
-          id: Date.now().toString(),
-          role: 'assistant',
-          content: message.data,
-        };
-        setMessages(prev => [...prev, assistantMessage]);
-        setIsLoading(false);
-      }
-    };
-
-    ws.onclose = event => {
-      console.log('WebSocket closed:', {
-        code: event.code,
-        reason: event.reason,
-        wasClean: event.wasClean,
-      });
-      setIsConnected(false);
-    };
-
-    ws.onerror = error => {
-      console.error('WebSocket error:', error);
-      setIsLoading(false);
-    };
-
-    socketRef.current = ws;
-
-    return () => {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.close();
-      }
-    };
-  }, [user]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,10 +125,7 @@ export function Chat() {
     setInput('');
     setIsLoading(true);
 
-    if (socketRef.current?.readyState === WebSocket.OPEN) {
-      socketRef.current.send(JSON.stringify({data: input.trim()}));
-    } else {
-      console.warn('WebSocket not connected');
+    if (!send(input.trim())) {
       setIsLoading(false);
     }
   };
@@ -150,7 +142,9 @@ export function Chat() {
   return (
     <Card className='flex h-full flex-col py-0'>
       <div className='flex items-center justify-between border-b px-4 py-3'>
-        <h3 className='text-sm font-medium'>Tell us a story from your work/project!</h3>
+        <h3 className='text-sm font-medium'>
+          {title || 'Tell us a story from your work/project!'}
+        </h3>
         <div className='flex items-center gap-2'>
           <span
             className={cn(
