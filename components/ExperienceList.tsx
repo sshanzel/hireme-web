@@ -1,7 +1,7 @@
 'use client';
 
 import {useState} from 'react';
-import {useMutation, useQueryClient} from '@tanstack/react-query';
+import {useMutation} from '@tanstack/react-query';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {
@@ -14,6 +14,11 @@ import {
 import {ExperienceForm} from '@/components/ExperienceForm';
 import {Briefcase, Plus, Pencil, Trash2, Loader2, BookOpen, Sparkles} from 'lucide-react';
 import type {Experience, Story} from '@/types/experience';
+
+interface ExperienceListProps {
+  experiences: Experience[];
+  onMutate?: () => void;
+}
 
 async function deleteExperience(id: string): Promise<void> {
   const token = localStorage.getItem('token');
@@ -30,48 +35,6 @@ async function deleteExperience(id: string): Promise<void> {
     throw new Error(error.message || 'Failed to delete experience');
   }
 }
-
-const MOCK_EXPERIENCES: Experience[] = [
-  {
-    id: '1',
-    company: 'Acme Corp',
-    role: 'Senior Software Engineer',
-    startDate: '2022-01',
-    endDate: null,
-    description:
-      'Led development of microservices architecture. Mentored junior developers and established coding standards.',
-    stories: [
-      {
-        id: 's1',
-        title: 'Led critical system migration',
-        context: 'Legacy monolith was causing frequent outages',
-        actions: 'Designed microservices architecture, led team of 4 engineers',
-        impact: 'Reduced downtime by 95%, improved deployment frequency from monthly to daily',
-        traits: ['Leadership', 'Technical Excellence'],
-      },
-    ],
-  },
-  {
-    id: '2',
-    company: 'Tech Startup Inc',
-    role: 'Full Stack Developer',
-    startDate: '2020-03',
-    endDate: '2021-12',
-    description:
-      'Built customer-facing dashboard from scratch. Implemented CI/CD pipelines and reduced deployment time by 60%.',
-    stories: [],
-  },
-  {
-    id: '3',
-    company: 'Digital Agency',
-    role: 'Frontend Developer',
-    startDate: '2018-06',
-    endDate: '2020-02',
-    description:
-      'Developed responsive web applications for clients. Collaborated with designers to implement pixel-perfect UIs.',
-    stories: [],
-  },
-];
 
 function formatDate(dateString: string): string {
   const [year, month] = dateString.split('-');
@@ -94,21 +57,21 @@ interface ExperienceItemProps {
 
 function StoryItem({story}: {story: Story}) {
   return (
-    <div className="rounded-md border bg-muted/30 p-3">
-      <div className="flex items-start justify-between gap-2">
-        <h5 className="text-sm font-medium">{story.title}</h5>
-        <div className="flex flex-wrap gap-1">
-          {story.traits.map((trait) => (
+    <div className='rounded-md border bg-muted/30 p-3'>
+      <div className='flex items-start justify-between gap-2'>
+        <h5 className='text-sm font-medium'>{story.title}</h5>
+        <div className='flex flex-wrap gap-1'>
+          {story.traits.map(trait => (
             <span
               key={trait}
-              className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
+              className='inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary'
             >
               {trait}
             </span>
           ))}
         </div>
       </div>
-      <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{story.impact}</p>
+      <p className='mt-1 text-xs text-muted-foreground line-clamp-2'>{story.impact}</p>
     </div>
   );
 }
@@ -133,48 +96,48 @@ function ExperienceItem({experience, onEdit, onDelete, isDeleting}: ExperienceIt
   };
 
   return (
-    <div className="rounded-lg border">
-      <div className="flex gap-4 p-4">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
-          <Briefcase className="h-5 w-5 text-primary" />
+    <div className='rounded-lg border'>
+      <div className='flex gap-4 p-4'>
+        <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10'>
+          <Briefcase className='h-5 w-5 text-primary' />
         </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
+        <div className='min-w-0 flex-1'>
+          <div className='flex flex-wrap items-start justify-between gap-x-4 gap-y-1'>
             <div>
-              <h4 className="font-medium">{experience.role}</h4>
-              <p className="text-sm text-muted-foreground">{experience.company}</p>
+              <h4 className='font-medium'>{experience.title}</h4>
+              <p className='text-sm text-muted-foreground'>{experience.organization}</p>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">
+            <div className='flex items-center gap-2'>
+              <span className='text-sm text-muted-foreground'>
                 {formatDateRange(experience.startDate, experience.endDate)}
               </span>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onEdit}>
-                <Pencil className="h-4 w-4" />
+              <Button variant='ghost' size='icon' className='h-8 w-8' onClick={onEdit}>
+                <Pencil className='h-4 w-4' />
               </Button>
               <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-destructive hover:text-destructive"
+                variant='ghost'
+                size='icon'
+                className='h-8 w-8 text-destructive hover:text-destructive'
                 onClick={handleDeleteClick}
                 disabled={isDeleting}
               >
                 {isDeleting ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className='h-4 w-4 animate-spin' />
                 ) : (
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className='h-4 w-4' />
                 )}
               </Button>
             </div>
           </div>
-          <p className="mt-2 text-sm">{experience.description}</p>
+          <p className='mt-2 text-sm'>{experience.description}</p>
 
           {showDeleteConfirm && (
-            <div className="mt-3 flex items-center gap-2 rounded-lg bg-destructive/10 p-3">
-              <p className="flex-1 text-sm text-destructive">Delete this experience?</p>
-              <Button variant="ghost" size="sm" onClick={handleCancelDelete}>
+            <div className='mt-3 flex items-center gap-2 rounded-lg bg-destructive/10 p-3'>
+              <p className='flex-1 text-sm text-destructive'>Delete this experience?</p>
+              <Button variant='ghost' size='sm' onClick={handleCancelDelete}>
                 Cancel
               </Button>
-              <Button variant="destructive" size="sm" onClick={handleConfirmDelete}>
+              <Button variant='destructive' size='sm' onClick={handleConfirmDelete}>
                 Delete
               </Button>
             </div>
@@ -182,40 +145,40 @@ function ExperienceItem({experience, onEdit, onDelete, isDeleting}: ExperienceIt
         </div>
       </div>
 
-      <div className="border-t px-4 py-3">
+      <div className='border-t px-4 py-3'>
         <Button
-          variant="ghost"
+          variant='ghost'
           onClick={() => setIsStoriesExpanded(!isStoriesExpanded)}
-          className="flex h-auto w-full items-center justify-between p-0 text-left hover:bg-transparent"
+          className='flex h-auto w-full items-center justify-between p-0 text-left hover:bg-transparent'
         >
-          <div className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium">
+          <div className='flex items-center gap-2'>
+            <BookOpen className='h-4 w-4 text-muted-foreground' />
+            <span className='text-sm font-medium'>
               Stories{' '}
               <span className={hasStories ? 'text-primary' : 'text-muted-foreground'}>
                 ({storiesCount})
               </span>
             </span>
           </div>
-          <span className="text-xs text-muted-foreground">
+          <span className='text-xs text-muted-foreground'>
             {isStoriesExpanded ? 'Hide' : 'Show'}
           </span>
         </Button>
 
         {isStoriesExpanded && (
-          <div className="mt-3 space-y-2">
+          <div className='mt-3 space-y-2'>
             {hasStories ? (
-              experience.stories.map((story) => <StoryItem key={story.id} story={story} />)
+              experience.stories.map(story => <StoryItem key={story.id} story={story} />)
             ) : (
-              <div className="rounded-md border border-dashed bg-muted/20 p-4 text-center">
-                <Sparkles className="mx-auto h-6 w-6 text-muted-foreground/50" />
-                <p className="mt-2 text-sm font-medium">No stories yet</p>
-                <p className="mt-1 text-xs text-muted-foreground">
+              <div className='rounded-md border border-dashed bg-muted/20 p-4 text-center'>
+                <Sparkles className='mx-auto h-6 w-6 text-muted-foreground/50' />
+                <p className='mt-2 text-sm font-medium'>No stories yet</p>
+                <p className='mt-1 text-xs text-muted-foreground'>
                   Stories help you remember specific achievements and answer interview questions
                   like &quot;Tell me about a time when...&quot;
                 </p>
-                <Button variant="outline" size="sm" className="mt-3">
-                  <Plus className="mr-2 h-3 w-3" />
+                <Button variant='outline' size='sm' className='mt-3'>
+                  <Plus className='mr-2 h-3 w-3' />
                   Add a story
                 </Button>
               </div>
@@ -227,17 +190,15 @@ function ExperienceItem({experience, onEdit, onDelete, isDeleting}: ExperienceIt
   );
 }
 
-export function ExperienceList() {
-  const queryClient = useQueryClient();
+export function ExperienceList({experiences, onMutate}: ExperienceListProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingExperience, setEditingExperience] = useState<Experience | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const experiences = MOCK_EXPERIENCES;
 
   const deleteMutation = useMutation({
     mutationFn: deleteExperience,
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['experiences']});
+      onMutate?.();
       setDeletingId(null);
     },
     onError: () => {
@@ -248,6 +209,7 @@ export function ExperienceList() {
   const handleFormSuccess = () => {
     setIsDialogOpen(false);
     setEditingExperience(null);
+    onMutate?.();
   };
 
   const handleDialogClose = () => {
@@ -276,29 +238,29 @@ export function ExperienceList() {
     <>
       <Card>
         <CardHeader>
-          <div className="flex items-start justify-between">
+          <div className='flex items-start justify-between'>
             <div>
               <CardTitle>Work Experience</CardTitle>
               <CardDescription>Your professional history</CardDescription>
             </div>
-            <Button size="sm" onClick={handleAddClick}>
-              <Plus className="mr-2 h-4 w-4" />
+            <Button size='sm' onClick={handleAddClick}>
+              <Plus className='mr-2 h-4 w-4' />
               Add
             </Button>
           </div>
         </CardHeader>
         <CardContent>
           {experiences.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <Briefcase className="h-10 w-10 text-muted-foreground/50" />
-              <p className="mt-4 text-sm text-muted-foreground">No experiences yet.</p>
-              <p className="text-sm text-muted-foreground">
+            <div className='flex flex-col items-center justify-center py-8 text-center'>
+              <Briefcase className='h-10 w-10 text-muted-foreground/50' />
+              <p className='mt-4 text-sm text-muted-foreground'>No experiences yet.</p>
+              <p className='text-sm text-muted-foreground'>
                 Upload your CV or add your work history manually.
               </p>
             </div>
           ) : (
-            <div className="space-y-4">
-              {experiences.map((experience) => (
+            <div className='space-y-4'>
+              {experiences.map(experience => (
                 <ExperienceItem
                   key={experience.id}
                   experience={experience}
@@ -313,7 +275,7 @@ export function ExperienceList() {
       </Card>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+        <DialogContent className='max-h-[90vh] overflow-y-auto sm:max-w-lg'>
           <DialogHeader>
             <DialogTitle>{isEditing ? 'Edit Experience' : 'Add Experience'}</DialogTitle>
             <DialogDescription>

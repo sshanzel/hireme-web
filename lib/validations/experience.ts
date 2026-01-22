@@ -2,8 +2,8 @@ import {z} from 'zod';
 
 export const experienceSchema = z
   .object({
-    company: z.string().min(1, 'Company name is required'),
-    role: z.string().min(1, 'Role is required'),
+    organization: z.string().min(1, 'Organization name is required'),
+    title: z.string().min(1, 'Title is required'),
     startDate: z.string().min(1, 'Start date is required'),
     endDate: z.string(),
     isCurrentRole: z.boolean(),

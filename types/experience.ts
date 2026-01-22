@@ -10,8 +10,8 @@ export interface Story {
 
 export interface Experience {
   id: string;
-  company: string;
-  role: string;
+  organization: string;
+  title: string;
   startDate: string;
   endDate: string | null;
   description: string;

@@ -2,20 +2,13 @@
 
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {useMutation, useQueryClient} from '@tanstack/react-query';
+import {useMutation} from '@tanstack/react-query';
 import {experienceSchema, ExperienceFormData} from '@/lib/validations/experience';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {Checkbox} from '@/components/ui/checkbox';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/components/ui/form';
 import {Loader2} from 'lucide-react';
 import type {Experience} from '@/types/experience';
 
@@ -35,8 +28,8 @@ async function createExperience(data: ExperienceFormData): Promise<Experience> {
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      company: data.company,
-      role: data.role,
+      organization: data.organization,
+      title: data.title,
       startDate: data.startDate,
       endDate: data.isCurrentRole ? null : data.endDate,
       description: data.description,
@@ -61,8 +54,8 @@ async function updateExperience(id: string, data: ExperienceFormData): Promise<E
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      company: data.company,
-      role: data.role,
+      organization: data.organization,
+      title: data.title,
       startDate: data.startDate,
       endDate: data.isCurrentRole ? null : data.endDate,
       description: data.description,
@@ -78,14 +71,13 @@ async function updateExperience(id: string, data: ExperienceFormData): Promise<E
 }
 
 export function ExperienceForm({experience, onSuccess, onCancel}: ExperienceFormProps) {
-  const queryClient = useQueryClient();
   const isEditMode = !!experience;
 
   const form = useForm<ExperienceFormData>({
     resolver: zodResolver(experienceSchema),
     defaultValues: {
-      company: experience?.company ?? '',
-      role: experience?.role ?? '',
+      organization: experience?.organization ?? '',
+      title: experience?.title ?? '',
       startDate: experience?.startDate ?? '',
       endDate: experience?.endDate ?? '',
       isCurrentRole: experience?.endDate === null,
@@ -98,7 +90,6 @@ export function ExperienceForm({experience, onSuccess, onCancel}: ExperienceForm
   const createMutation = useMutation({
     mutationFn: createExperience,
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['experiences']});
       form.reset();
       onSuccess?.();
     },
@@ -107,7 +98,6 @@ export function ExperienceForm({experience, onSuccess, onCancel}: ExperienceForm
   const updateMutation = useMutation({
     mutationFn: (data: ExperienceFormData) => updateExperience(experience!.id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['experiences']});
       onSuccess?.();
     },
   });
@@ -120,16 +110,16 @@ export function ExperienceForm({experience, onSuccess, onCancel}: ExperienceForm
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-4'>
+        <div className='grid gap-4 sm:grid-cols-2'>
           <FormField
             control={form.control}
-            name="company"
+            name='organization'
             render={({field}) => (
               <FormItem>
-                <FormLabel>Company</FormLabel>
+                <FormLabel>Organization</FormLabel>
                 <FormControl>
-                  <Input placeholder="Company name" {...field} />
+                  <Input placeholder='Company or organization name' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -137,12 +127,12 @@ export function ExperienceForm({experience, onSuccess, onCancel}: ExperienceForm
           />
           <FormField
             control={form.control}
-            name="role"
+            name='title'
             render={({field}) => (
               <FormItem>
-                <FormLabel>Role</FormLabel>
+                <FormLabel>Title</FormLabel>
                 <FormControl>
-                  <Input placeholder="Job title" {...field} />
+                  <Input placeholder='Job title' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -150,15 +140,15 @@ export function ExperienceForm({experience, onSuccess, onCancel}: ExperienceForm
           />
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className='grid gap-4 sm:grid-cols-2'>
           <FormField
             control={form.control}
-            name="startDate"
+            name='startDate'
             render={({field}) => (
               <FormItem>
                 <FormLabel>Start Date</FormLabel>
                 <FormControl>
-                  <Input type="month" {...field} />
+                  <Input type='month' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -166,12 +156,12 @@ export function ExperienceForm({experience, onSuccess, onCancel}: ExperienceForm
           />
           <FormField
             control={form.control}
-            name="endDate"
+            name='endDate'
             render={({field}) => (
               <FormItem>
                 <FormLabel>End Date</FormLabel>
                 <FormControl>
-                  <Input type="month" disabled={isCurrentRole} {...field} />
+                  <Input type='month' disabled={isCurrentRole} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -181,26 +171,26 @@ export function ExperienceForm({experience, onSuccess, onCancel}: ExperienceForm
 
         <FormField
           control={form.control}
-          name="isCurrentRole"
+          name='isCurrentRole'
           render={({field}) => (
-            <FormItem className="flex items-center gap-2 space-y-0">
+            <FormItem className='flex items-center gap-2 space-y-0'>
               <FormControl>
                 <Checkbox checked={field.value} onCheckedChange={field.onChange} />
               </FormControl>
-              <FormLabel className="font-normal">I currently work here</FormLabel>
+              <FormLabel className='font-normal'>I currently work here</FormLabel>
             </FormItem>
           )}
         />
 
         <FormField
           control={form.control}
-          name="description"
+          name='description'
           render={({field}) => (
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Describe your responsibilities and achievements..."
+                  placeholder='Describe your responsibilities and achievements...'
                   rows={4}
                   {...field}
                 />
@@ -210,20 +200,18 @@ export function ExperienceForm({experience, onSuccess, onCancel}: ExperienceForm
           )}
         />
 
-        {mutation.isError && (
-          <p className="text-sm text-destructive">{mutation.error.message}</p>
-        )}
+        {mutation.isError && <p className='text-sm text-destructive'>{mutation.error.message}</p>}
 
-        <div className="flex justify-end gap-2">
+        <div className='flex justify-end gap-2'>
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button type='button' variant='outline' onClick={onCancel}>
               Cancel
             </Button>
           )}
-          <Button type="submit" disabled={mutation.isPending}>
+          <Button type='submit' disabled={mutation.isPending}>
             {mutation.isPending ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
                 {isEditMode ? 'Updating...' : 'Saving...'}
               </>
             ) : isEditMode ? (
