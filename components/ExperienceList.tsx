@@ -82,9 +82,9 @@ function StoryItem({story, onClick}: StoryItemProps) {
       className='w-full rounded-md border bg-muted/30 p-3 text-left transition-colors hover:bg-muted/50'
     >
       <div className='flex items-start justify-between gap-2'>
-        <h5 className='text-sm font-medium'>{story.title}</h5>
+        <h5 className='text-sm font-medium line-clamp-1'>{story.title}</h5>
         <div className='flex flex-wrap gap-1'>
-          {story.tags?.map(tag => (
+          {story.tags?.slice(0, 2).map(tag => (
             <span
               key={tag}
               className='inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary'
