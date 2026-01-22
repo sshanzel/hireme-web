@@ -1,8 +1,12 @@
 'use client';
 
+import {useState} from 'react';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
-import {MessageSquareWarning} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {MessageSquareWarning, ChevronDown, ChevronUp} from 'lucide-react';
 import type {Story} from '@/types/experience';
+
+const INITIAL_DISPLAY_COUNT = 2;
 
 interface UntaggedStoriesProps {
   stories: Story[];
@@ -18,9 +22,15 @@ function StoryItem({story}: {story: Story}) {
 }
 
 export function UntaggedStories({stories}: UntaggedStoriesProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   if (stories.length === 0) {
     return null;
   }
+
+  const hasMore = stories.length > INITIAL_DISPLAY_COUNT;
+  const displayedStories = isExpanded ? stories : stories.slice(0, INITIAL_DISPLAY_COUNT);
+  const hiddenCount = stories.length - INITIAL_DISPLAY_COUNT;
 
   return (
     <Card>
@@ -28,7 +38,9 @@ export function UntaggedStories({stories}: UntaggedStoriesProps) {
         <div className='flex items-center gap-2'>
           <MessageSquareWarning className='h-5 w-5 text-amber-500' />
           <div>
-            <CardTitle className='text-base'>Untagged Stories</CardTitle>
+            <CardTitle className='text-base'>
+              Untagged Stories ({stories.length})
+            </CardTitle>
             <CardDescription>
               These stories need to be linked to a work experience
             </CardDescription>
@@ -37,10 +49,30 @@ export function UntaggedStories({stories}: UntaggedStoriesProps) {
       </CardHeader>
       <CardContent>
         <div className='space-y-2'>
-          {stories.map(story => (
+          {displayedStories.map(story => (
             <StoryItem key={story.id} story={story} />
           ))}
         </div>
+        {hasMore && (
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={() => setIsExpanded(!isExpanded)}
+            className='mt-3 w-full'
+          >
+            {isExpanded ? (
+              <>
+                <ChevronUp className='mr-2 h-4 w-4' />
+                Show less
+              </>
+            ) : (
+              <>
+                <ChevronDown className='mr-2 h-4 w-4' />
+                Show {hiddenCount} more
+              </>
+            )}
+          </Button>
+        )}
       </CardContent>
     </Card>
   );
