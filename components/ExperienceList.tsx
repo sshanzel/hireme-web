@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import {ExperienceForm} from '@/components/ExperienceForm';
 import {Briefcase, Plus, Pencil, Trash2, Loader2, BookOpen, Sparkles} from 'lucide-react';
+import {useStoryChatContext} from '@/contexts/StoryChatContext';
 import type {Experience, Story} from '@/types/experience';
 
 interface ExperienceListProps {
@@ -52,12 +53,22 @@ interface ExperienceItemProps {
   experience: Experience;
   onEdit: () => void;
   onDelete: () => void;
+  onStorySelect: (storyId: string) => void;
   isDeleting: boolean;
 }
 
-function StoryItem({story}: {story: Story}) {
+interface StoryItemProps {
+  story: Story;
+  onClick: () => void;
+}
+
+function StoryItem({story, onClick}: StoryItemProps) {
   return (
-    <div className='rounded-md border bg-muted/30 p-3'>
+    <button
+      type='button'
+      onClick={onClick}
+      className='w-full rounded-md border bg-muted/30 p-3 text-left transition-colors hover:bg-muted/50'
+    >
       <div className='flex items-start justify-between gap-2'>
         <h5 className='text-sm font-medium'>{story.title}</h5>
         <div className='flex flex-wrap gap-1'>
@@ -72,11 +83,11 @@ function StoryItem({story}: {story: Story}) {
         </div>
       </div>
       <p className='mt-1 text-xs text-muted-foreground line-clamp-2'>{story.impact}</p>
-    </div>
+    </button>
   );
 }
 
-function ExperienceItem({experience, onEdit, onDelete, isDeleting}: ExperienceItemProps) {
+function ExperienceItem({experience, onEdit, onDelete, onStorySelect, isDeleting}: ExperienceItemProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isStoriesExpanded, setIsStoriesExpanded] = useState(false);
   const storiesCount = experience.stories.length;
@@ -168,7 +179,9 @@ function ExperienceItem({experience, onEdit, onDelete, isDeleting}: ExperienceIt
         {isStoriesExpanded && (
           <div className='mt-3 space-y-2'>
             {hasStories ? (
-              experience.stories.map(story => <StoryItem key={story.id} story={story} />)
+              experience.stories.map(story => (
+                <StoryItem key={story.id} story={story} onClick={() => onStorySelect(story.id)} />
+              ))
             ) : (
               <div className='rounded-md border border-dashed bg-muted/20 p-4 text-center'>
                 <Sparkles className='mx-auto h-6 w-6 text-muted-foreground/50' />
@@ -191,6 +204,7 @@ function ExperienceItem({experience, onEdit, onDelete, isDeleting}: ExperienceIt
 }
 
 export function ExperienceList({experiences, onMutate}: ExperienceListProps) {
+  const {selectStory} = useStoryChatContext();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingExperience, setEditingExperience] = useState<Experience | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -266,6 +280,7 @@ export function ExperienceList({experiences, onMutate}: ExperienceListProps) {
                   experience={experience}
                   onEdit={() => handleEdit(experience)}
                   onDelete={() => handleDelete(experience.id)}
+                  onStorySelect={selectStory}
                   isDeleting={deletingId === experience.id}
                 />
               ))}

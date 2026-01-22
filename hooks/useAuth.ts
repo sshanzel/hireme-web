@@ -6,7 +6,8 @@ interface AuthResponse {
   user: {
     id: string;
     email: string;
-    name?: string;
+    name: string;
+    cvUploadedAt: string | null;
   };
   token: string;
 }

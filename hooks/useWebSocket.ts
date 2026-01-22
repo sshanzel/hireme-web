@@ -1,3 +1,4 @@
+import {Story} from '@/contexts/StoryChatContext';
 import {useEffect, useRef, useState, useCallback} from 'react';
 
 type MessageType = 'response' | 'error' | 'connected';
@@ -24,6 +25,7 @@ interface ErrorMessage extends BaseMessage {
 
 interface ConnectedMessage extends BaseMessage {
   type: 'connected';
+  story: Story;
 }
 
 type WebSocketMessage = ResponseMessage | ErrorMessage | ConnectedMessage;

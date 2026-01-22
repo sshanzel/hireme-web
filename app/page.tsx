@@ -6,6 +6,7 @@ import {Chat} from '@/components/Chat';
 import {ProfileSection} from '@/components/ProfileSection';
 import {useAuthContext} from '@/contexts/AuthContext';
 import {getFirstName} from '@/lib/strings/name';
+import {StoryChatProvider} from '@/contexts/StoryChatContext';
 
 export default function HomePage() {
   const {user} = useAuthContext();
@@ -16,8 +17,10 @@ export default function HomePage() {
       <div className='flex h-full flex-col'>
         <PageHeader title={title} description='Start preparing for your next interview.' />
         <div className='mt-6 pb-6 grid flex-1 grid-cols-2 gap-6'>
-          <Chat />
-          <ProfileSection />
+          <StoryChatProvider>
+            <Chat />
+            <ProfileSection />
+          </StoryChatProvider>
         </div>
       </div>
     </AppLayout>

@@ -1,18 +1,19 @@
 'use client';
 
-import {useState, useRef, useEffect, useCallback} from 'react';
+import {useState, useRef, useEffect, useCallback, useMemo} from 'react';
 import {Card} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
-import {Send, Bot, User, MessageSquare, AlertCircle} from 'lucide-react';
+import {Send, Bot, User, MessageSquare, AlertCircle, X} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {useAuthContext} from '@/contexts/AuthContext';
 import {useWebSocket} from '@/hooks/useWebSocket';
+import {useStoryChatContext} from '@/contexts/StoryChatContext';
 
 interface Message {
-  id: string;
   role: 'user' | 'assistant' | 'error';
   content: string;
+  createdAt: string;
 }
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:4000';
@@ -35,7 +36,7 @@ function MessageBubble({message}: {message: Message}) {
           'flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
           isUser && 'bg-primary text-primary-foreground',
           isError && 'bg-destructive/10 text-destructive',
-          !isUser && !isError && 'bg-muted'
+          !isUser && !isError && 'bg-muted',
         )}
       >
         {isUser ? (
@@ -51,7 +52,7 @@ function MessageBubble({message}: {message: Message}) {
           'max-w-[80%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm',
           isUser && 'bg-primary text-primary-foreground',
           isError && 'bg-destructive/10 text-destructive',
-          !isUser && !isError && 'bg-muted'
+          !isUser && !isError && 'bg-muted',
         )}
       >
         {message.content}
@@ -62,43 +63,42 @@ function MessageBubble({message}: {message: Message}) {
 
 export function Chat() {
   const {user} = useAuthContext();
-  const [messages, setMessages] = useState<Message[]>([]);
+  const {story, selectedStoryId, setStory, addEvent, clearSelection} = useStoryChatContext();
+  const messages = useMemo(() => story?.events ?? [], [story?.events]);
   const [input, setInput] = useState('');
-  const [title, setTitle] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  const wsUrl = selectedStoryId
+    ? `${WS_URL}/ws/story-event?uid=${user?.id}&storyId=${selectedStoryId}`
+    : `${WS_URL}/ws/story-event?uid=${user?.id}`;
+
   const {isConnected, send} = useWebSocket({
-    url: `${WS_URL}/ws/story-event?uid=${user?.id}`,
+    url: wsUrl,
     enabled: !!user,
     onResponse: message => {
-      setMessages(prev => [
-        ...prev,
-        {
-          id: Date.now().toString(),
-          role: 'assistant',
-          content: message.data.content,
-        },
-      ]);
-      if (message.data.title) {
-        setTitle(message.data.title);
-      }
+      addEvent({
+        createdAt: new Date().toISOString(),
+        role: 'assistant',
+        content: message.data.content,
+      });
       setIsLoading(false);
     },
     onError: message => {
-      setMessages(prev => [
-        ...prev,
-        {
-          id: Date.now().toString(),
-          role: 'error',
-          content: message.error,
-        },
-      ]);
+      addEvent({
+        createdAt: new Date().toISOString(),
+        role: 'error',
+        content: message.error,
+      });
       setIsLoading(false);
     },
     onConnectionError: () => {
       setIsLoading(false);
+    },
+    onConnected: ({story}) => {
+      setStory(story);
+      console.log('WebSocket connection established for Chat component');
     },
   });
 
@@ -116,12 +116,12 @@ export function Chat() {
     if (!input.trim() || isLoading) return;
 
     const userMessage: Message = {
-      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
       role: 'user',
       content: input.trim(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    addEvent(userMessage);
     setInput('');
     setIsLoading(true);
 
@@ -139,17 +139,29 @@ export function Chat() {
     inputRef.current?.focus();
   };
 
+  const title = story?.title || 'Tell us a story from your work/project!';
+
   return (
     <Card className='flex h-full flex-col py-0'>
       <div className='flex items-center justify-between border-b px-4 py-3'>
-        <h3 className='text-sm font-medium'>
-          {title || 'Tell us a story from your work/project!'}
-        </h3>
-        <div className='flex items-center gap-2'>
+        <div className='flex min-w-0 flex-1 items-center gap-2'>
+          <h3 className='truncate text-sm font-medium'>{title}</h3>
+          {selectedStoryId && (
+            <Button
+              variant='ghost'
+              size='icon'
+              className='h-6 w-6 shrink-0'
+              onClick={clearSelection}
+            >
+              <X className='h-3 w-3' />
+            </Button>
+          )}
+        </div>
+        <div className='flex shrink-0 items-center gap-2'>
           <span
             className={cn(
               'h-2 w-2 rounded-full',
-              isConnected ? 'bg-green-500' : 'bg-muted-foreground/50'
+              isConnected ? 'bg-green-500' : 'bg-muted-foreground/50',
             )}
           />
           <span className='text-xs text-muted-foreground'>
@@ -186,7 +198,7 @@ export function Chat() {
         ) : (
           <div className='space-y-4'>
             {messages.map(message => (
-              <MessageBubble key={message.id} message={message} />
+              <MessageBubble key={message.createdAt} message={message} />
             ))}
             {isLoading && (
               <div className='flex gap-3'>
