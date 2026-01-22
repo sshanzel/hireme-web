@@ -12,9 +12,21 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import {ExperienceForm} from '@/components/ExperienceForm';
-import {Briefcase, Plus, Pencil, Trash2, Loader2, BookOpen, Sparkles} from 'lucide-react';
+import {
+  Briefcase,
+  Plus,
+  Pencil,
+  Trash2,
+  Loader2,
+  BookOpen,
+  Sparkles,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
 import {useStoryChatContext} from '@/contexts/StoryChatContext';
 import type {Experience, Story} from '@/types/experience';
+
+const INITIAL_DISPLAY_COUNT = 2;
 
 interface ExperienceListProps {
   experiences: Experience[];
@@ -87,7 +99,13 @@ function StoryItem({story, onClick}: StoryItemProps) {
   );
 }
 
-function ExperienceItem({experience, onEdit, onDelete, onStorySelect, isDeleting}: ExperienceItemProps) {
+function ExperienceItem({
+  experience,
+  onEdit,
+  onDelete,
+  onStorySelect,
+  isDeleting,
+}: ExperienceItemProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isStoriesExpanded, setIsStoriesExpanded] = useState(false);
   const storiesCount = experience.stories.length;
@@ -140,7 +158,7 @@ function ExperienceItem({experience, onEdit, onDelete, onStorySelect, isDeleting
               </Button>
             </div>
           </div>
-          <p className='mt-2 text-sm'>{experience.description}</p>
+          <p className='mt-2 text-sm line-clamp-2'>{experience.description}</p>
 
           {showDeleteConfirm && (
             <div className='mt-3 flex items-center gap-2 rounded-lg bg-destructive/10 p-3'>
@@ -205,9 +223,16 @@ function ExperienceItem({experience, onEdit, onDelete, onStorySelect, isDeleting
 
 export function ExperienceList({experiences, onMutate}: ExperienceListProps) {
   const {selectStory} = useStoryChatContext();
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingExperience, setEditingExperience] = useState<Experience | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const hasMore = experiences.length > INITIAL_DISPLAY_COUNT;
+  const displayedExperiences = isExpanded
+    ? experiences
+    : experiences.slice(0, INITIAL_DISPLAY_COUNT);
+  const hiddenCount = experiences.length - INITIAL_DISPLAY_COUNT;
 
   const deleteMutation = useMutation({
     mutationFn: deleteExperience,
@@ -273,18 +298,40 @@ export function ExperienceList({experiences, onMutate}: ExperienceListProps) {
               </p>
             </div>
           ) : (
-            <div className='space-y-4'>
-              {experiences.map(experience => (
-                <ExperienceItem
-                  key={experience.id}
-                  experience={experience}
-                  onEdit={() => handleEdit(experience)}
-                  onDelete={() => handleDelete(experience.id)}
-                  onStorySelect={selectStory}
-                  isDeleting={deletingId === experience.id}
-                />
-              ))}
-            </div>
+            <>
+              <div className='space-y-4'>
+                {displayedExperiences.map(experience => (
+                  <ExperienceItem
+                    key={experience.id}
+                    experience={experience}
+                    onEdit={() => handleEdit(experience)}
+                    onDelete={() => handleDelete(experience.id)}
+                    onStorySelect={selectStory}
+                    isDeleting={deletingId === experience.id}
+                  />
+                ))}
+              </div>
+              {hasMore && (
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className='mt-4 w-full'
+                >
+                  {isExpanded ? (
+                    <>
+                      <ChevronUp className='mr-2 h-4 w-4' />
+                      Show less
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className='mr-2 h-4 w-4' />
+                      Show {hiddenCount} more
+                    </>
+                  )}
+                </Button>
+              )}
+            </>
           )}
         </CardContent>
       </Card>
