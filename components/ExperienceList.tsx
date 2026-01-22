@@ -84,12 +84,12 @@ function StoryItem({story, onClick}: StoryItemProps) {
       <div className='flex items-start justify-between gap-2'>
         <h5 className='text-sm font-medium'>{story.title}</h5>
         <div className='flex flex-wrap gap-1'>
-          {story.traits.map(trait => (
+          {story.tags?.map(tag => (
             <span
-              key={trait}
+              key={tag}
               className='inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary'
             >
-              {trait}
+              {tag}
             </span>
           ))}
         </div>

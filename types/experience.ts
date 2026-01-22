@@ -5,7 +5,7 @@ export interface Story {
   actions: string;
   impact: string;
   constraints?: string;
-  traits: string[];
+  tags?: string[];
 }
 
 export interface Experience {
