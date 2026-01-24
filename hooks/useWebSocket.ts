@@ -33,6 +33,9 @@ type WebSocketMessage = ResponseMessage | ErrorMessage | ConnectedMessage;
 interface UseWebSocketOptions {
   url: string;
   enabled?: boolean;
+}
+
+interface UseWebSocketCallbacks {
   onResponse: (message: ResponseMessage) => void;
   onError?: (message: ErrorMessage) => void;
   onConnected?: (message: ConnectedMessage) => void;
@@ -44,26 +47,39 @@ interface UseWebSocketReturn {
   send: (data: string) => boolean;
 }
 
-export function useWebSocket(options: UseWebSocketOptions): UseWebSocketReturn {
+export function useWebSocket(
+  options: UseWebSocketOptions,
+  callbacks: UseWebSocketCallbacks,
+): UseWebSocketReturn {
   const {url, enabled = true} = options;
 
   const [isConnected, setIsConnected] = useState(false);
   const socketRef = useRef<WebSocket | null>(null);
-  const optionsRef = useRef(options);
+  const callbacksRef = useRef(callbacks);
 
   // Keep options ref updated to avoid stale closures
   // eslint-disable-next-line react-hooks/refs
-  optionsRef.current = options;
+  callbacksRef.current = callbacks;
 
   useEffect(() => {
     if (!enabled) return;
 
+    const cleanupFn = (socket: WebSocket) => {
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.close();
+      }
+    };
+
+    const ref = socketRef.current;
+
     if (
-      socketRef.current &&
-      (socketRef.current.readyState === WebSocket.OPEN ||
-        socketRef.current.readyState === WebSocket.CONNECTING)
+      ref &&
+      ref.url === url &&
+      (ref.readyState === WebSocket.OPEN || ref.readyState === WebSocket.CONNECTING)
     ) {
-      return;
+      return () => {
+        cleanupFn(ref);
+      };
     }
 
     const ws = new WebSocket(url);
@@ -80,13 +96,13 @@ export function useWebSocket(options: UseWebSocketOptions): UseWebSocketReturn {
 
         switch (message.type) {
           case 'response':
-            optionsRef.current.onResponse?.(message);
+            callbacksRef.current.onResponse?.(message);
             break;
           case 'error':
-            optionsRef.current.onError?.(message);
+            callbacksRef.current.onError?.(message);
             break;
           case 'connected':
-            optionsRef.current.onConnected?.(message);
+            callbacksRef.current.onConnected?.(message);
             break;
           default:
             console.warn('Unknown message type:', message);
@@ -107,15 +123,13 @@ export function useWebSocket(options: UseWebSocketOptions): UseWebSocketReturn {
 
     ws.onerror = error => {
       console.error('WebSocket error:', error);
-      optionsRef.current.onConnectionError?.();
+      callbacksRef.current.onConnectionError?.();
     };
 
     socketRef.current = ws;
 
     return () => {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.close();
-      }
+      cleanupFn(ws);
     };
   }, [url, enabled]);
 

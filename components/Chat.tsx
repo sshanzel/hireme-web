@@ -74,33 +74,37 @@ export function Chat() {
     ? `${WS_URL}/ws/story-event?uid=${user?.id}&storyId=${selectedStoryId}`
     : `${WS_URL}/ws/story-event?uid=${user?.id}`;
 
-  const {isConnected, send} = useWebSocket({
-    url: wsUrl,
-    enabled: !!user,
-    onResponse: message => {
-      addEvent({
-        createdAt: new Date().toISOString(),
-        role: 'assistant',
-        content: message.data.content,
-      });
-      setIsLoading(false);
+  const {isConnected, send} = useWebSocket(
+    {
+      url: wsUrl,
+      enabled: !!user,
     },
-    onError: message => {
-      addEvent({
-        createdAt: new Date().toISOString(),
-        role: 'error',
-        content: message.error,
-      });
-      setIsLoading(false);
+    {
+      onResponse: message => {
+        addEvent({
+          createdAt: new Date().toISOString(),
+          role: 'assistant',
+          content: message.data.content,
+        });
+        setIsLoading(false);
+      },
+      onError: message => {
+        addEvent({
+          createdAt: new Date().toISOString(),
+          role: 'error',
+          content: message.error,
+        });
+        setIsLoading(false);
+      },
+      onConnectionError: () => {
+        setIsLoading(false);
+      },
+      onConnected: ({story}) => {
+        setStory(story);
+        console.log('WebSocket connection established for Chat component');
+      },
     },
-    onConnectionError: () => {
-      setIsLoading(false);
-    },
-    onConnected: ({story}) => {
-      setStory(story);
-      console.log('WebSocket connection established for Chat component');
-    },
-  });
+  );
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
