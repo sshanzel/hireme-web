@@ -20,7 +20,7 @@ export function ProfileSection() {
 
   return (
     <div className='flex h-full flex-col gap-6 overflow-auto'>
-      <UntaggedStories stories={untaggedStories} />
+      <UntaggedStories stories={untaggedStories} experiences={experiences} />
       <ExperienceList experiences={experiences} onMutate={invalidate} />
     </div>
   );

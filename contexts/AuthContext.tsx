@@ -8,6 +8,12 @@ interface User {
   email: string;
   name: string;
   cvUploadedAt: string | null;
+  title: string | null;
+  bio: string | null;
+  githubUrl: string | null;
+  linkedinUrl: string | null;
+  twitterUrl: string | null;
+  websiteUrl: string | null;
 }
 
 interface AuthContextType {
