@@ -58,6 +58,14 @@ export function useWebSocket(options: UseWebSocketOptions): UseWebSocketReturn {
   useEffect(() => {
     if (!enabled) return;
 
+    if (
+      socketRef.current &&
+      (socketRef.current.readyState === WebSocket.OPEN ||
+        socketRef.current.readyState === WebSocket.CONNECTING)
+    ) {
+      return;
+    }
+
     const ws = new WebSocket(url);
 
     ws.onopen = () => {
@@ -105,7 +113,7 @@ export function useWebSocket(options: UseWebSocketOptions): UseWebSocketReturn {
     socketRef.current = ws;
 
     return () => {
-      if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+      if (ws.readyState === WebSocket.OPEN) {
         ws.close();
       }
     };
