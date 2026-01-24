@@ -29,16 +29,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 async function fetchCurrentUser(): Promise<User | null> {
   if (typeof window === 'undefined') return null;
 
-  const token = localStorage.getItem('token');
-
-  if (!token) return null;
-
   const response = await fetch('/api/auth/me', {
-    headers: {Authorization: `Bearer ${token}`},
+    credentials: 'include',
   });
 
   if (!response.ok) {
-    localStorage.removeItem('token');
     return null;
   }
 
@@ -61,8 +56,11 @@ export function AuthProvider({children}: {children: ReactNode}) {
     queryClient.setQueryData(['auth', 'me'], newUser);
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
+  const logout = async () => {
+    await fetch('/api/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
+    });
     queryClient.setQueryData(['auth', 'me'], null);
   };
 

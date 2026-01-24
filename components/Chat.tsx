@@ -71,8 +71,8 @@ export function Chat() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const wsUrl = selectedStoryId
-    ? `${WS_URL}/ws/story-event?uid=${user?.id}&storyId=${selectedStoryId}`
-    : `${WS_URL}/ws/story-event?uid=${user?.id}`;
+    ? `${WS_URL}/ws/story-event?storyId=${selectedStoryId}`
+    : `${WS_URL}/ws/story-event`;
 
   const {isConnected, send} = useWebSocket(
     {

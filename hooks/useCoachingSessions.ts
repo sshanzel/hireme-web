@@ -16,12 +16,8 @@ export interface CoachingSession {
 }
 
 async function fetchCoachingSessions(): Promise<CoachingSession[]> {
-  const token = localStorage.getItem('token');
-
   const response = await fetch('/api/coachings', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -33,13 +29,9 @@ async function fetchCoachingSessions(): Promise<CoachingSession[]> {
 }
 
 async function deleteCoachingSession(id: string): Promise<void> {
-  const token = localStorage.getItem('token');
-
   const response = await fetch(`/api/coachings/${id}`, {
     method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    credentials: 'include',
   });
 
   if (!response.ok) {

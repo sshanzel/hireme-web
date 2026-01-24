@@ -21,12 +21,8 @@ interface ProfileData {
 }
 
 async function fetchProfile(): Promise<ProfileData> {
-  const token = localStorage.getItem('token');
-
   const response = await fetch('/api/profile', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    credentials: 'include',
   });
 
   if (!response.ok) {

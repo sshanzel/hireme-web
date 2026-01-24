@@ -221,8 +221,8 @@ export default function CoachPage() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const wsUrl = activeSessionId
-    ? `${WS_URL}/ws/coach?uid=${user?.id}&coachingId=${activeSessionId}`
-    : `${WS_URL}/ws/coach?uid=${user?.id}`;
+    ? `${WS_URL}/ws/coach?coachingId=${activeSessionId}`
+    : `${WS_URL}/ws/coach`;
 
   const {isConnected, send} = useWebSocket(
     {

@@ -15,13 +15,11 @@ interface UpdateProfileResponse {
 }
 
 async function updateProfile(data: ProfileFormData): Promise<UpdateProfileResponse> {
-  const token = localStorage.getItem('token');
-
   const response = await fetch('/api/profile', {
     method: 'PUT',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
   });

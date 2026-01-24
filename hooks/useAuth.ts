@@ -15,7 +15,6 @@ interface AuthResponse {
     twitterUrl: string | null;
     websiteUrl: string | null;
   };
-  token: string;
 }
 
 interface SignupData {
@@ -27,6 +26,7 @@ interface SignupData {
 async function loginRequest(data: LoginFormData): Promise<AuthResponse> {
   const response = await fetch("/api/auth/login", {
     method: "POST",
+    credentials: "include",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
@@ -42,6 +42,7 @@ async function loginRequest(data: LoginFormData): Promise<AuthResponse> {
 async function signupRequest(data: SignupData): Promise<AuthResponse> {
   const response = await fetch("/api/auth/signup", {
     method: "POST",
+    credentials: "include",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
@@ -60,7 +61,6 @@ export function useLogin() {
   return useMutation({
     mutationFn: loginRequest,
     onSuccess: (data) => {
-      localStorage.setItem("token", data.token);
       setUser(data.user);
     },
   });
@@ -72,7 +72,6 @@ export function useSignup() {
   return useMutation({
     mutationFn: signupRequest,
     onSuccess: (data) => {
-      localStorage.setItem("token", data.token);
       setUser(data.user);
     },
   });

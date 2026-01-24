@@ -19,13 +19,11 @@ interface ExperienceFormProps {
 }
 
 async function createExperience(data: ExperienceFormData): Promise<Experience> {
-  const token = localStorage.getItem('token');
-
   const response = await fetch('/api/experiences', {
     method: 'POST',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       organization: data.organization,
@@ -45,13 +43,11 @@ async function createExperience(data: ExperienceFormData): Promise<Experience> {
 }
 
 async function updateExperience(id: string, data: ExperienceFormData): Promise<Experience> {
-  const token = localStorage.getItem('token');
-
   const response = await fetch(`/api/experiences/${id}`, {
     method: 'PUT',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       organization: data.organization,

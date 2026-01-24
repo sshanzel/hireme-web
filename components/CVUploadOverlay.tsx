@@ -13,15 +13,12 @@ interface UploadResponse {
 }
 
 async function uploadCV(file: File): Promise<UploadResponse> {
-  const token = localStorage.getItem('token');
   const formData = new FormData();
   formData.append('file', file);
 
   const response = await fetch('/api/cv/upload', {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    credentials: 'include',
     body: formData,
   });
 

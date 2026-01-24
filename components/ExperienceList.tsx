@@ -34,13 +34,9 @@ interface ExperienceListProps {
 }
 
 async function deleteExperience(id: string): Promise<void> {
-  const token = localStorage.getItem('token');
-
   const response = await fetch(`/api/experiences/${id}`, {
     method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    credentials: 'include',
   });
 
   if (!response.ok) {
