@@ -172,10 +172,10 @@ function ExperienceItem({
       </div>
 
       <div className='border-t px-4 py-3'>
-        <Button
-          variant='ghost'
+        <button
+          type='button'
           onClick={() => setIsStoriesExpanded(!isStoriesExpanded)}
-          className='flex h-auto w-full items-center justify-between p-0 text-left hover:bg-transparent'
+          className='flex w-full items-center justify-between text-left'
         >
           <div className='flex items-center gap-2'>
             <BookOpen className='h-4 w-4 text-muted-foreground' />
@@ -189,30 +189,35 @@ function ExperienceItem({
           <span className='text-xs text-muted-foreground'>
             {isStoriesExpanded ? 'Hide' : 'Show'}
           </span>
-        </Button>
+        </button>
 
-        {isStoriesExpanded && (
-          <div className='mt-3 space-y-2'>
-            {hasStories ? (
-              experience.stories.map(story => (
-                <StoryItem key={story.id} story={story} onClick={() => onStorySelect(story.id)} />
-              ))
-            ) : (
-              <div className='rounded-md border border-dashed bg-muted/20 p-4 text-center'>
-                <Sparkles className='mx-auto h-6 w-6 text-muted-foreground/50' />
-                <p className='mt-2 text-sm font-medium'>No stories yet</p>
-                <p className='mt-1 text-xs text-muted-foreground'>
-                  Stories help you remember specific achievements and answer interview questions
-                  like &quot;Tell me about a time when...&quot;
-                </p>
-                <Button variant='outline' size='sm' className='mt-3'>
-                  <Plus className='mr-2 h-3 w-3' />
-                  Add a story
-                </Button>
-              </div>
-            )}
+        <div
+          className='grid transition-[grid-template-rows] duration-300 ease-in-out'
+          style={{ gridTemplateRows: isStoriesExpanded ? '1fr' : '0fr' }}
+        >
+          <div className='overflow-hidden'>
+            <div className='pt-3 space-y-2'>
+              {hasStories ? (
+                experience.stories.map(story => (
+                  <StoryItem key={story.id} story={story} onClick={() => onStorySelect(story.id)} />
+                ))
+              ) : (
+                <div className='rounded-md border border-dashed bg-muted/20 p-4 text-center'>
+                  <Sparkles className='mx-auto h-6 w-6 text-muted-foreground/50' />
+                  <p className='mt-2 text-sm font-medium'>No stories yet</p>
+                  <p className='mt-1 text-xs text-muted-foreground'>
+                    Stories help you remember specific achievements and answer interview questions
+                    like &quot;Tell me about a time when...&quot;
+                  </p>
+                  <Button variant='outline' size='sm' className='mt-3'>
+                    <Plus className='mr-2 h-3 w-3' />
+                    Add a story
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
@@ -292,7 +297,7 @@ export function ExperienceList({experiences, onMutate}: ExperienceListProps) {
               items={experiences}
               maxItems={2}
               keyExtractor={exp => exp.id}
-              gap="lg"
+              gap='lg'
               renderItem={experience => (
                 <ExperienceItem
                   experience={experience}

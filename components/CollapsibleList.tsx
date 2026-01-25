@@ -3,6 +3,7 @@
 import {useState, useRef, useLayoutEffect} from 'react';
 import {Button} from '@/components/ui/button';
 import {ChevronDown, ChevronUp} from 'lucide-react';
+import {cn} from '@/lib/utils';
 
 interface CollapsibleListProps<T> {
   items: T[];
@@ -72,9 +73,9 @@ export function CollapsibleList<T>({
   }
 
   return (
-    <div className={className}>
+    <div className={cn('relative', className)}>
       {/* Hidden ref to measure collapsed height */}
-      <div ref={collapsedRef} className='invisible absolute' aria-hidden='true'>
+      <div ref={collapsedRef} className='invisible absolute left-0 right-0 -z-10 overflow-hidden pointer-events-none' aria-hidden='true'>
         <div className={gapClass}>
           {items.slice(0, maxItems).map((item, index) => (
             <div key={keyExtractor(item)}>{renderItem(item, index)}</div>
