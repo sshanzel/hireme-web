@@ -10,6 +10,7 @@ export interface Story {
   id: string;
   title: string;
   events: StoryEvent[];
+  experienceId?: string | null;
 }
 
 interface StoryChatContextValue {

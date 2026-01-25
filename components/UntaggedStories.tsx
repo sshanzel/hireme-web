@@ -15,15 +15,15 @@ interface UntaggedStoriesProps {
 
 interface StoryItemProps {
   story: Story;
-  onClick: () => void;
+  onClickStory: () => void;
 }
 
-function StoryItem({story, onClick}: StoryItemProps) {
+function StoryItem({story, onClickStory}: StoryItemProps) {
   return (
     <button
       type='button'
-      onClick={onClick}
-      className='w-full rounded-md border bg-muted/30 p-3 text-left transition-colors hover:bg-muted/50'
+      onClick={onClickStory}
+      className='w-full cursor-pointer rounded-md border bg-muted/30 p-3 text-left transition-colors hover:bg-muted/50'
     >
       <h5 className='text-sm font-medium'>{story.title}</h5>
       <p className='mt-1 text-xs text-muted-foreground line-clamp-2'>{story.impact}</p>
@@ -50,14 +50,18 @@ export function UntaggedStories({stories}: UntaggedStoriesProps) {
           <MessageSquareWarning className='h-5 w-5 text-amber-500' />
           <div>
             <CardTitle className='text-base'>Untagged Stories ({stories.length})</CardTitle>
-            <CardDescription>These stories need to be linked to a work experience</CardDescription>
+            <CardDescription>Click a story to open it, then tag it from the chat</CardDescription>
           </div>
         </div>
       </CardHeader>
       <CardContent>
         <div className='space-y-2'>
-          {displayedStories.map(story => (
-            <StoryItem key={story.id} story={story} onClick={() => selectStory(story.id)} />
+          {displayedStories.map((story) => (
+            <StoryItem
+              key={story.id}
+              story={story}
+              onClickStory={() => selectStory(story.id)}
+            />
           ))}
         </div>
         {hasMore && (

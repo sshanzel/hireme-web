@@ -4,11 +4,20 @@ import {useState, useRef, useEffect, useCallback, useMemo} from 'react';
 import {Card} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
-import {Send, Bot, User, MessageSquare, AlertCircle, X} from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {Send, Bot, User, MessageSquare, AlertCircle, X, Tag} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {useAuthContext} from '@/contexts/AuthContext';
 import {useWebSocket} from '@/hooks/useWebSocket';
 import {useStoryChatContext} from '@/contexts/StoryChatContext';
+import {useProfile} from '@/hooks/useProfile';
+import {useTagStory} from '@/hooks/useTagStory';
 
 interface Message {
   role: 'user' | 'assistant' | 'error';
@@ -64,11 +73,26 @@ function MessageBubble({message}: {message: Message}) {
 export function Chat() {
   const {user} = useAuthContext();
   const {story, selectedStoryId, setStory, addEvent, clearSelection} = useStoryChatContext();
+  const {data: profileData} = useProfile();
+  const tagMutation = useTagStory();
+  const experiences = profileData?.experiences ?? [];
   const messages = useMemo(() => story?.events ?? [], [story?.events]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleTagStory = (experienceId: string) => {
+    if (!selectedStoryId) return;
+    tagMutation.mutate(
+      {storyId: selectedStoryId, experienceId},
+      {
+        onSuccess: () => {
+          clearSelection();
+        },
+      },
+    );
+  };
 
   const wsUrl = selectedStoryId
     ? `${WS_URL}/ws/story-event?storyId=${selectedStoryId}`
@@ -146,7 +170,7 @@ export function Chat() {
   const title = story?.title || 'Tell us a story from your work/project!';
 
   return (
-    <Card className='flex h-full flex-col py-0'>
+    <Card className='flex h-full flex-col py-0 gap-0'>
       <div className='flex items-center justify-between border-b px-4 py-3'>
         <div className='flex min-w-0 flex-1 items-center gap-2'>
           <h3 className='truncate text-sm font-medium'>{title}</h3>
@@ -220,6 +244,27 @@ export function Chat() {
           </div>
         )}
       </div>
+
+      {selectedStoryId && experiences.length > 0 && !story?.experienceId && (
+        <div className='flex items-center gap-3 border-t bg-muted/30 px-4 py-2 mt-6'>
+          <div className='flex items-center gap-2 text-sm text-muted-foreground'>
+            <Tag className='h-4 w-4' />
+            <span>Tag this story:</span>
+          </div>
+          <Select onValueChange={handleTagStory} disabled={tagMutation.isPending}>
+            <SelectTrigger className='h-8 w-48'>
+              <SelectValue placeholder='Select experience...' />
+            </SelectTrigger>
+            <SelectContent>
+              {experiences.map(exp => (
+                <SelectItem key={exp.id} value={exp.id}>
+                  {exp.organization}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className='border-t p-4'>
         <div className='flex gap-2'>
