@@ -165,15 +165,16 @@ export default function StackPage() {
         <div className='relative mx-auto max-w-6xl px-6 py-24 text-center'>
           <div className='mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm text-primary'>
             <Brain className='h-4 w-4' />
-            <span>Learning Applied AI</span>
+            <span>A Learning Project</span>
           </div>
           <h1 className='mb-6 text-5xl font-bold tracking-tight md:text-6xl'>
             Tech <span className='text-gradient'>Stack</span>
           </h1>
           <p className='mx-auto max-w-2xl text-lg text-muted-foreground leading-relaxed'>
-            I&apos;m always trying to get into the latest tech, so I built this side project to learn
-            how RAG (Retrieval-Augmented Generation) pipelines work &mdash; an AI that answers questions
-            about your career using your own stories and experiences as context.
+            I&apos;m probably late to the RAG party, but I wanted to understand how it actually works
+            instead of just reading about it. So I built this &mdash; an AI that can answer questions
+            about your career, but only using your own stories and experiences. No generic advice,
+            just your documented history.
           </p>
         </div>
       </section>
@@ -183,7 +184,9 @@ export default function StackPage() {
         <div className='mx-auto max-w-6xl px-6'>
           <div className='mb-12 text-center'>
             <h2 className='mb-4 text-3xl font-bold'>System Architecture</h2>
-            <p className='text-muted-foreground'>How data flows through the platform</p>
+            <p className='text-muted-foreground'>
+              The bird&apos;s eye view. Nothing too fancy &mdash; just enough moving parts to make it interesting.
+            </p>
           </div>
 
           {/* Desktop Architecture Diagram */}
@@ -426,12 +429,13 @@ export default function StackPage() {
         <div className='mx-auto max-w-6xl px-6'>
           <div className='mb-12 text-center'>
             <div className='mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary'>
-              Core Feature
+              The Whole Point
             </div>
             <h2 className='mb-4 text-3xl font-bold'>RAG Pipeline</h2>
             <p className='mx-auto max-w-2xl text-muted-foreground'>
-              The core of this project &mdash; a RAG system that allows an AI to &ldquo;become&rdquo; the user
-              and answer questions about their career using their own documented stories as context.
+              This is the heart of the project. The idea is simple: when someone asks the AI a question,
+              it doesn&apos;t make things up. It searches through your actual stories and experiences,
+              finds the relevant bits, and answers based on that. Your data, your voice.
             </p>
           </div>
 
@@ -443,10 +447,13 @@ export default function StackPage() {
                   <Upload className='h-5 w-5' />
                 </div>
                 <div>
-                  <h3 className='font-semibold'>Ingestion Pipeline</h3>
-                  <p className='text-xs text-muted-foreground'>Async, event-driven via Pub/Sub</p>
+                  <h3 className='font-semibold'>Ingestion</h3>
+                  <p className='text-xs text-muted-foreground'>How content becomes searchable</p>
                 </div>
               </div>
+              <p className='mb-4 text-sm text-muted-foreground'>
+                Whenever you add or update something, a background worker turns it into vectors that can be searched later.
+              </p>
               <div className='space-y-3'>
                 <div className='flex items-center gap-3 rounded-lg bg-secondary/50 p-3'>
                   <div className='flex h-6 w-6 items-center justify-center rounded bg-blue-500/20 text-xs font-bold text-blue-600'>1</div>
@@ -486,10 +493,13 @@ export default function StackPage() {
                   <Search className='h-5 w-5' />
                 </div>
                 <div>
-                  <h3 className='font-semibold'>Retrieval Pipeline</h3>
-                  <p className='text-xs text-muted-foreground'>Real-time via WebSocket</p>
+                  <h3 className='font-semibold'>Retrieval</h3>
+                  <p className='text-xs text-muted-foreground'>How questions get answered</p>
                 </div>
               </div>
+              <p className='mb-4 text-sm text-muted-foreground'>
+                When a visitor asks something, we find the most relevant chunks from your data and let the AI answer based on those.
+              </p>
               <div className='space-y-3'>
                 <div className='flex items-center gap-3 rounded-lg bg-secondary/50 p-3'>
                   <div className='flex h-6 w-6 items-center justify-center rounded bg-emerald-500/20 text-xs font-bold text-emerald-600'>1</div>
@@ -525,7 +535,8 @@ export default function StackPage() {
 
           {/* AI Models */}
           <div className='mt-8 rounded-2xl border border-border/50 bg-card p-6'>
-            <h3 className='mb-4 font-semibold'>AI Models Used</h3>
+            <h3 className='mb-1 font-semibold'>Models I&apos;m Using</h3>
+            <p className='mb-4 text-sm text-muted-foreground'>Went with gpt-4o-mini for most things. Fast enough, cheap enough, good enough.</p>
             <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
               <div className='rounded-lg bg-secondary/50 p-3'>
                 <p className='text-xs text-muted-foreground'>Embeddings</p>
@@ -552,63 +563,65 @@ export default function StackPage() {
       <section className='py-20'>
         <div className='mx-auto max-w-6xl px-6'>
           <div className='mb-12 text-center'>
-            <h2 className='mb-4 text-3xl font-bold'>Technology Stack</h2>
-            <p className='text-muted-foreground'>The tools and technologies powering HireMe.dev</p>
+            <h2 className='mb-4 text-3xl font-bold'>The Boring Parts</h2>
+            <p className='text-muted-foreground'>
+              Standard stuff, really. TypeScript everywhere, serverless so I don&apos;t pay when nobody&apos;s using it.
+            </p>
           </div>
 
           <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
             <TechCard
               icon={<Globe className='h-6 w-6' />}
               title='Next.js Frontend'
-              description='Server-side rendering with React 19, deployed on Vercel for optimal performance and global edge delivery.'
+              description='React 19 with server components. Deployed on Vercel because it just works.'
               tags={['React 19', 'TypeScript', 'Tailwind CSS', 'Vercel']}
             />
             <TechCard
               icon={<Server className='h-6 w-6' />}
               title='Fastify Backend'
-              description='High-performance Node.js API server with TypeScript, handling REST endpoints and WebSocket connections.'
+              description='Handles REST and WebSocket connections. Picked Fastify over Express for the schema validation.'
               tags={['Node.js 20', 'Fastify', 'TypeScript']}
             />
             <TechCard
               icon={<Cloud className='h-6 w-6' />}
               title='Cloud Run'
-              description='Serverless containers that scale to zero, with separate API and Worker services for optimal resource usage.'
+              description='Scales to zero when idle. I only pay when someone actually uses it, which is nice for a side project.'
               tags={['Serverless', 'Auto-scaling', 'Pay-per-use']}
             />
             <TechCard
               icon={<Radio className='h-6 w-6' />}
               title='Cloud Pub/Sub'
-              description='Event-driven messaging for async workflows like CV parsing, story summarization, and embedding generation.'
+              description='Decouples the heavy stuff like CV parsing and embedding generation. Failed messages go to a dead letter queue.'
               tags={['Event-driven', 'Async', 'Dead Letter Queue']}
             />
             <TechCard
               icon={<Cpu className='h-6 w-6' />}
-              title='OpenAI Integration'
-              description='GPT-4o-mini for chat and summarization, text-embedding-3-small for vector embeddings in the RAG pipeline.'
+              title='OpenAI'
+              description='GPT-4o-mini for the chat stuff, text-embedding-3-small for vectors. Balancing cost and quality.'
               tags={['GPT-4o-mini', 'Embeddings', 'Streaming']}
             />
             <TechCard
               icon={<Database className='h-6 w-6' />}
               title='Supabase + pgvector'
-              description='Managed PostgreSQL with pgvector extension for vector similarity search, powering the RAG retrieval pipeline.'
+              description='PostgreSQL with the pgvector extension. Keeps everything in one database instead of a separate vector store.'
               tags={['PostgreSQL', 'pgvector', 'Drizzle ORM']}
             />
             <TechCard
               icon={<HardDrive className='h-6 w-6' />}
               title='Cloud Storage'
-              description='Secure file storage for CV uploads, integrated with Eden AI for intelligent document parsing.'
+              description='Where uploaded CVs live. Eden AI parses them into structured data.'
               tags={['GCS', 'Eden AI', 'CV Parsing']}
             />
             <TechCard
               icon={<Layers className='h-6 w-6' />}
-              title='Pulumi IaC'
-              description='Infrastructure as Code in TypeScript, managing all GCP resources with version-controlled deployments.'
-              tags={['Pulumi', 'TypeScript', 'GitOps']}
+              title='Pulumi'
+              description='All infrastructure defined in TypeScript. Easier to reason about than YAML.'
+              tags={['Pulumi', 'TypeScript', 'IaC']}
             />
             <TechCard
               icon={<GitBranch className='h-6 w-6' />}
               title='GitHub Actions'
-              description='Automated CI/CD pipeline for testing, building Docker images, and deploying to Cloud Run.'
+              description='Push to main, it builds and deploys. Nothing fancy, but it works.'
               tags={['CI/CD', 'Docker', 'Automation']}
             />
           </div>
@@ -619,8 +632,10 @@ export default function StackPage() {
       <section className='border-t border-border/50 bg-secondary/30 py-20'>
         <div className='mx-auto max-w-6xl px-6'>
           <div className='mb-12 text-center'>
-            <h2 className='mb-4 text-3xl font-bold'>Data Flows</h2>
-            <p className='text-muted-foreground'>Key workflows in the platform</p>
+            <h2 className='mb-4 text-3xl font-bold'>How Things Actually Work</h2>
+            <p className='text-muted-foreground'>
+              Three main flows. Each one taught me something new about async processing.
+            </p>
           </div>
 
           <div className='grid gap-6 md:grid-cols-3'>
@@ -705,15 +720,16 @@ export default function StackPage() {
       {/* CTA Section */}
       <section className='border-t border-border/50 bg-gradient-to-b from-primary/5 to-transparent py-20'>
         <div className='mx-auto max-w-2xl px-6 text-center'>
-          <h2 className='mb-4 text-3xl font-bold'>Ready to build your career story?</h2>
+          <h2 className='mb-4 text-3xl font-bold'>Want to try it?</h2>
           <p className='mb-8 text-muted-foreground'>
-            Join developers who are showcasing their experiences and landing their dream jobs.
+            It&apos;s free to use. Add some experiences, chat with the AI to create stories,
+            and see how the RAG pipeline answers questions about you.
           </p>
           <Link
             href='/signup'
             className='inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-primary-foreground transition-all hover:opacity-90 hover:shadow-lg hover:shadow-primary/20'
           >
-            Get Started Free
+            Create an Account
             <ArrowRight className='h-4 w-4' />
           </Link>
         </div>
