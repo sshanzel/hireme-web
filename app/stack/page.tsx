@@ -553,7 +553,7 @@ export default function StackPage() {
                   <div className='text-sm'>
                     <span className='font-medium'>Embed query & vector search</span>
                     <p className='text-xs text-muted-foreground'>
-                      Cosine similarity to find top 5 relevant chunks
+                      Cosine similarity to find the relevant chunks
                     </p>
                   </div>
                 </div>
