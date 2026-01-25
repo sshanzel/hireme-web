@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import {ProtectedRoute} from '@/components/ProtectedRoute';
 import {Sidebar} from '@/components/Sidebar';
 import {CVUploadOverlay} from '@/components/CVUploadOverlay';
@@ -22,12 +21,9 @@ export function AppLayout({children}: AppLayoutProps) {
         <div className="flex flex-1 flex-col overflow-hidden">
           <header className="flex h-16 items-center justify-end border-b px-6">
             <div className="flex items-center gap-4">
-              <Link
-                href="/"
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
+              <span className="text-sm text-muted-foreground">
                 {user?.name || user?.email}
-              </Link>
+              </span>
               <Button variant="outline" size="sm" onClick={logout}>
                 Logout
               </Button>

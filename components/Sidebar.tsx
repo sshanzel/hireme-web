@@ -35,7 +35,7 @@ export function Sidebar() {
   return (
     <aside className="flex h-screen w-64 flex-col border-r border-sidebar-border bg-sidebar">
       <div className="flex h-16 items-center border-b border-sidebar-border px-6">
-        <Link href="/" className="text-xl font-semibold text-sidebar-foreground">
+        <Link href="/" className="cursor-pointer text-xl font-semibold text-sidebar-foreground transition-opacity hover:opacity-80">
           HireMe.dev
         </Link>
       </div>
