@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
-import {LayoutDashboard, MessageCircle, Settings} from 'lucide-react';
+import {LayoutDashboard, MessageCircle} from 'lucide-react';
 import {cn} from '@/lib/utils';
 
 interface NavItem {
@@ -21,11 +21,6 @@ const navItems: NavItem[] = [
     label: 'Coach',
     href: '/coach',
     icon: <MessageCircle className="h-5 w-5" />,
-  },
-  {
-    label: 'Settings',
-    href: '/settings',
-    icon: <Settings className="h-5 w-5" />,
   },
 ];
 
