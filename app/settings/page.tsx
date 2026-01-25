@@ -28,7 +28,7 @@ export default function SettingsPage() {
     <AppLayout>
       <PageHeader title='Settings' description='Manage your account settings.' />
 
-      <div className='space-y-6'>
+      <div className='max-w-2xl space-y-6'>
         <Card>
           <CardHeader>
             <CardTitle>Profile</CardTitle>
