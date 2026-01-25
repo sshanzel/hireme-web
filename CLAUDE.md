@@ -29,3 +29,4 @@ When writing code, you MUST follow these principles:
 - Always use React Query for fetching, never do raw calls with fetch.
 - Use arrow functions when declaring a function inside a component.
 - Consider a11y, for example, anything clickable if you hover, cursor pointer must change.
+- Always use the function `cn` when merging classnames.
