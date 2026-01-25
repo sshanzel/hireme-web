@@ -200,9 +200,9 @@ export default function StackPage() {
           </h1>
           <p className='mx-auto max-w-2xl text-lg text-muted-foreground leading-relaxed'>
             I&apos;m probably late to the RAG party, but I wanted to understand how it actually
-            works instead of just reading about it. So I built this &mdash; an AI that can answer
-            questions about your career, but only using your own stories and experiences. No generic
-            advice, just your documented history.
+            works instead of just reading about it. So I built this, an AI that can answer questions
+            about your career, but only using your own stories and experiences. No generic advice,
+            just your documented history.
           </p>
         </div>
       </section>
@@ -213,8 +213,8 @@ export default function StackPage() {
           <div className='mb-12 text-center'>
             <h2 className='mb-4 text-3xl font-bold'>System Architecture</h2>
             <p className='text-muted-foreground'>
-              The bird&apos;s eye view. Nothing too fancy &mdash; just enough moving parts to make
-              it interesting.
+              The bird&apos;s eye view. Nothing too fancy - just enough moving parts to make it
+              interesting.
             </p>
           </div>
 
