@@ -20,13 +20,10 @@ import {
   Loader2,
   BookOpen,
   Sparkles,
-  ChevronDown,
-  ChevronUp,
 } from 'lucide-react';
 import {useStoryChatContext} from '@/contexts/StoryChatContext';
+import {CollapsibleList} from '@/components/CollapsibleList';
 import type {Experience, Story} from '@/types/experience';
-
-const INITIAL_DISPLAY_COUNT = 2;
 
 interface ExperienceListProps {
   experiences: Experience[];
@@ -219,16 +216,9 @@ function ExperienceItem({
 
 export function ExperienceList({experiences, onMutate}: ExperienceListProps) {
   const {selectStory} = useStoryChatContext();
-  const [isExpanded, setIsExpanded] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingExperience, setEditingExperience] = useState<Experience | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  const hasMore = experiences.length > INITIAL_DISPLAY_COUNT;
-  const displayedExperiences = isExpanded
-    ? experiences
-    : experiences.slice(0, INITIAL_DISPLAY_COUNT);
-  const hiddenCount = experiences.length - INITIAL_DISPLAY_COUNT;
 
   const deleteMutation = useMutation({
     mutationFn: deleteExperience,
@@ -294,40 +284,21 @@ export function ExperienceList({experiences, onMutate}: ExperienceListProps) {
               </p>
             </div>
           ) : (
-            <>
-              <div className='space-y-4'>
-                {displayedExperiences.map(experience => (
-                  <ExperienceItem
-                    key={experience.id}
-                    experience={experience}
-                    onEdit={() => handleEdit(experience)}
-                    onDelete={() => handleDelete(experience.id)}
-                    onStorySelect={selectStory}
-                    isDeleting={deletingId === experience.id}
-                  />
-                ))}
-              </div>
-              {hasMore && (
-                <Button
-                  variant='ghost'
-                  size='sm'
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  className='mt-4 w-full'
-                >
-                  {isExpanded ? (
-                    <>
-                      <ChevronUp className='mr-2 h-4 w-4' />
-                      Show less
-                    </>
-                  ) : (
-                    <>
-                      <ChevronDown className='mr-2 h-4 w-4' />
-                      Show {hiddenCount} more
-                    </>
-                  )}
-                </Button>
+            <CollapsibleList
+              items={experiences}
+              maxItems={2}
+              keyExtractor={exp => exp.id}
+              gap="lg"
+              renderItem={experience => (
+                <ExperienceItem
+                  experience={experience}
+                  onEdit={() => handleEdit(experience)}
+                  onDelete={() => handleDelete(experience.id)}
+                  onStorySelect={selectStory}
+                  isDeleting={deletingId === experience.id}
+                />
               )}
-            </>
+            />
           )}
         </CardContent>
       </Card>

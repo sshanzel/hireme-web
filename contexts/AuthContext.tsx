@@ -7,6 +7,7 @@ interface User {
   id: string;
   email: string;
   name: string;
+  username: string | null;
   cvUploadedAt: string | null;
   title: string | null;
   bio: string | null;

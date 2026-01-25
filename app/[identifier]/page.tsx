@@ -7,6 +7,13 @@ import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import {
   Send,
   Bot,
   User,
@@ -20,6 +27,7 @@ import {
 } from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {useWebSocket} from '@/hooks/useWebSocket';
+import {CollapsibleList} from '@/components/CollapsibleList';
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:4000';
 
@@ -45,6 +53,7 @@ interface PublicExperience {
   title: string;
   startDate: string;
   endDate: string | null;
+  description: string | null;
 }
 
 interface PublicProfile {
@@ -120,6 +129,55 @@ function formatDateRange(startDate: string, endDate: string | null): string {
   return `${start} - ${end}`;
 }
 
+function getHeadline(profile: PublicProfile): string | null {
+  if (profile.title) return profile.title;
+
+  if (profile.experiences.length === 0) return null;
+
+  // Find current role (no end date) or most recent by start date
+  const currentRole = profile.experiences.find(exp => !exp.endDate);
+  if (currentRole) return currentRole.title;
+
+  // Sort by start date descending and get the most recent
+  const sorted = [...profile.experiences].sort(
+    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+  );
+  return sorted[0].title;
+}
+
+interface ExperienceModalProps {
+  experience: PublicExperience | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+function ExperienceModal({experience, open, onOpenChange}: ExperienceModalProps) {
+  if (!experience) return null;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className='max-h-[85vh] overflow-y-auto sm:max-w-lg'>
+        <DialogHeader>
+          <DialogTitle>{experience.title}</DialogTitle>
+          <DialogDescription>
+            {experience.organization} &bull; {formatDateRange(experience.startDate, experience.endDate)}
+          </DialogDescription>
+        </DialogHeader>
+        <div className='space-y-4'>
+          {experience.description ? (
+            <div>
+              <h4 className='mb-2 text-sm font-medium'>Description</h4>
+              <p className='text-sm text-muted-foreground whitespace-pre-wrap'>{experience.description}</p>
+            </div>
+          ) : (
+            <p className='text-sm text-muted-foreground'>No additional details available.</p>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 interface PublicProfilePageProps {
   params: Promise<{identifier: string}>;
 }
@@ -130,6 +188,7 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [selectedExperience, setSelectedExperience] = useState<PublicExperience | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -232,6 +291,9 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
     );
   }
 
+  const hasSocials = profile.githubUrl || profile.linkedinUrl || profile.twitterUrl || profile.websiteUrl;
+  const headline = getHeadline(profile);
+
   return (
     <div className='min-h-screen bg-background'>
       {/* Header */}
@@ -255,25 +317,22 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                     {getInitials(profile.name)}
                   </div>
                   <h1 className='mt-4 text-xl font-semibold'>{profile.name}</h1>
-                  {profile.title && <p className='text-muted-foreground'>{profile.title}</p>}
+                  {headline && <p className='text-muted-foreground'>{headline}</p>}
                   {profile.bio && (
                     <p className='mt-3 text-sm text-muted-foreground'>{profile.bio}</p>
                   )}
 
                   {/* Social Links */}
-                  {(profile.githubUrl ||
-                    profile.linkedinUrl ||
-                    profile.twitterUrl ||
-                    profile.websiteUrl) && (
-                    <div className='mt-4 flex gap-3'>
+                  {hasSocials && (
+                    <div className='mt-4 flex gap-2'>
                       {profile.githubUrl && (
                         <a
                           href={profile.githubUrl}
                           target='_blank'
                           rel='noopener noreferrer'
-                          className='text-muted-foreground transition-colors hover:text-foreground'
+                          className='flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
                         >
-                          <Github className='h-5 w-5' />
+                          <Github className='h-4 w-4' />
                         </a>
                       )}
                       {profile.linkedinUrl && (
@@ -281,9 +340,9 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                           href={profile.linkedinUrl}
                           target='_blank'
                           rel='noopener noreferrer'
-                          className='text-muted-foreground transition-colors hover:text-foreground'
+                          className='flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
                         >
-                          <Linkedin className='h-5 w-5' />
+                          <Linkedin className='h-4 w-4' />
                         </a>
                       )}
                       {profile.twitterUrl && (
@@ -291,9 +350,9 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                           href={profile.twitterUrl}
                           target='_blank'
                           rel='noopener noreferrer'
-                          className='text-muted-foreground transition-colors hover:text-foreground'
+                          className='flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
                         >
-                          <Twitter className='h-5 w-5' />
+                          <Twitter className='h-4 w-4' />
                         </a>
                       )}
                       {profile.websiteUrl && (
@@ -301,9 +360,9 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                           href={profile.websiteUrl}
                           target='_blank'
                           rel='noopener noreferrer'
-                          className='text-muted-foreground transition-colors hover:text-foreground'
+                          className='flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
                         >
-                          <Globe className='h-5 w-5' />
+                          <Globe className='h-4 w-4' />
                         </a>
                       )}
                     </div>
@@ -318,21 +377,30 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                 <CardHeader>
                   <CardTitle className='text-base'>Experience</CardTitle>
                 </CardHeader>
-                <CardContent className='space-y-4'>
-                  {profile.experiences.map(exp => (
-                    <div key={exp.id} className='flex gap-3'>
-                      <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted'>
-                        <Briefcase className='h-4 w-4' />
-                      </div>
-                      <div>
-                        <p className='font-medium'>{exp.title}</p>
-                        <p className='text-sm text-muted-foreground'>{exp.organization}</p>
-                        <p className='text-xs text-muted-foreground'>
-                          {formatDateRange(exp.startDate, exp.endDate)}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                <CardContent>
+                  <CollapsibleList
+                    items={profile.experiences}
+                    maxItems={3}
+                    keyExtractor={exp => exp.id}
+                    renderItem={exp => (
+                      <button
+                        type='button'
+                        onClick={() => setSelectedExperience(exp)}
+                        className='flex w-full cursor-pointer gap-3 rounded-lg p-2 text-left transition-colors hover:bg-muted'
+                      >
+                        <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted'>
+                          <Briefcase className='h-5 w-5' />
+                        </div>
+                        <div className='min-w-0 flex-1'>
+                          <p className='font-medium'>{exp.title}</p>
+                          <p className='text-sm text-muted-foreground'>{exp.organization}</p>
+                          <p className='text-xs text-muted-foreground'>
+                            {formatDateRange(exp.startDate, exp.endDate)}
+                          </p>
+                        </div>
+                      </button>
+                    )}
+                  />
                 </CardContent>
               </Card>
             )}
@@ -440,6 +508,13 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
           </Card>
         </div>
       </main>
+
+      {/* Experience Detail Modal */}
+      <ExperienceModal
+        experience={selectedExperience}
+        open={!!selectedExperience}
+        onOpenChange={open => !open && setSelectedExperience(null)}
+      />
     </div>
   );
 }

@@ -48,7 +48,7 @@ export function AppLayout({children}: AppLayoutProps) {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem asChild>
-                  <Link href={`/bio/${user?.id}`} className="cursor-pointer">
+                  <Link href={`/${user?.username ?? user?.id}`} className="cursor-pointer">
                     <User className="mr-2 h-4 w-4" />
                     Profile
                   </Link>

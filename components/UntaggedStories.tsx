@@ -1,47 +1,21 @@
 'use client';
 
-import {useState} from 'react';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
-import {Button} from '@/components/ui/button';
-import {MessageSquareWarning, ChevronDown, ChevronUp} from 'lucide-react';
+import {MessageSquareWarning} from 'lucide-react';
 import {useStoryChatContext} from '@/contexts/StoryChatContext';
+import {CollapsibleList} from '@/components/CollapsibleList';
 import type {Story} from '@/types/experience';
-
-const INITIAL_DISPLAY_COUNT = 2;
 
 interface UntaggedStoriesProps {
   stories: Story[];
 }
 
-interface StoryItemProps {
-  story: Story;
-  onClickStory: () => void;
-}
-
-function StoryItem({story, onClickStory}: StoryItemProps) {
-  return (
-    <button
-      type='button'
-      onClick={onClickStory}
-      className='w-full cursor-pointer rounded-md border bg-muted/30 p-3 text-left transition-colors hover:bg-muted/50'
-    >
-      <h5 className='text-sm font-medium'>{story.title}</h5>
-      <p className='mt-1 text-xs text-muted-foreground line-clamp-2'>{story.impact}</p>
-    </button>
-  );
-}
-
 export function UntaggedStories({stories}: UntaggedStoriesProps) {
   const {selectStory} = useStoryChatContext();
-  const [isExpanded, setIsExpanded] = useState(false);
 
   if (stories.length === 0) {
     return null;
   }
-
-  const hasMore = stories.length > INITIAL_DISPLAY_COUNT;
-  const displayedStories = isExpanded ? stories : stories.slice(0, INITIAL_DISPLAY_COUNT);
-  const hiddenCount = stories.length - INITIAL_DISPLAY_COUNT;
 
   return (
     <Card>
@@ -55,35 +29,21 @@ export function UntaggedStories({stories}: UntaggedStoriesProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className='space-y-2'>
-          {displayedStories.map((story) => (
-            <StoryItem
-              key={story.id}
-              story={story}
-              onClickStory={() => selectStory(story.id)}
-            />
-          ))}
-        </div>
-        {hasMore && (
-          <Button
-            variant='ghost'
-            size='sm'
-            onClick={() => setIsExpanded(!isExpanded)}
-            className='mt-3 w-full'
-          >
-            {isExpanded ? (
-              <>
-                <ChevronUp className='mr-2 h-4 w-4' />
-                Show less
-              </>
-            ) : (
-              <>
-                <ChevronDown className='mr-2 h-4 w-4' />
-                Show {hiddenCount} more
-              </>
-            )}
-          </Button>
-        )}
+        <CollapsibleList
+          items={stories}
+          maxItems={2}
+          keyExtractor={story => story.id}
+          renderItem={story => (
+            <button
+              type='button'
+              onClick={() => selectStory(story.id)}
+              className='w-full cursor-pointer rounded-md border bg-muted/30 p-3 text-left transition-colors hover:bg-muted/50'
+            >
+              <h5 className='text-sm font-medium'>{story.title}</h5>
+              <p className='mt-1 text-xs text-muted-foreground line-clamp-2'>{story.impact}</p>
+            </button>
+          )}
+        />
       </CardContent>
     </Card>
   );
