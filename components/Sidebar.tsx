@@ -30,8 +30,8 @@ export function Sidebar() {
   return (
     <aside className="flex h-screen w-64 flex-col border-r border-sidebar-border bg-sidebar">
       <div className="flex h-16 items-center border-b border-sidebar-border px-6">
-        <Link href="/" className="cursor-pointer text-xl font-semibold text-sidebar-foreground transition-opacity hover:opacity-80">
-          HireMe.dev
+        <Link href="/" className="cursor-pointer text-xl font-semibold transition-opacity hover:opacity-80">
+          <span className="text-gradient">HireMe</span><span className="text-sidebar-foreground">.dev</span>
         </Link>
       </div>
       <nav className="flex-1 space-y-1 p-4">

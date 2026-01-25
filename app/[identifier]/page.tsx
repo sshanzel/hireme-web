@@ -18,6 +18,7 @@ import {
   Bot,
   User,
   Briefcase,
+  GraduationCap,
   Sparkles,
   Loader2,
   Github,
@@ -49,6 +50,7 @@ interface BioSession {
 
 interface PublicExperience {
   id: string;
+  type: 'work' | 'education';
   organization: string;
   title: string;
   startDate: string;
@@ -151,6 +153,47 @@ interface ExperienceModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
+function formatDescription(text: string): React.ReactNode {
+  const lines = text.split('\n').filter(line => line.trim());
+  const elements: React.ReactNode[] = [];
+  let currentList: string[] = [];
+
+  const flushList = () => {
+    if (currentList.length > 0) {
+      elements.push(
+        <ul key={`list-${elements.length}`} className='space-y-1.5 pl-4'>
+          {currentList.map((item, i) => (
+            <li key={i} className='list-disc text-sm text-muted-foreground'>
+              {item}
+            </li>
+          ))}
+        </ul>
+      );
+      currentList = [];
+    }
+  };
+
+  lines.forEach((line, index) => {
+    const trimmed = line.trim();
+    const bulletMatch = trimmed.match(/^[-•*]\s*(.+)$/);
+    const numberedMatch = trimmed.match(/^\d+[.)]\s*(.+)$/);
+
+    if (bulletMatch || numberedMatch) {
+      currentList.push(bulletMatch?.[1] || numberedMatch?.[1] || trimmed);
+    } else {
+      flushList();
+      elements.push(
+        <p key={`p-${index}`} className='text-sm text-muted-foreground leading-relaxed'>
+          {trimmed}
+        </p>
+      );
+    }
+  });
+
+  flushList();
+  return <div className='space-y-3'>{elements}</div>;
+}
+
 function ExperienceModal({experience, open, onOpenChange}: ExperienceModalProps) {
   if (!experience) return null;
 
@@ -163,12 +206,9 @@ function ExperienceModal({experience, open, onOpenChange}: ExperienceModalProps)
             {experience.organization} &bull; {formatDateRange(experience.startDate, experience.endDate)}
           </DialogDescription>
         </DialogHeader>
-        <div className='space-y-4'>
+        <div className='pt-2'>
           {experience.description ? (
-            <div>
-              <h4 className='mb-2 text-sm font-medium'>Description</h4>
-              <p className='text-sm text-muted-foreground whitespace-pre-wrap'>{experience.description}</p>
-            </div>
+            formatDescription(experience.description)
           ) : (
             <p className='text-sm text-muted-foreground'>No additional details available.</p>
           )}
@@ -300,7 +340,7 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
       <header className='border-b'>
         <div className='mx-auto flex h-16 max-w-6xl items-center px-4'>
           <Link href='/' className='cursor-pointer text-xl font-semibold transition-opacity hover:opacity-80'>
-            HireMe.dev
+            <span className='text-gradient'>HireMe</span><span>.dev</span>
           </Link>
         </div>
       </header>
@@ -382,24 +422,27 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                     items={profile.experiences}
                     maxItems={3}
                     keyExtractor={exp => exp.id}
-                    renderItem={exp => (
-                      <button
-                        type='button'
-                        onClick={() => setSelectedExperience(exp)}
-                        className='flex w-full cursor-pointer gap-3 rounded-lg p-2 text-left transition-colors hover:bg-muted'
-                      >
-                        <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted'>
-                          <Briefcase className='h-5 w-5' />
-                        </div>
-                        <div className='min-w-0 flex-1'>
-                          <p className='font-medium'>{exp.title}</p>
-                          <p className='text-sm text-muted-foreground'>{exp.organization}</p>
-                          <p className='text-xs text-muted-foreground'>
-                            {formatDateRange(exp.startDate, exp.endDate)}
-                          </p>
-                        </div>
-                      </button>
-                    )}
+                    renderItem={exp => {
+                      const ExperienceIcon = exp.type === 'education' ? GraduationCap : Briefcase;
+                      return (
+                        <button
+                          type='button'
+                          onClick={() => setSelectedExperience(exp)}
+                          className='flex w-full cursor-pointer gap-3 rounded-lg p-2 text-left transition-colors hover:bg-muted'
+                        >
+                          <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted'>
+                            <ExperienceIcon className='h-5 w-5' />
+                          </div>
+                          <div className='min-w-0 flex-1'>
+                            <p className='font-medium'>{exp.title}</p>
+                            <p className='text-sm text-muted-foreground'>{exp.organization}</p>
+                            <p className='text-xs text-muted-foreground'>
+                              {formatDateRange(exp.startDate, exp.endDate)}
+                            </p>
+                          </div>
+                        </button>
+                      );
+                    }}
                   />
                 </CardContent>
               </Card>
