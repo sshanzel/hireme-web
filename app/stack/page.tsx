@@ -86,6 +86,14 @@ function ArchitectureNode({icon, label, sublabel, className, variant = 'secondar
     external: 'bg-emerald-500/20 text-emerald-600',
   };
 
+  const sublabelColor = {
+    primary: 'text-primary-foreground/70',
+    secondary: 'text-muted-foreground',
+    accent: 'text-muted-foreground',
+    gcp: 'text-muted-foreground',
+    external: 'text-muted-foreground',
+  };
+
   return (
     <div
       className={cn(
@@ -98,7 +106,7 @@ function ArchitectureNode({icon, label, sublabel, className, variant = 'secondar
         {icon}
       </div>
       <span className='text-sm font-medium text-center'>{label}</span>
-      {sublabel && <span className='text-xs text-muted-foreground text-center'>{sublabel}</span>}
+      {sublabel && <span className={cn('text-xs text-center', sublabelColor[variant])}>{sublabel}</span>}
     </div>
   );
 }
