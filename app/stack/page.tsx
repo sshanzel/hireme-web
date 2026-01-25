@@ -36,7 +36,7 @@ function TechCard({icon, title, description, tags, className}: TechCardProps) {
     <div
       className={cn(
         'group relative overflow-hidden rounded-2xl border border-border/50 bg-card p-6 transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5',
-        className
+        className,
       )}
     >
       <div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
@@ -69,7 +69,13 @@ interface ArchitectureNodeProps {
   variant?: 'primary' | 'secondary' | 'accent' | 'gcp' | 'external';
 }
 
-function ArchitectureNode({icon, label, sublabel, className, variant = 'secondary'}: ArchitectureNodeProps) {
+function ArchitectureNode({
+  icon,
+  label,
+  sublabel,
+  className,
+  variant = 'secondary',
+}: ArchitectureNodeProps) {
   const variants = {
     primary: 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20',
     secondary: 'bg-card border-border hover:border-primary/30',
@@ -99,14 +105,16 @@ function ArchitectureNode({icon, label, sublabel, className, variant = 'secondar
       className={cn(
         'flex flex-col items-center gap-2 rounded-xl border p-4 transition-all duration-300 hover:scale-105',
         variants[variant],
-        className
+        className,
       )}
     >
       <div className={cn('flex h-10 w-10 items-center justify-center rounded-lg', iconBg[variant])}>
         {icon}
       </div>
       <span className='text-sm font-medium text-center'>{label}</span>
-      {sublabel && <span className={cn('text-xs text-center', sublabelColor[variant])}>{sublabel}</span>}
+      {sublabel && (
+        <span className={cn('text-xs text-center', sublabelColor[variant])}>{sublabel}</span>
+      )}
     </div>
   );
 }
@@ -120,7 +128,13 @@ function VerticalFlow({className}: {className?: string}) {
   );
 }
 
-function SectionLabel({children, color = 'default'}: {children: React.ReactNode; color?: 'default' | 'gcp' | 'external'}) {
+function SectionLabel({
+  children,
+  color = 'default',
+}: {
+  children: React.ReactNode;
+  color?: 'default' | 'gcp' | 'external';
+}) {
   const colors = {
     default: 'text-muted-foreground',
     gcp: 'text-blue-600',
@@ -146,7 +160,10 @@ export default function StackPage() {
             <span>.dev</span>
           </Link>
           <div className='flex items-center gap-6'>
-            <Link href='/login' className='text-sm text-muted-foreground transition-colors hover:text-foreground'>
+            <Link
+              href='/login'
+              className='text-sm text-muted-foreground transition-colors hover:text-foreground'
+            >
               Login
             </Link>
             <Link
@@ -163,10 +180,13 @@ export default function StackPage() {
       <section className='relative overflow-hidden border-b border-border/50'>
         {/* Background Pattern */}
         <div className='absolute inset-0 opacity-30'>
-          <div className='absolute inset-0' style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, var(--color-border) 1px, transparent 0)`,
-            backgroundSize: '40px 40px',
-          }} />
+          <div
+            className='absolute inset-0'
+            style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, var(--color-border) 1px, transparent 0)`,
+              backgroundSize: '40px 40px',
+            }}
+          />
         </div>
         <div className='absolute -top-40 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl' />
 
@@ -179,10 +199,10 @@ export default function StackPage() {
             Tech <span className='text-gradient'>Stack</span>
           </h1>
           <p className='mx-auto max-w-2xl text-lg text-muted-foreground leading-relaxed'>
-            I&apos;m probably late to the RAG party, but I wanted to understand how it actually works
-            instead of just reading about it. So I built this &mdash; an AI that can answer questions
-            about your career, but only using your own stories and experiences. No generic advice,
-            just your documented history.
+            I&apos;m probably late to the RAG party, but I wanted to understand how it actually
+            works instead of just reading about it. So I built this &mdash; an AI that can answer
+            questions about your career, but only using your own stories and experiences. No generic
+            advice, just your documented history.
           </p>
         </div>
       </section>
@@ -193,14 +213,14 @@ export default function StackPage() {
           <div className='mb-12 text-center'>
             <h2 className='mb-4 text-3xl font-bold'>System Architecture</h2>
             <p className='text-muted-foreground'>
-              The bird&apos;s eye view. Nothing too fancy &mdash; just enough moving parts to make it interesting.
+              The bird&apos;s eye view. Nothing too fancy &mdash; just enough moving parts to make
+              it interesting.
             </p>
           </div>
 
           {/* Desktop Architecture Diagram */}
           <div className='hidden lg:block'>
             <div className='relative rounded-2xl border border-border/50 bg-card/50 p-8'>
-
               {/* Row 1: Clients */}
               <SectionLabel>Clients</SectionLabel>
               <div className='mb-6 flex justify-center gap-8'>
@@ -233,7 +253,9 @@ export default function StackPage() {
                       </div>
                       <div>
                         <p className='text-sm font-semibold'>Cloud Run - API Service</p>
-                        <p className='text-xs text-muted-foreground'>Fastify + TypeScript (scales 0→N)</p>
+                        <p className='text-xs text-muted-foreground'>
+                          Fastify + TypeScript (scales 0→N)
+                        </p>
                       </div>
                     </div>
                     <div className='grid grid-cols-2 gap-4 text-xs'>
@@ -271,7 +293,10 @@ export default function StackPage() {
                     </div>
                     <div className='flex gap-2 flex-wrap'>
                       {['cv-uploaded', 'story-completed', 'experience-updated'].map(topic => (
-                        <span key={topic} className='rounded-full bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-600'>
+                        <span
+                          key={topic}
+                          className='rounded-full bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-600'
+                        >
                           {topic}
                         </span>
                       ))}
@@ -342,13 +367,6 @@ export default function StackPage() {
                       <p className='text-sm font-semibold'>Supabase PostgreSQL + pgvector</p>
                       <p className='text-xs text-muted-foreground'>Drizzle ORM + Vector Search</p>
                     </div>
-                  </div>
-                  <div className='mt-3 flex gap-2 flex-wrap'>
-                    {['users', 'experiences', 'stories', 'story_index', 'experience_index'].map(table => (
-                      <span key={table} className='rounded bg-emerald-500/10 px-1.5 py-0.5 text-xs font-mono text-emerald-600'>
-                        {table}
-                      </span>
-                    ))}
                   </div>
                 </div>
               </div>
@@ -441,9 +459,10 @@ export default function StackPage() {
             </div>
             <h2 className='mb-4 text-3xl font-bold'>RAG Pipeline</h2>
             <p className='mx-auto max-w-2xl text-muted-foreground'>
-              This is the heart of the project. The idea is simple: when someone asks the AI a question,
-              it doesn&apos;t make things up. It searches through your actual stories and experiences,
-              finds the relevant bits, and answers based on that. Your data, your voice.
+              This is the heart of the project. The idea is simple: when someone asks the AI a
+              question, it doesn&apos;t make things up. It searches through your actual stories and
+              experiences, finds the relevant bits, and answers based on that. Your data, your
+              voice.
             </p>
           </div>
 
@@ -460,35 +479,52 @@ export default function StackPage() {
                 </div>
               </div>
               <p className='mb-4 text-sm text-muted-foreground'>
-                Whenever you add or update something, a background worker turns it into vectors that can be searched later.
+                Whenever you add or update something, a background worker turns it into vectors that
+                can be searched later.
               </p>
               <div className='space-y-3'>
                 <div className='flex items-center gap-3 rounded-lg bg-secondary/50 p-3'>
-                  <div className='flex h-6 w-6 items-center justify-center rounded bg-blue-500/20 text-xs font-bold text-blue-600'>1</div>
+                  <div className='flex h-6 w-6 items-center justify-center rounded bg-blue-500/20 text-xs font-bold text-blue-600'>
+                    1
+                  </div>
                   <div className='text-sm'>
                     <span className='font-medium'>Content triggers event</span>
-                    <p className='text-xs text-muted-foreground'>CV upload, story completion, experience update</p>
+                    <p className='text-xs text-muted-foreground'>
+                      CV upload, story completion, experience update
+                    </p>
                   </div>
                 </div>
                 <div className='flex items-center gap-3 rounded-lg bg-secondary/50 p-3'>
-                  <div className='flex h-6 w-6 items-center justify-center rounded bg-blue-500/20 text-xs font-bold text-blue-600'>2</div>
+                  <div className='flex h-6 w-6 items-center justify-center rounded bg-blue-500/20 text-xs font-bold text-blue-600'>
+                    2
+                  </div>
                   <div className='text-sm'>
                     <span className='font-medium'>Worker processes content</span>
-                    <p className='text-xs text-muted-foreground'>Summarize with GPT-4o-mini, format as chunks</p>
+                    <p className='text-xs text-muted-foreground'>
+                      Summarize with GPT-4o-mini, format as chunks
+                    </p>
                   </div>
                 </div>
                 <div className='flex items-center gap-3 rounded-lg bg-secondary/50 p-3'>
-                  <div className='flex h-6 w-6 items-center justify-center rounded bg-blue-500/20 text-xs font-bold text-blue-600'>3</div>
+                  <div className='flex h-6 w-6 items-center justify-center rounded bg-blue-500/20 text-xs font-bold text-blue-600'>
+                    3
+                  </div>
                   <div className='text-sm'>
                     <span className='font-medium'>Generate embeddings</span>
-                    <p className='text-xs text-muted-foreground'>text-embedding-3-small → 1536-dim vectors</p>
+                    <p className='text-xs text-muted-foreground'>
+                      text-embedding-3-small → 1536-dim vectors
+                    </p>
                   </div>
                 </div>
                 <div className='flex items-center gap-3 rounded-lg bg-secondary/50 p-3'>
-                  <div className='flex h-6 w-6 items-center justify-center rounded bg-blue-500/20 text-xs font-bold text-blue-600'>4</div>
+                  <div className='flex h-6 w-6 items-center justify-center rounded bg-blue-500/20 text-xs font-bold text-blue-600'>
+                    4
+                  </div>
                   <div className='text-sm'>
                     <span className='font-medium'>Store in pgvector</span>
-                    <p className='text-xs text-muted-foreground'>PostgreSQL with vector similarity search</p>
+                    <p className='text-xs text-muted-foreground'>
+                      PostgreSQL with vector similarity search
+                    </p>
                   </div>
                 </div>
               </div>
@@ -506,35 +542,52 @@ export default function StackPage() {
                 </div>
               </div>
               <p className='mb-4 text-sm text-muted-foreground'>
-                When a visitor asks something, we find the most relevant chunks from your data and let the AI answer based on those.
+                When a visitor asks something, we find the most relevant chunks from your data and
+                let the AI answer based on those.
               </p>
               <div className='space-y-3'>
                 <div className='flex items-center gap-3 rounded-lg bg-secondary/50 p-3'>
-                  <div className='flex h-6 w-6 items-center justify-center rounded bg-emerald-500/20 text-xs font-bold text-emerald-600'>1</div>
+                  <div className='flex h-6 w-6 items-center justify-center rounded bg-emerald-500/20 text-xs font-bold text-emerald-600'>
+                    1
+                  </div>
                   <div className='text-sm'>
                     <span className='font-medium'>Visitor asks a question</span>
-                    <p className='text-xs text-muted-foreground'>&ldquo;What projects have you worked on?&rdquo;</p>
+                    <p className='text-xs text-muted-foreground'>
+                      &ldquo;What projects have you worked on?&rdquo;
+                    </p>
                   </div>
                 </div>
                 <div className='flex items-center gap-3 rounded-lg bg-secondary/50 p-3'>
-                  <div className='flex h-6 w-6 items-center justify-center rounded bg-emerald-500/20 text-xs font-bold text-emerald-600'>2</div>
+                  <div className='flex h-6 w-6 items-center justify-center rounded bg-emerald-500/20 text-xs font-bold text-emerald-600'>
+                    2
+                  </div>
                   <div className='text-sm'>
                     <span className='font-medium'>Embed query & vector search</span>
-                    <p className='text-xs text-muted-foreground'>Cosine similarity to find top 5 relevant chunks</p>
+                    <p className='text-xs text-muted-foreground'>
+                      Cosine similarity to find top 5 relevant chunks
+                    </p>
                   </div>
                 </div>
                 <div className='flex items-center gap-3 rounded-lg bg-secondary/50 p-3'>
-                  <div className='flex h-6 w-6 items-center justify-center rounded bg-emerald-500/20 text-xs font-bold text-emerald-600'>3</div>
+                  <div className='flex h-6 w-6 items-center justify-center rounded bg-emerald-500/20 text-xs font-bold text-emerald-600'>
+                    3
+                  </div>
                   <div className='text-sm'>
                     <span className='font-medium'>Augment prompt with context</span>
-                    <p className='text-xs text-muted-foreground'>Inject relevant stories & experiences</p>
+                    <p className='text-xs text-muted-foreground'>
+                      Inject relevant stories & experiences
+                    </p>
                   </div>
                 </div>
                 <div className='flex items-center gap-3 rounded-lg bg-secondary/50 p-3'>
-                  <div className='flex h-6 w-6 items-center justify-center rounded bg-emerald-500/20 text-xs font-bold text-emerald-600'>4</div>
+                  <div className='flex h-6 w-6 items-center justify-center rounded bg-emerald-500/20 text-xs font-bold text-emerald-600'>
+                    4
+                  </div>
                   <div className='text-sm'>
                     <span className='font-medium'>AI responds as the user</span>
-                    <p className='text-xs text-muted-foreground'>Grounded answers, no hallucination</p>
+                    <p className='text-xs text-muted-foreground'>
+                      Grounded answers, no hallucination
+                    </p>
                   </div>
                 </div>
               </div>
@@ -544,7 +597,9 @@ export default function StackPage() {
           {/* AI Models */}
           <div className='mt-8 rounded-2xl border border-border/50 bg-card p-6'>
             <h3 className='mb-1 font-semibold'>Models I&apos;m Using</h3>
-            <p className='mb-4 text-sm text-muted-foreground'>Went with gpt-4o-mini for most things. Fast enough, cheap enough, good enough.</p>
+            <p className='mb-4 text-sm text-muted-foreground'>
+              Went with gpt-4o-mini for most things. Fast enough, cheap enough, good enough.
+            </p>
             <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
               <div className='rounded-lg bg-secondary/50 p-3'>
                 <p className='text-xs text-muted-foreground'>Embeddings</p>
@@ -573,7 +628,8 @@ export default function StackPage() {
           <div className='mb-12 text-center'>
             <h2 className='mb-4 text-3xl font-bold'>The Boring Parts</h2>
             <p className='text-muted-foreground'>
-              Standard stuff, really. TypeScript everywhere, serverless so I don&apos;t pay when nobody&apos;s using it.
+              Standard stuff, really. TypeScript everywhere, serverless so I don&apos;t pay when
+              nobody&apos;s using it.
             </p>
           </div>
 
@@ -730,8 +786,8 @@ export default function StackPage() {
         <div className='mx-auto max-w-2xl px-6 text-center'>
           <h2 className='mb-4 text-3xl font-bold'>Want to try it?</h2>
           <p className='mb-8 text-muted-foreground'>
-            It&apos;s free to use. Add some experiences, chat with the AI to create stories,
-            and see how the RAG pipeline answers questions about you.
+            It&apos;s free to use. Add some experiences, chat with the AI to create stories, and see
+            how the RAG pipeline answers questions about you.
           </p>
           <Link
             href='/signup'
@@ -751,9 +807,15 @@ export default function StackPage() {
               &copy; {new Date().getFullYear()} HireMe.dev. All rights reserved.
             </div>
             <div className='flex gap-6 text-sm text-muted-foreground'>
-              <Link href='/' className='transition-colors hover:text-foreground'>Home</Link>
-              <Link href='/stack' className='transition-colors hover:text-foreground'>Stack</Link>
-              <Link href='/login' className='transition-colors hover:text-foreground'>Login</Link>
+              <Link href='/' className='transition-colors hover:text-foreground'>
+                Home
+              </Link>
+              <Link href='/stack' className='transition-colors hover:text-foreground'>
+                Stack
+              </Link>
+              <Link href='/login' className='transition-colors hover:text-foreground'>
+                Login
+              </Link>
             </div>
           </div>
         </div>
