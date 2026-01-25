@@ -199,10 +199,10 @@ export default function StackPage() {
             Tech <span className='text-gradient'>Stack</span>
           </h1>
           <p className='mx-auto max-w-2xl text-lg text-muted-foreground leading-relaxed'>
-            I&apos;m probably late to the RAG party, but I wanted to understand how it actually
-            works instead of just reading about it. So I built this, an AI that can answer questions
-            about your career, but only using your own stories and experiences. No generic advice,
-            just your documented history.
+            I&apos;m probably late to the RAG party, but I wanted to understand the basics of how it
+            actually works instead of just reading about it. So I built this, an AI that can answer
+            questions about your career, but only using your own stories and experiences. No generic
+            advice, just your documented history.
           </p>
         </div>
       </section>
