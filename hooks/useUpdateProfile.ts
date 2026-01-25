@@ -1,5 +1,6 @@
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import type {ProfileFormData} from '@/lib/validations/profile';
+import {apiFetch, endpoints} from '@/lib/api';
 
 interface UpdateProfileResponse {
   id: string;
@@ -14,23 +15,8 @@ interface UpdateProfileResponse {
   websiteUrl: string | null;
 }
 
-async function updateProfile(data: ProfileFormData): Promise<UpdateProfileResponse> {
-  const response = await fetch('/api/profile', {
-    method: 'PUT',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({message: 'Failed to update profile'}));
-    throw new Error(error.message || 'Failed to update profile');
-  }
-
-  return response.json();
-}
+const updateProfile = (data: ProfileFormData) =>
+  apiFetch<UpdateProfileResponse>(endpoints.profile, {method: 'PUT', body: data});
 
 export function useUpdateProfile() {
   const queryClient = useQueryClient();

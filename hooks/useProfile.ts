@@ -1,5 +1,6 @@
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import type {Experience, Story} from '@/types/experience';
+import {apiFetch, endpoints} from '@/lib/api';
 
 interface ProfileUser {
   id: string;
@@ -20,18 +21,7 @@ interface ProfileData {
   untaggedStories: Story[];
 }
 
-async function fetchProfile(): Promise<ProfileData> {
-  const response = await fetch('/api/profile', {
-    credentials: 'include',
-  });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({message: 'Failed to fetch profile'}));
-    throw new Error(error.message || 'Failed to fetch profile');
-  }
-
-  return response.json();
-}
+const fetchProfile = () => apiFetch<ProfileData>(endpoints.profile);
 
 export function useProfile() {
   const queryClient = useQueryClient();

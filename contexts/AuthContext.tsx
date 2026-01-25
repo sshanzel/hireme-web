@@ -2,6 +2,7 @@
 
 import {createContext, useContext, ReactNode} from 'react';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
+import {apiFetchSafe, apiFetch, endpoints} from '@/lib/api';
 
 interface User {
   id: string;
@@ -29,18 +30,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 async function fetchCurrentUser(): Promise<User | null> {
   if (typeof window === 'undefined') return null;
-
-  const response = await fetch('/api/auth/me', {
-    credentials: 'include',
-  });
-
-  if (!response.ok) {
-    return null;
-  }
-
-  const data = await response.json();
-
-  return data ?? null;
+  return apiFetchSafe<User>(endpoints.auth.me);
 }
 
 export function AuthProvider({children}: {children: ReactNode}) {
@@ -58,10 +48,7 @@ export function AuthProvider({children}: {children: ReactNode}) {
   };
 
   const logout = async () => {
-    await fetch('/api/auth/logout', {
-      method: 'POST',
-      credentials: 'include',
-    });
+    await apiFetch(endpoints.auth.logout, {method: 'POST'});
     queryClient.setQueryData(['auth', 'me'], null);
   };
 

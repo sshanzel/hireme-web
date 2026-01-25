@@ -1,4 +1,5 @@
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
+import {apiFetch, endpoints} from '@/lib/api';
 
 export interface CoachingEvent {
   id: string;
@@ -15,30 +16,11 @@ export interface CoachingSession {
   updatedAt: string;
 }
 
-async function fetchCoachingSessions(): Promise<CoachingSession[]> {
-  const response = await fetch('/api/coachings', {
-    credentials: 'include',
-  });
+const fetchCoachingSessions = () =>
+  apiFetch<CoachingSession[]>(endpoints.coachings);
 
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({message: 'Failed to fetch sessions'}));
-    throw new Error(error.message || 'Failed to fetch sessions');
-  }
-
-  return response.json();
-}
-
-async function deleteCoachingSession(id: string): Promise<void> {
-  const response = await fetch(`/api/coachings/${id}`, {
-    method: 'DELETE',
-    credentials: 'include',
-  });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({message: 'Failed to delete session'}));
-    throw new Error(error.message || 'Failed to delete session');
-  }
-}
+const deleteCoachingSession = (id: string) =>
+  apiFetch<void>(endpoints.coaching(id), {method: 'DELETE'});
 
 export function useCoachingSessions() {
   const queryClient = useQueryClient();

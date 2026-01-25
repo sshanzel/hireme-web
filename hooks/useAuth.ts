@@ -1,6 +1,7 @@
-import { useMutation } from "@tanstack/react-query";
-import { useAuthContext } from "@/contexts/AuthContext";
-import { LoginFormData } from "@/lib/validations/auth";
+import {useMutation} from '@tanstack/react-query';
+import {useAuthContext} from '@/contexts/AuthContext';
+import {LoginFormData} from '@/lib/validations/auth';
+import {apiFetch, endpoints} from '@/lib/api';
 
 interface AuthResponse {
   user: {
@@ -24,40 +25,14 @@ interface SignupData {
   password: string;
 }
 
-async function loginRequest(data: LoginFormData): Promise<AuthResponse> {
-  const response = await fetch("/api/auth/login", {
-    method: "POST",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
+const loginRequest = (data: LoginFormData) =>
+  apiFetch<AuthResponse>(endpoints.auth.login, {method: 'POST', body: data});
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Login failed");
-  }
-
-  return response.json();
-}
-
-async function signupRequest(data: SignupData): Promise<AuthResponse> {
-  const response = await fetch("/api/auth/signup", {
-    method: "POST",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Signup failed");
-  }
-
-  return response.json();
-}
+const signupRequest = (data: SignupData) =>
+  apiFetch<AuthResponse>(endpoints.auth.signup, {method: 'POST', body: data});
 
 export function useLogin() {
-  const { setUser } = useAuthContext();
+  const {setUser} = useAuthContext();
 
   return useMutation({
     mutationFn: loginRequest,
@@ -68,7 +43,7 @@ export function useLogin() {
 }
 
 export function useSignup() {
-  const { setUser } = useAuthContext();
+  const {setUser} = useAuthContext();
 
   return useMutation({
     mutationFn: signupRequest,

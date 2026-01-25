@@ -1,5 +1,6 @@
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import type {Experience, Story} from '@/types/experience';
+import {apiFetch, endpoints} from '@/lib/api';
 
 interface ProfileData {
   user: {
@@ -23,23 +24,11 @@ interface TagStoryParams {
   experienceId: string;
 }
 
-async function tagStory({storyId, experienceId}: TagStoryParams): Promise<Story> {
-  const response = await fetch(`/api/stories/${storyId}/experience`, {
+const tagStory = ({storyId, experienceId}: TagStoryParams) =>
+  apiFetch<Story>(endpoints.storyExperience(storyId), {
     method: 'PATCH',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({experienceId}),
+    body: {experienceId},
   });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({message: 'Failed to tag story'}));
-    throw new Error(error.message || 'Failed to tag story');
-  }
-
-  return response.json();
-}
 
 export function useTagStory() {
   const queryClient = useQueryClient();

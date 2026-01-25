@@ -29,8 +29,8 @@ import {
 import {cn} from '@/lib/utils';
 import {useWebSocket} from '@/hooks/useWebSocket';
 import {CollapsibleList} from '@/components/CollapsibleList';
-
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:4000';
+import {apiFetch, endpoints} from '@/lib/api';
+import {WS_URL} from '@/lib/config';
 
 interface Message {
   id: string;
@@ -78,16 +78,8 @@ const QUICK_PROMPTS = [
   'What makes you a great fit for my team?',
 ];
 
-async function fetchPublicProfile(identifier: string): Promise<PublicProfile> {
-  const response = await fetch(`/api/profile/public/${identifier}`);
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({message: 'Profile not found'}));
-    throw new Error(error.message || 'Profile not found');
-  }
-
-  return response.json();
-}
+const fetchPublicProfile = (identifier: string) =>
+  apiFetch<PublicProfile>(endpoints.publicProfile(identifier));
 
 function MessageBubble({message}: {message: Message}) {
   const isUser = message.role === 'user';

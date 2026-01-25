@@ -38,8 +38,7 @@ import {cn} from '@/lib/utils';
 import {useAuthContext} from '@/contexts/AuthContext';
 import {useWebSocket} from '@/hooks/useWebSocket';
 import {useCoachingSessions, CoachingSession, CoachingEvent} from '@/hooks/useCoachingSessions';
-
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:4000';
+import {WS_URL} from '@/lib/config';
 
 const QUICK_PROMPTS = [
   'Tell me about a time I showed ownership',
