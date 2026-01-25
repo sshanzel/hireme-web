@@ -258,21 +258,10 @@ export default function StackPage() {
                         </p>
                       </div>
                     </div>
-                    <div className='grid grid-cols-2 gap-4 text-xs'>
-                      <div>
-                        <p className='font-medium text-muted-foreground mb-1'>REST Endpoints</p>
-                        <div className='space-y-0.5 font-mono text-muted-foreground'>
-                          <p>/auth, /profile, /cv</p>
-                          <p>/experiences, /stories</p>
-                        </div>
-                      </div>
-                      <div>
-                        <p className='font-medium text-muted-foreground mb-1'>WebSocket</p>
-                        <div className='space-y-0.5 font-mono text-muted-foreground'>
-                          <p>/ws/story-event</p>
-                          <p>/ws/coach, /ws/bio/:id</p>
-                        </div>
-                      </div>
+                    <div className='text-xs text-center'>
+                      <p className='font-medium text-muted-foreground mb-1'>
+                        REST Endpoints + WebSocket
+                      </p>
                     </div>
                   </div>
                 </div>
