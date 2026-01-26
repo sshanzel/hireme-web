@@ -85,14 +85,12 @@ export function useWebSocket(
     const ws = new WebSocket(url);
 
     ws.onopen = () => {
-      console.log('WebSocket connected');
       setIsConnected(true);
     };
 
     ws.onmessage = event => {
       try {
         const message = JSON.parse(event.data) as WebSocketMessage;
-        console.log('WebSocket received:', message);
 
         switch (message.type) {
           case 'response':
@@ -112,12 +110,7 @@ export function useWebSocket(
       }
     };
 
-    ws.onclose = event => {
-      console.log('WebSocket closed:', {
-        code: event.code,
-        reason: event.reason,
-        wasClean: event.wasClean,
-      });
+    ws.onclose = () => {
       setIsConnected(false);
     };
 
@@ -138,7 +131,6 @@ export function useWebSocket(
       socketRef.current.send(JSON.stringify({data, type: 'chat'}));
       return true;
     }
-    console.warn('WebSocket not connected');
     return false;
   }, []);
 
