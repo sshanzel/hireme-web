@@ -14,11 +14,11 @@ export function StoryItem({story, onClick}: StoryItemProps) {
     >
       <div className='flex items-start justify-between gap-2'>
         <h5 className='text-sm font-medium line-clamp-1'>{story.title}</h5>
-        <div className='flex flex-wrap gap-1'>
+        <div className='flex shrink-0 gap-1'>
           {story.tags?.slice(0, 2).map(tag => (
             <span
               key={tag}
-              className='inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary'
+              className='inline-flex shrink-0 items-center whitespace-nowrap rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary'
             >
               {tag}
             </span>
