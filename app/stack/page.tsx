@@ -773,16 +773,16 @@ export default function StackPage() {
       {/* CTA Section */}
       <section className='border-t border-border/50 bg-gradient-to-b from-primary/5 to-transparent py-20'>
         <div className='mx-auto max-w-2xl px-6 text-center'>
-          <h2 className='mb-4 text-3xl font-bold'>Want to try it?</h2>
+          <h2 className='mb-4 text-3xl font-bold'>Want to see it in action?</h2>
           <p className='mb-8 text-muted-foreground'>
-            It&apos;s free to use. Add some experiences, chat with the AI to create stories, and see
-            how the RAG pipeline answers questions about you.
+            Check out how the RAG pipeline answers questions based on real experiences and stories.
+            Try asking about projects, skills, or career history.
           </p>
           <Link
-            href='/signup'
+            href='/sshanzel'
             className='inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-primary-foreground transition-all hover:opacity-90 hover:shadow-lg hover:shadow-primary/20'
           >
-            Create an Account
+            Try it on my profile
             <ArrowRight className='h-4 w-4' />
           </Link>
         </div>
