@@ -5,6 +5,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/compo
 import {Button} from '@/components/ui/button';
 import {useFileUpload, CV_UPLOAD_CONFIG} from '@/hooks/useFileUpload';
 import {useAuthContext} from '@/contexts/AuthContext';
+import {apiUpload, endpoints} from '@/lib/api';
 import {Upload, FileText, X, Loader2, AlertCircle} from 'lucide-react';
 import {cn} from '@/lib/utils';
 
@@ -15,19 +16,7 @@ interface UploadResponse {
 async function uploadCV(file: File): Promise<UploadResponse> {
   const formData = new FormData();
   formData.append('file', file);
-
-  const response = await fetch('/api/cv/upload', {
-    method: 'POST',
-    credentials: 'include',
-    body: formData,
-  });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({message: 'Upload failed'}));
-    throw new Error(error.message || 'Upload failed');
-  }
-
-  return response.json();
+  return apiUpload<UploadResponse>(endpoints.cvUpload, formData);
 }
 
 export function CVUploadOverlay() {

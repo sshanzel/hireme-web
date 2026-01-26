@@ -4,6 +4,7 @@ import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useMutation} from '@tanstack/react-query';
 import {experienceSchema, ExperienceFormData} from '@/lib/validations/experience';
+import {apiFetch, endpoints} from '@/lib/api';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
@@ -18,52 +19,28 @@ interface ExperienceFormProps {
   onCancel?: () => void;
 }
 
+function toExperiencePayload(data: ExperienceFormData) {
+  return {
+    organization: data.organization,
+    title: data.title,
+    startDate: data.startDate,
+    endDate: data.isCurrentRole ? null : data.endDate,
+    description: data.description,
+  };
+}
+
 async function createExperience(data: ExperienceFormData): Promise<Experience> {
-  const response = await fetch('/api/experiences', {
+  return apiFetch<Experience>(endpoints.experiences, {
     method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      organization: data.organization,
-      title: data.title,
-      startDate: data.startDate,
-      endDate: data.isCurrentRole ? null : data.endDate,
-      description: data.description,
-    }),
+    body: toExperiencePayload(data),
   });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({message: 'Failed to create experience'}));
-    throw new Error(error.message || 'Failed to create experience');
-  }
-
-  return response.json();
 }
 
 async function updateExperience(id: string, data: ExperienceFormData): Promise<Experience> {
-  const response = await fetch(`/api/experiences/${id}`, {
+  return apiFetch<Experience>(endpoints.experience(id), {
     method: 'PATCH',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      organization: data.organization,
-      title: data.title,
-      startDate: data.startDate,
-      endDate: data.isCurrentRole ? null : data.endDate,
-      description: data.description,
-    }),
+    body: toExperiencePayload(data),
   });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({message: 'Failed to update experience'}));
-    throw new Error(error.message || 'Failed to update experience');
-  }
-
-  return response.json();
 }
 
 export function ExperienceForm({experience, onSuccess, onCancel}: ExperienceFormProps) {
