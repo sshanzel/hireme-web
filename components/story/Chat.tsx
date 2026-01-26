@@ -48,9 +48,9 @@ export function Chat() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const handleTagStory = (experienceId: string) => {
-    if (!selectedStoryId) return;
+    if (!story?.id) return;
     tagMutation.mutate(
-      {storyId: selectedStoryId, experienceId},
+      {storyId: story.id, experienceId},
       {
         onSuccess: () => {
           clearSelection();
@@ -198,7 +198,7 @@ export function Chat() {
         )}
       </div>
 
-      {selectedStoryId && experiences.length > 0 && !story?.experienceId && (
+      {story?.id && experiences.length > 0 && !story?.experienceId && (
         <div className='mt-6 flex items-center gap-3 border-t bg-muted/30 px-4 py-2'>
           <div className='flex items-center gap-2 text-sm text-muted-foreground'>
             <Tag className='h-4 w-4' />
