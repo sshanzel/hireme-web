@@ -44,7 +44,7 @@ async function createExperience(data: ExperienceFormData): Promise<Experience> {
 
 async function updateExperience(id: string, data: ExperienceFormData): Promise<Experience> {
   const response = await fetch(`/api/experiences/${id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
