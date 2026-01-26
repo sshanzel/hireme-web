@@ -49,14 +49,7 @@ export function Chat() {
 
   const handleTagStory = (experienceId: string) => {
     if (!story?.id) return;
-    tagMutation.mutate(
-      {storyId: story.id, experienceId},
-      {
-        onSuccess: () => {
-          clearSelection();
-        },
-      },
-    );
+    tagMutation.mutate({storyId: story.id, experienceId});
   };
 
   const wsUrl = selectedStoryId
