@@ -90,7 +90,6 @@ export function Chat() {
       },
       onConnected: ({story}) => {
         setStory(story);
-        console.log('WebSocket connection established for Chat component');
       },
     },
   );

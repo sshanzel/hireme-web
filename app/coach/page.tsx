@@ -97,7 +97,6 @@ export default function CoachPage() {
       },
       onConnected: connectedMessage => {
         const session = (connectedMessage as unknown as {coaching: CoachingSession}).coaching;
-        console.log('Connected to coaching session: ', session);
         if (session?.events) {
           setMessages(
             session.events.map((msg: CoachingEvent) => ({

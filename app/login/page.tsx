@@ -22,7 +22,6 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/
 export default function LoginPage() {
   const router = useRouter();
   const {mutate: login, isPending, error} = useLogin();
-  console.log('LoginPage rendered: ', error);
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),

@@ -43,17 +43,15 @@ export async function apiFetch<T>(
 
   if (!response.ok) {
     const text = await response.text();
-    console.log('API error response:', text);
     let data: Record<string, unknown> = {};
     try {
       data = JSON.parse(text);
     } catch {
-      // Response wasn't JSON, use the text as the error
       throw new Error(text || `Request failed with status ${response.status}`);
     }
-    const errorMessage = (data.error as string) || (data.message as string) || 'Request failed';
-    console.log('Throwing error:', errorMessage);
-    throw new Error(errorMessage);
+    throw new Error(
+      (data.error as string) || (data.message as string) || 'Request failed',
+    );
   }
 
   // Handle empty responses (e.g., 204 No Content)
