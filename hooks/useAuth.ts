@@ -2,6 +2,7 @@ import {useMutation} from '@tanstack/react-query';
 import {useAuthContext} from '@/contexts/AuthContext';
 import {LoginFormData} from '@/lib/validations/auth';
 import {apiFetch, endpoints} from '@/lib/api';
+import {setToken} from '@/lib/token';
 
 interface AuthResponse {
   user: {
@@ -17,6 +18,7 @@ interface AuthResponse {
     twitterUrl: string | null;
     websiteUrl: string | null;
   };
+  token: string;
 }
 
 interface SignupData {
@@ -37,6 +39,7 @@ export function useLogin() {
   return useMutation({
     mutationFn: loginRequest,
     onSuccess: (data) => {
+      setToken(data.token);
       setUser(data.user);
     },
   });
@@ -48,6 +51,7 @@ export function useSignup() {
   return useMutation({
     mutationFn: signupRequest,
     onSuccess: (data) => {
+      setToken(data.token);
       setUser(data.user);
     },
   });

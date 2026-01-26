@@ -1,5 +1,6 @@
 import {Story} from '@/contexts/StoryChatContext';
 import {useEffect, useRef, useState, useCallback} from 'react';
+import {getToken} from '@/lib/token';
 
 type MessageType = 'response' | 'error' | 'connected';
 
@@ -64,6 +65,11 @@ export function useWebSocket(
   useEffect(() => {
     if (!enabled) return;
 
+    const token = getToken();
+    const authUrl = token
+      ? `${url}${url.includes('?') ? '&' : '?'}token=${token}`
+      : url;
+
     const cleanupFn = (socket: WebSocket) => {
       if (socket.readyState === WebSocket.OPEN) {
         socket.close();
@@ -74,7 +80,7 @@ export function useWebSocket(
 
     if (
       ref &&
-      ref.url === url &&
+      ref.url === authUrl &&
       (ref.readyState === WebSocket.OPEN || ref.readyState === WebSocket.CONNECTING)
     ) {
       return () => {
@@ -82,7 +88,7 @@ export function useWebSocket(
       };
     }
 
-    const ws = new WebSocket(url);
+    const ws = new WebSocket(authUrl);
 
     ws.onopen = () => {
       setIsConnected(true);

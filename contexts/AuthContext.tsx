@@ -3,6 +3,7 @@
 import {createContext, useContext, ReactNode} from 'react';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {apiFetchSafe, apiFetch, endpoints} from '@/lib/api';
+import {removeToken} from '@/lib/token';
 
 interface User {
   id: string;
@@ -49,6 +50,7 @@ export function AuthProvider({children}: {children: ReactNode}) {
 
   const logout = async () => {
     await apiFetch(endpoints.auth.logout, {method: 'POST'});
+    removeToken();
     queryClient.setQueryData(['auth', 'me'], null);
   };
 
