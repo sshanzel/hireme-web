@@ -135,12 +135,15 @@ export default function SignupPage() {
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="justify-center">
+        <CardFooter className="flex-col gap-3">
           <p className="text-sm text-muted-foreground">
             Already have an account?{" "}
             <Link href="/login" className="text-primary hover:underline">
               Sign in
             </Link>
+          </p>
+          <p className="text-xs text-muted-foreground text-center">
+            This app is currently invite-only. Please contact the owner for access.
           </p>
         </CardFooter>
         </Card>
