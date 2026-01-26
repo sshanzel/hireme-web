@@ -199,13 +199,17 @@ export function Chat() {
         )}
       </div>
 
-      {story?.id && experiences.length > 0 && !story?.experienceId && (
-        <div className='mt-6 flex items-center gap-3 border-t bg-muted/30 px-4 py-2'>
+      {story?.id && experiences.length > 0 && (
+        <div className='flex items-center gap-3 border-t bg-muted/30 px-4 py-2'>
           <div className='flex items-center gap-2 text-sm text-muted-foreground'>
             <Tag className='h-4 w-4' />
-            <span>Tag this story:</span>
+            <span>{story.experienceId ? 'Tagged to:' : 'Tag this story:'}</span>
           </div>
-          <Select onValueChange={handleTagStory} disabled={tagMutation.isPending}>
+          <Select
+            value={story.experienceId ?? undefined}
+            onValueChange={handleTagStory}
+            disabled={tagMutation.isPending}
+          >
             <SelectTrigger className='h-8 w-48'>
               <SelectValue placeholder='Select experience...' />
             </SelectTrigger>
