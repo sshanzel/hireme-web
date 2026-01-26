@@ -14,14 +14,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import {ConfirmDialog} from '@/components/common/ConfirmDialog';
 import {Send, Sparkles, History, Plus} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {useAuthContext} from '@/contexts/AuthContext';
@@ -310,24 +303,15 @@ export default function CoachPage() {
         </div>
       </div>
 
-      <Dialog open={!!deleteConfirmId} onOpenChange={open => !open && setDeleteConfirmId(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete session</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete this session? This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant='outline' onClick={() => setDeleteConfirmId(null)}>
-              Cancel
-            </Button>
-            <Button variant='destructive' onClick={handleDeleteConfirm}>
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDialog
+        open={!!deleteConfirmId}
+        onOpenChange={open => !open && setDeleteConfirmId(null)}
+        title='Delete session'
+        description='Are you sure you want to delete this session? This action cannot be undone.'
+        confirmLabel='Delete'
+        onConfirm={handleDeleteConfirm}
+        variant='destructive'
+      />
     </AppLayout>
   );
 }

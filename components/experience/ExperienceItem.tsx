@@ -12,7 +12,9 @@ interface ExperienceItemProps {
   onEdit: () => void;
   onDelete: () => void;
   onStorySelect: (storyId: string) => void;
+  onStoryDelete: (storyId: string) => void;
   isDeleting: boolean;
+  deletingStoryId: string | null;
 }
 
 export function ExperienceItem({
@@ -20,7 +22,9 @@ export function ExperienceItem({
   onEdit,
   onDelete,
   onStorySelect,
+  onStoryDelete,
   isDeleting,
+  deletingStoryId,
 }: ExperienceItemProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isStoriesExpanded, setIsStoriesExpanded] = useState(false);
@@ -121,7 +125,13 @@ export function ExperienceItem({
             <div className='space-y-2 pt-3'>
               {hasStories ? (
                 experience.stories.map(story => (
-                  <StoryItem key={story.id} story={story} onClick={() => onStorySelect(story.id)} />
+                  <StoryItem
+                    key={story.id}
+                    story={story}
+                    onClick={() => onStorySelect(story.id)}
+                    onDelete={() => onStoryDelete(story.id)}
+                    isDeleting={deletingStoryId === story.id}
+                  />
                 ))
               ) : (
                 <div className='rounded-md border border-dashed bg-muted/20 p-4 text-center'>

@@ -17,6 +17,7 @@ export const endpoints = {
   experiences: '/experiences',
   experience: (id: string) => `/experiences/${id}`,
   storyExperience: (storyId: string) => `/stories/${storyId}/experience`,
+  story: (storyId: string) => `/stories/${storyId}`,
   cvUpload: '/cv/upload',
 };
 

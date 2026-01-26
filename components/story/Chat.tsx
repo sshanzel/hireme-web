@@ -124,7 +124,7 @@ export function Chat() {
     inputRef.current?.focus();
   };
 
-  const title = story?.title || 'Tell us a story from your work/project!';
+  const title = story?.title || (story ? 'Untitled Story' : 'Tell us a story from your work/project!');
 
   return (
     <Card className='flex h-full flex-col gap-0 py-0'>

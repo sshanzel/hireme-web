@@ -16,7 +16,9 @@ import {ExperienceItem} from './ExperienceItem';
 import {Briefcase, Plus} from 'lucide-react';
 import {useStoryChatContext} from '@/contexts/StoryChatContext';
 import {CollapsibleList} from '@/components/common/CollapsibleList';
+import {ConfirmDialog} from '@/components/common/ConfirmDialog';
 import {apiFetch, endpoints} from '@/lib/api';
+import {useDeleteStory} from '@/hooks/useDeleteStory';
 import type {Experience} from '@/types/experience';
 
 interface ExperienceListProps {
@@ -28,10 +30,11 @@ const deleteExperience = (id: string) =>
   apiFetch<void>(endpoints.experience(id), {method: 'DELETE'});
 
 export function ExperienceList({experiences, onMutate}: ExperienceListProps) {
-  const {selectStory} = useStoryChatContext();
+  const {selectStory, selectedStoryId, story, clearSelection} = useStoryChatContext();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingExperience, setEditingExperience] = useState<Experience | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmingStoryId, setConfirmingStoryId] = useState<string | null>(null);
 
   const deleteMutation = useMutation({
     mutationFn: deleteExperience,
@@ -43,6 +46,8 @@ export function ExperienceList({experiences, onMutate}: ExperienceListProps) {
       setDeletingId(null);
     },
   });
+
+  const deleteStoryMutation = useDeleteStory();
 
   const handleFormSuccess = () => {
     setIsDialogOpen(false);
@@ -63,6 +68,22 @@ export function ExperienceList({experiences, onMutate}: ExperienceListProps) {
   const handleDelete = (id: string) => {
     setDeletingId(id);
     deleteMutation.mutate(id);
+  };
+
+  const handleStoryDeleteClick = (storyId: string) => {
+    setConfirmingStoryId(storyId);
+  };
+
+  const handleStoryDeleteConfirm = () => {
+    if (!confirmingStoryId) return;
+    deleteStoryMutation.mutate(confirmingStoryId, {
+      onSuccess: () => {
+        if (selectedStoryId === confirmingStoryId || story?.id === confirmingStoryId) {
+          clearSelection();
+        }
+      },
+      onSettled: () => setConfirmingStoryId(null),
+    });
   };
 
   const handleAddClick = () => {
@@ -108,7 +129,9 @@ export function ExperienceList({experiences, onMutate}: ExperienceListProps) {
                   onEdit={() => handleEdit(experience)}
                   onDelete={() => handleDelete(experience.id)}
                   onStorySelect={selectStory}
+                  onStoryDelete={handleStoryDeleteClick}
                   isDeleting={deletingId === experience.id}
+                  deletingStoryId={confirmingStoryId}
                 />
               )}
             />
@@ -133,6 +156,17 @@ export function ExperienceList({experiences, onMutate}: ExperienceListProps) {
           />
         </DialogContent>
       </Dialog>
+
+      <ConfirmDialog
+        open={!!confirmingStoryId}
+        onOpenChange={open => !open && setConfirmingStoryId(null)}
+        title='Delete story'
+        description='Are you sure you want to delete this story? This action cannot be undone.'
+        confirmLabel='Delete'
+        onConfirm={handleStoryDeleteConfirm}
+        isLoading={deleteStoryMutation.isPending}
+        variant='destructive'
+      />
     </>
   );
 }
