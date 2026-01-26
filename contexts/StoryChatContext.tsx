@@ -13,11 +13,17 @@ export interface Story {
   experienceId?: string | null;
 }
 
+interface StoryUpdate {
+  title?: string;
+  tags?: string[];
+}
+
 interface StoryChatContextValue {
   story: Story | null;
   selectedStoryId: string | null;
   setStory: (story: Story | null) => void;
   addEvent: (event: StoryEvent) => void;
+  updateStory: (update: StoryUpdate) => void;
   selectStory: (storyId: string) => void;
   clearSelection: () => void;
 }
@@ -41,6 +47,16 @@ export const StoryChatProvider = ({children}: React.PropsWithChildren) => {
     });
   }, []);
 
+  const updateStory = useCallback((update: StoryUpdate) => {
+    setStory(previous => {
+      if (!previous) return previous;
+      return {
+        ...previous,
+        ...update,
+      };
+    });
+  }, []);
+
   const selectStory = useCallback((storyId: string) => {
     setSelectedStoryId(storyId);
     setStory(null);
@@ -53,7 +69,7 @@ export const StoryChatProvider = ({children}: React.PropsWithChildren) => {
 
   return (
     <StoryChatContext.Provider
-      value={{story, selectedStoryId, setStory, addEvent, selectStory, clearSelection}}
+      value={{story, selectedStoryId, setStory, addEvent, updateStory, selectStory, clearSelection}}
     >
       {children}
     </StoryChatContext.Provider>

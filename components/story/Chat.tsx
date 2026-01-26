@@ -37,7 +37,8 @@ const STORY_PROMPTS = [
 
 export function Chat() {
   const {user} = useAuthContext();
-  const {story, selectedStoryId, setStory, addEvent, clearSelection} = useStoryChatContext();
+  const {story, selectedStoryId, setStory, addEvent, updateStory, clearSelection} =
+    useStoryChatContext();
   const {data: profileData} = useProfile();
   const tagMutation = useTagStory();
   const experiences = profileData?.experiences ?? [];
@@ -68,6 +69,9 @@ export function Chat() {
           role: 'assistant',
           content: message.data.content,
         });
+        if (message.data.title) {
+          updateStory({title: message.data.title});
+        }
         setIsLoading(false);
       },
       onError: message => {
@@ -124,14 +128,18 @@ export function Chat() {
     inputRef.current?.focus();
   };
 
-  const title = story?.title || (story ? 'Untitled Story' : 'Tell us a story from your work/project!');
+  const hasMessages = messages.length > 0 || isLoading;
+  const hasActiveSession = selectedStoryId || messages.length > 0;
+  const title = hasMessages
+    ? story?.title || 'Untitled Story'
+    : 'Tell us a story from your work/project!';
 
   return (
     <Card className='flex h-full flex-col gap-0 py-0'>
       <div className='flex items-center justify-between border-b px-4 py-3'>
         <div className='flex min-w-0 flex-1 items-center gap-2'>
           <h3 className='truncate text-sm font-medium'>{title}</h3>
-          {selectedStoryId && (
+          {hasActiveSession && (
             <Button
               variant='ghost'
               size='icon'
