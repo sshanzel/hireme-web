@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { loginSchema, LoginFormData } from "@/lib/validations/auth";
 import { useLogin } from "@/hooks/useAuth";
-import { GuestRoute } from "@/components/GuestRoute";
+import { GuestRoute } from "@/components/auth/GuestRoute";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";

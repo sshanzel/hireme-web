@@ -3,7 +3,7 @@
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {MessageSquareWarning} from 'lucide-react';
 import {useStoryChatContext} from '@/contexts/StoryChatContext';
-import {CollapsibleList} from '@/components/CollapsibleList';
+import {CollapsibleList} from '@/components/common/CollapsibleList';
 import type {Story} from '@/types/experience';
 
 interface UntaggedStoriesProps {

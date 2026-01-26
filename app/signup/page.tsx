@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { signupSchema, SignupFormData } from "@/lib/validations/auth";
 import { useSignup } from "@/hooks/useAuth";
-import { GuestRoute } from "@/components/GuestRoute";
+import { GuestRoute } from "@/components/auth/GuestRoute";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {

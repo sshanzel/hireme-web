@@ -1,8 +1,8 @@
 'use client';
 
-import {Loader2} from 'lucide-react';
-import {ExperienceList} from '@/components/ExperienceList';
-import {UntaggedStories} from '@/components/UntaggedStories';
+import {ExperienceList} from '@/components/experience/ExperienceList';
+import {UntaggedStories} from '@/components/story/UntaggedStories';
+import {LoadingSpinner} from '@/components/common/LoadingSpinner';
 import {useProfile} from '@/hooks/useProfile';
 
 export function ProfileSection() {
@@ -11,11 +11,7 @@ export function ProfileSection() {
   const untaggedStories = data?.untaggedStories ?? [];
 
   if (isLoading) {
-    return (
-      <div className='flex h-full items-center justify-center'>
-        <Loader2 className='h-8 w-8 animate-spin text-muted-foreground' />
-      </div>
-    );
+    return <LoadingSpinner size='lg' className='h-full' />;
   }
 
   return (

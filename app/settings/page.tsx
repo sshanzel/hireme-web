@@ -1,11 +1,11 @@
 'use client';
 
-import {AppLayout} from '@/components/AppLayout';
-import {PageHeader} from '@/components/PageHeader';
-import {ProfileForm} from '@/components/ProfileForm';
+import {AppLayout} from '@/components/layout/AppLayout';
+import {PageHeader} from '@/components/layout/PageHeader';
+import {ProfileForm} from '@/components/profile/ProfileForm';
+import {LoadingSpinner} from '@/components/common/LoadingSpinner';
 import {useAuthContext} from '@/contexts/AuthContext';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
-import {Loader2} from 'lucide-react';
 
 export default function SettingsPage() {
   const {user, isLoading} = useAuthContext();
@@ -13,9 +13,7 @@ export default function SettingsPage() {
   if (isLoading) {
     return (
       <AppLayout>
-        <div className='flex h-full items-center justify-center'>
-          <Loader2 className='h-8 w-8 animate-spin text-muted-foreground' />
-        </div>
+        <LoadingSpinner size='lg' className='h-full' />
       </AppLayout>
     );
   }

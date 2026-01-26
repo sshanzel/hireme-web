@@ -14,6 +14,8 @@ export const endpoints = {
   publicProfile: (identifier: string) => `/profile/public/${identifier}`,
   coachings: '/coachings',
   coaching: (id: string) => `/coachings/${id}`,
+  experiences: '/experiences',
+  experience: (id: string) => `/experiences/${id}`,
   storyExperience: (storyId: string) => `/stories/${storyId}/experience`,
 };
 

@@ -1,9 +1,9 @@
 'use client';
 
-import {AppLayout} from '@/components/AppLayout';
-import {PageHeader} from '@/components/PageHeader';
-import {Chat} from '@/components/Chat';
-import {ProfileSection} from '@/components/ProfileSection';
+import {AppLayout} from '@/components/layout/AppLayout';
+import {PageHeader} from '@/components/layout/PageHeader';
+import {Chat} from '@/components/story/Chat';
+import {ProfileSection} from '@/components/profile/ProfileSection';
 import {useAuthContext} from '@/contexts/AuthContext';
 import {getFirstName} from '@/lib/strings/name';
 import {StoryChatProvider} from '@/contexts/StoryChatContext';

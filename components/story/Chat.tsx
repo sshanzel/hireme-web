@@ -11,13 +11,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {Send, Bot, User, MessageSquare, AlertCircle, X, Tag} from 'lucide-react';
+import {Send, MessageSquare, X, Tag} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {useAuthContext} from '@/contexts/AuthContext';
 import {useWebSocket} from '@/hooks/useWebSocket';
 import {useStoryChatContext} from '@/contexts/StoryChatContext';
 import {useProfile} from '@/hooks/useProfile';
 import {useTagStory} from '@/hooks/useTagStory';
+import {MessageBubble} from '@/components/chat/MessageBubble';
+import {TypingIndicator} from '@/components/chat/TypingIndicator';
+import {WS_URL} from '@/lib/config';
 
 interface Message {
   role: 'user' | 'assistant' | 'error';
@@ -25,50 +28,12 @@ interface Message {
   createdAt: string;
 }
 
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:4000';
-
 const STORY_PROMPTS = [
   'I led a project that was behind schedule...',
   'I had to convince my team to try a new approach...',
   'I solved a tricky bug that no one else could figure out...',
   'I had a disagreement with a coworker about...',
 ];
-
-function MessageBubble({message}: {message: Message}) {
-  const isUser = message.role === 'user';
-  const isError = message.role === 'error';
-
-  return (
-    <div className={cn('flex gap-3', isUser && 'flex-row-reverse')}>
-      <div
-        className={cn(
-          'flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
-          isUser && 'bg-primary text-primary-foreground',
-          isError && 'bg-destructive/10 text-destructive',
-          !isUser && !isError && 'bg-muted',
-        )}
-      >
-        {isUser ? (
-          <User className='h-4 w-4' />
-        ) : isError ? (
-          <AlertCircle className='h-4 w-4' />
-        ) : (
-          <Bot className='h-4 w-4' />
-        )}
-      </div>
-      <div
-        className={cn(
-          'max-w-[80%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm',
-          isUser && 'bg-primary text-primary-foreground',
-          isError && 'bg-destructive/10 text-destructive',
-          !isUser && !isError && 'bg-muted',
-        )}
-      >
-        {message.content}
-      </div>
-    </div>
-  );
-}
 
 export function Chat() {
   const {user} = useAuthContext();
@@ -170,7 +135,7 @@ export function Chat() {
   const title = story?.title || 'Tell us a story from your work/project!';
 
   return (
-    <Card className='flex h-full flex-col py-0 gap-0'>
+    <Card className='flex h-full flex-col gap-0 py-0'>
       <div className='flex items-center justify-between border-b px-4 py-3'>
         <div className='flex min-w-0 flex-1 items-center gap-2'>
           <h3 className='truncate text-sm font-medium'>{title}</h3>
@@ -228,25 +193,14 @@ export function Chat() {
             {messages.map(message => (
               <MessageBubble key={message.createdAt} message={message} />
             ))}
-            {isLoading && (
-              <div className='flex gap-3'>
-                <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted'>
-                  <Bot className='h-4 w-4' />
-                </div>
-                <div className='flex items-center gap-1 rounded-lg bg-muted px-3 py-2'>
-                  <span className='h-2 w-2 animate-bounce rounded-full bg-muted-foreground/50 [animation-delay:-0.3s]' />
-                  <span className='h-2 w-2 animate-bounce rounded-full bg-muted-foreground/50 [animation-delay:-0.15s]' />
-                  <span className='h-2 w-2 animate-bounce rounded-full bg-muted-foreground/50' />
-                </div>
-              </div>
-            )}
+            {isLoading && <TypingIndicator />}
             <div ref={messagesEndRef} />
           </div>
         )}
       </div>
 
       {selectedStoryId && experiences.length > 0 && !story?.experienceId && (
-        <div className='flex items-center gap-3 border-t bg-muted/30 px-4 py-2 mt-6'>
+        <div className='mt-6 flex items-center gap-3 border-t bg-muted/30 px-4 py-2'>
           <div className='flex items-center gap-2 text-sm text-muted-foreground'>
             <Tag className='h-4 w-4' />
             <span>Tag this story:</span>
@@ -281,7 +235,7 @@ export function Chat() {
             placeholder='Type your message... (Shift+Enter for new line)'
             disabled={isLoading}
             rows={1}
-            className='min-h-10 max-h-32 resize-none'
+            className='max-h-32 min-h-10 resize-none'
           />
           <Button type='submit' size='icon' disabled={!input.trim() || isLoading}>
             <Send className='h-4 w-4' />

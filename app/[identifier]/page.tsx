@@ -6,31 +6,17 @@ import {useQuery} from '@tanstack/react-query';
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '@/components/ui/dialog';
-import {
-  Send,
-  Bot,
-  User,
-  Briefcase,
-  GraduationCap,
-  Sparkles,
-  Loader2,
-  Github,
-  Linkedin,
-  Twitter,
-  Globe,
-} from 'lucide-react';
+import {Send, Bot, Briefcase, GraduationCap, Sparkles, Github, Linkedin, Twitter, Globe} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {useWebSocket} from '@/hooks/useWebSocket';
-import {CollapsibleList} from '@/components/CollapsibleList';
+import {CollapsibleList} from '@/components/common/CollapsibleList';
+import {MessageBubble} from '@/components/chat/MessageBubble';
+import {TypingIndicator} from '@/components/chat/TypingIndicator';
+import {ExperienceModal} from '@/components/experience/ExperienceModal';
+import {LoadingSpinner} from '@/components/common/LoadingSpinner';
 import {apiFetch, endpoints} from '@/lib/api';
 import {WS_URL} from '@/lib/config';
+import {getInitials, formatDateRange} from '@/lib/strings/format';
 
 interface Message {
   id: string;
@@ -81,133 +67,18 @@ const QUICK_PROMPTS = [
 const fetchPublicProfile = (identifier: string) =>
   apiFetch<PublicProfile>(endpoints.publicProfile(identifier));
 
-function MessageBubble({message}: {message: Message}) {
-  const isUser = message.role === 'user';
-
-  return (
-    <div className={cn('flex gap-3', isUser && 'flex-row-reverse')}>
-      <div
-        className={cn(
-          'flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
-          isUser ? 'bg-primary text-primary-foreground' : 'bg-muted',
-        )}
-      >
-        {isUser ? <User className='h-4 w-4' /> : <Bot className='h-4 w-4' />}
-      </div>
-      <div
-        className={cn(
-          'max-w-[80%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm',
-          isUser ? 'bg-primary text-primary-foreground' : 'bg-muted',
-        )}
-      >
-        {message.content}
-      </div>
-    </div>
-  );
-}
-
-function getInitials(name: string): string {
-  return name
-    .split(' ')
-    .map(n => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2);
-}
-
-function formatDateRange(startDate: string, endDate: string | null): string {
-  const start = new Date(startDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short'});
-  const end = endDate
-    ? new Date(endDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short'})
-    : 'Present';
-  return `${start} - ${end}`;
-}
-
 function getHeadline(profile: PublicProfile): string | null {
   if (profile.title) return profile.title;
 
   if (profile.experiences.length === 0) return null;
 
-  // Find current role (no end date) or most recent by start date
   const currentRole = profile.experiences.find(exp => !exp.endDate);
   if (currentRole) return currentRole.title;
 
-  // Sort by start date descending and get the most recent
   const sorted = [...profile.experiences].sort(
-    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
   );
   return sorted[0].title;
-}
-
-interface ExperienceModalProps {
-  experience: PublicExperience | null;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
-function formatDescription(text: string): React.ReactNode {
-  const lines = text.split('\n').filter(line => line.trim());
-  const elements: React.ReactNode[] = [];
-  let currentList: string[] = [];
-
-  const flushList = () => {
-    if (currentList.length > 0) {
-      elements.push(
-        <ul key={`list-${elements.length}`} className='space-y-1.5 pl-4'>
-          {currentList.map((item, i) => (
-            <li key={i} className='list-disc text-sm text-muted-foreground'>
-              {item}
-            </li>
-          ))}
-        </ul>
-      );
-      currentList = [];
-    }
-  };
-
-  lines.forEach((line, index) => {
-    const trimmed = line.trim();
-    const bulletMatch = trimmed.match(/^[-•*]\s*(.+)$/);
-    const numberedMatch = trimmed.match(/^\d+[.)]\s*(.+)$/);
-
-    if (bulletMatch || numberedMatch) {
-      currentList.push(bulletMatch?.[1] || numberedMatch?.[1] || trimmed);
-    } else {
-      flushList();
-      elements.push(
-        <p key={`p-${index}`} className='text-sm text-muted-foreground leading-relaxed'>
-          {trimmed}
-        </p>
-      );
-    }
-  });
-
-  flushList();
-  return <div className='space-y-3'>{elements}</div>;
-}
-
-function ExperienceModal({experience, open, onOpenChange}: ExperienceModalProps) {
-  if (!experience) return null;
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='max-h-[85vh] overflow-y-auto sm:max-w-lg'>
-        <DialogHeader>
-          <DialogTitle>{experience.title}</DialogTitle>
-          <DialogDescription>
-            {experience.organization} &bull; {formatDateRange(experience.startDate, experience.endDate)}
-          </DialogDescription>
-        </DialogHeader>
-        <div className='pt-2'>
-          {experience.description ? (
-            formatDescription(experience.description)
-          ) : (
-            <p className='text-sm text-muted-foreground'>No additional details available.</p>
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
 }
 
 interface PublicProfilePageProps {
@@ -307,7 +178,7 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
   if (isLoading) {
     return (
       <div className='flex min-h-screen items-center justify-center bg-background'>
-        <Loader2 className='h-8 w-8 animate-spin text-muted-foreground' />
+        <LoadingSpinner size='lg' />
       </div>
     );
   }
@@ -323,7 +194,8 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
     );
   }
 
-  const hasSocials = profile.githubUrl || profile.linkedinUrl || profile.twitterUrl || profile.websiteUrl;
+  const hasSocials =
+    profile.githubUrl || profile.linkedinUrl || profile.twitterUrl || profile.websiteUrl;
   const headline = getHeadline(profile);
 
   return (
@@ -331,8 +203,12 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
       {/* Header */}
       <header className='border-b'>
         <div className='mx-auto flex h-16 max-w-6xl items-center px-4'>
-          <Link href='/' className='cursor-pointer text-xl font-semibold transition-opacity hover:opacity-80'>
-            <span className='text-gradient'>HireMe</span><span>.dev</span>
+          <Link
+            href='/'
+            className='cursor-pointer text-xl font-semibold transition-opacity hover:opacity-80'
+          >
+            <span className='text-gradient'>HireMe</span>
+            <span>.dev</span>
           </Link>
         </div>
       </header>
@@ -497,18 +373,7 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                   {messages.map(message => (
                     <MessageBubble key={message.id} message={message} />
                   ))}
-                  {isTyping && (
-                    <div className='flex gap-3'>
-                      <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted'>
-                        <Bot className='h-4 w-4' />
-                      </div>
-                      <div className='flex items-center gap-1 rounded-lg bg-muted px-3 py-2'>
-                        <span className='h-2 w-2 animate-bounce rounded-full bg-muted-foreground/50 [animation-delay:-0.3s]' />
-                        <span className='h-2 w-2 animate-bounce rounded-full bg-muted-foreground/50 [animation-delay:-0.15s]' />
-                        <span className='h-2 w-2 animate-bounce rounded-full bg-muted-foreground/50' />
-                      </div>
-                    </div>
-                  )}
+                  {isTyping && <TypingIndicator />}
                   <div ref={messagesEndRef} />
                 </div>
               )}
@@ -529,13 +394,9 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                   placeholder={isConnected ? 'Ask me anything...' : 'Connecting...'}
                   disabled={isTyping || !isConnected}
                   rows={1}
-                  className='min-h-10 max-h-32 resize-none'
+                  className='max-h-32 min-h-10 resize-none'
                 />
-                <Button
-                  type='submit'
-                  size='icon'
-                  disabled={!input.trim() || isTyping || !isConnected}
-                >
+                <Button type='submit' size='icon' disabled={!input.trim() || isTyping || !isConnected}>
                   <Send className='h-4 w-4' />
                 </Button>
               </div>

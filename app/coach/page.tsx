@@ -1,8 +1,8 @@
 'use client';
 
 import {useState, useRef, useEffect, useCallback} from 'react';
-import {AppLayout} from '@/components/AppLayout';
-import {PageHeader} from '@/components/PageHeader';
+import {AppLayout} from '@/components/layout/AppLayout';
+import {PageHeader} from '@/components/layout/PageHeader';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
@@ -22,23 +22,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  Send,
-  Sparkles,
-  History,
-  Plus,
-  MessageCircle,
-  Bot,
-  User,
-  AlertCircle,
-  Trash2,
-  Loader2,
-} from 'lucide-react';
+import {Send, Sparkles, History, Plus} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {useAuthContext} from '@/contexts/AuthContext';
 import {useWebSocket} from '@/hooks/useWebSocket';
 import {useCoachingSessions, CoachingSession, CoachingEvent} from '@/hooks/useCoachingSessions';
 import {WS_URL} from '@/lib/config';
+import {MessageBubble} from '@/components/chat/MessageBubble';
+import {TypingIndicator} from '@/components/chat/TypingIndicator';
+import {SessionList} from '@/components/coaching/SessionList';
 
 const QUICK_PROMPTS = [
   'Tell me about a time I showed ownership',
@@ -52,159 +44,6 @@ interface Message {
   role: 'user' | 'assistant' | 'error';
   content: string;
   createdAt: string;
-}
-
-function formatRelativeDate(dateString: string): string {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffDays === 0) {
-    return 'Today';
-  } else if (diffDays === 1) {
-    return 'Yesterday';
-  } else if (diffDays < 7) {
-    return `${diffDays} days ago`;
-  } else if (diffDays < 30) {
-    const weeks = Math.floor(diffDays / 7);
-    return `${weeks} ${weeks === 1 ? 'week' : 'weeks'} ago`;
-  } else {
-    return date.toLocaleDateString('en-US', {month: 'short', day: 'numeric'});
-  }
-}
-
-interface SessionItemProps {
-  session: CoachingSession;
-  isActive?: boolean;
-  onClick?: () => void;
-  onDelete?: () => void;
-}
-
-function SessionItem({session, isActive, onClick, onDelete}: SessionItemProps) {
-  const handleDelete = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onDelete?.();
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      onClick?.();
-    }
-  };
-
-  return (
-    <div
-      role='button'
-      tabIndex={0}
-      onClick={onClick}
-      onKeyDown={handleKeyDown}
-      className={cn(
-        'group flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-        isActive && 'bg-muted',
-      )}
-    >
-      <MessageCircle className='h-4 w-4 shrink-0 text-muted-foreground' />
-      <div className='min-w-0 flex-1'>
-        <p className='truncate font-medium'>{session.title || 'Untitled session'}</p>
-        <p className='text-xs text-muted-foreground'>{formatRelativeDate(session.updatedAt)}</p>
-      </div>
-      {onDelete && (
-        <button
-          type='button'
-          onClick={handleDelete}
-          className='shrink-0 rounded p-1 opacity-0 transition-opacity hover:bg-destructive/10 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring group-hover:opacity-100'
-        >
-          <Trash2 className='h-3 w-3 text-destructive' />
-          <span className='sr-only'>Delete session</span>
-        </button>
-      )}
-    </div>
-  );
-}
-
-interface SessionListProps {
-  sessions: CoachingSession[];
-  activeSessionId?: string | null;
-  onSessionClick?: (session: CoachingSession) => void;
-  onSessionDelete?: (sessionId: string) => void;
-  isLoading?: boolean;
-}
-
-function SessionList({
-  sessions,
-  activeSessionId,
-  onSessionClick,
-  onSessionDelete,
-  isLoading,
-}: SessionListProps) {
-  if (isLoading) {
-    return (
-      <div className='flex items-center justify-center py-8'>
-        <Loader2 className='h-5 w-5 animate-spin text-muted-foreground' />
-      </div>
-    );
-  }
-
-  if (sessions.length === 0) {
-    return (
-      <div className='py-8 text-center'>
-        <MessageCircle className='mx-auto h-8 w-8 text-muted-foreground/50' />
-        <p className='mt-2 text-sm text-muted-foreground'>No sessions yet</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className='space-y-1'>
-      {sessions.map(session => (
-        <SessionItem
-          key={session.id}
-          session={session}
-          isActive={activeSessionId === session.id}
-          onClick={() => onSessionClick?.(session)}
-          onDelete={() => onSessionDelete?.(session.id)}
-        />
-      ))}
-    </div>
-  );
-}
-
-function MessageBubble({message}: {message: Message}) {
-  const isUser = message.role === 'user';
-  const isError = message.role === 'error';
-
-  return (
-    <div className={cn('flex gap-3', isUser && 'flex-row-reverse')}>
-      <div
-        className={cn(
-          'flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
-          isUser && 'bg-primary text-primary-foreground',
-          isError && 'bg-destructive/10 text-destructive',
-          !isUser && !isError && 'bg-muted',
-        )}
-      >
-        {isUser ? (
-          <User className='h-4 w-4' />
-        ) : isError ? (
-          <AlertCircle className='h-4 w-4' />
-        ) : (
-          <Bot className='h-4 w-4' />
-        )}
-      </div>
-      <div
-        className={cn(
-          'max-w-[80%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm',
-          isUser && 'bg-primary text-primary-foreground',
-          isError && 'bg-destructive/10 text-destructive',
-          !isUser && !isError && 'bg-muted',
-        )}
-      >
-        {message.content}
-      </div>
-    </div>
-  );
 }
 
 export default function CoachPage() {
@@ -422,18 +261,7 @@ export default function CoachPage() {
                   {messages.map(message => (
                     <MessageBubble key={message.id} message={message} />
                   ))}
-                  {isLoading && (
-                    <div className='flex gap-3'>
-                      <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted'>
-                        <Bot className='h-4 w-4' />
-                      </div>
-                      <div className='flex items-center gap-1 rounded-lg bg-muted px-3 py-2'>
-                        <span className='h-2 w-2 animate-bounce rounded-full bg-muted-foreground/50 [animation-delay:-0.3s]' />
-                        <span className='h-2 w-2 animate-bounce rounded-full bg-muted-foreground/50 [animation-delay:-0.15s]' />
-                        <span className='h-2 w-2 animate-bounce rounded-full bg-muted-foreground/50' />
-                      </div>
-                    </div>
-                  )}
+                  {isLoading && <TypingIndicator />}
                   <div ref={messagesEndRef} />
                 </div>
               )}
@@ -455,7 +283,7 @@ export default function CoachPage() {
                   placeholder='Ask me about your stories or practice an interview question...'
                   disabled={isLoading}
                   rows={1}
-                  className='min-h-10 max-h-32 resize-none'
+                  className='max-h-32 min-h-10 resize-none'
                 />
                 <Button type='submit' size='icon' disabled={!input.trim() || isLoading}>
                   <Send className='h-4 w-4' />
