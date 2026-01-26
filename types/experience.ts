@@ -8,7 +8,7 @@ export interface Story {
   tags?: string[];
 }
 
-export type ExperienceType = 'work' | 'education';
+export type ExperienceType = 'work' | 'project' | 'education';
 
 export interface Experience {
   id: string;

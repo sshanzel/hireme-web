@@ -2,7 +2,7 @@ import {z} from 'zod';
 
 export const experienceSchema = z
   .object({
-    type: z.enum(['work', 'education']),
+    type: z.enum(['work', 'project', 'education']),
     organization: z.string().min(1, 'Organization name is required'),
     title: z.string().min(1, 'Title is required'),
     startDate: z.string().min(1, 'Start date is required'),

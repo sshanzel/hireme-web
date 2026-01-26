@@ -1,6 +1,37 @@
 import {API_URL} from './config';
 
 /**
+ * Zod-style field errors from the API
+ */
+export interface FieldErrors {
+  [field: string]: string[];
+}
+
+export interface ZodErrorResponse {
+  formErrors: string[];
+  fieldErrors: FieldErrors;
+}
+
+/**
+ * Custom API error that can hold field-level validation errors
+ */
+export class ApiError extends Error {
+  fieldErrors?: FieldErrors;
+  formErrors?: string[];
+
+  constructor(message: string, fieldErrors?: FieldErrors, formErrors?: string[]) {
+    super(message);
+    this.name = 'ApiError';
+    this.fieldErrors = fieldErrors;
+    this.formErrors = formErrors;
+  }
+
+  hasFieldErrors(): boolean {
+    return !!this.fieldErrors && Object.keys(this.fieldErrors).length > 0;
+  }
+}
+
+/**
  * API endpoints
  */
 export const endpoints = {
@@ -49,10 +80,20 @@ export async function apiFetch<T>(
     try {
       data = JSON.parse(text);
     } catch {
-      throw new Error(text || `Request failed with status ${response.status}`);
+      throw new ApiError(text || `Request failed with status ${response.status}`);
     }
-    throw new Error(
-      (data.error as string) || (data.message as string) || 'Request failed',
+
+    // Handle Zod validation errors
+    const error = data.error as ZodErrorResponse | string | undefined;
+    if (error && typeof error === 'object' && 'fieldErrors' in error) {
+      const firstFieldError = Object.values(error.fieldErrors)[0]?.[0];
+      const firstFormError = error.formErrors[0];
+      const message = firstFieldError || firstFormError || 'Validation failed';
+      throw new ApiError(message, error.fieldErrors, error.formErrors);
+    }
+
+    throw new ApiError(
+      (error as string) || (data.message as string) || 'Request failed',
     );
   }
 
@@ -96,10 +137,20 @@ export async function apiUpload<T>(
     try {
       data = JSON.parse(text);
     } catch {
-      throw new Error(text || `Request failed with status ${response.status}`);
+      throw new ApiError(text || `Request failed with status ${response.status}`);
     }
-    throw new Error(
-      (data.error as string) || (data.message as string) || 'Upload failed',
+
+    // Handle Zod validation errors
+    const error = data.error as ZodErrorResponse | string | undefined;
+    if (error && typeof error === 'object' && 'fieldErrors' in error) {
+      const firstFieldError = Object.values(error.fieldErrors)[0]?.[0];
+      const firstFormError = error.formErrors[0];
+      const message = firstFieldError || firstFormError || 'Validation failed';
+      throw new ApiError(message, error.fieldErrors, error.formErrors);
+    }
+
+    throw new ApiError(
+      (error as string) || (data.message as string) || 'Upload failed',
     );
   }
 

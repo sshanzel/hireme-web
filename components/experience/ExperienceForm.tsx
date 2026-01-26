@@ -5,6 +5,7 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {useMutation} from '@tanstack/react-query';
 import {experienceSchema, ExperienceFormData} from '@/lib/validations/experience';
 import {apiFetch, endpoints} from '@/lib/api';
+import {applyFieldErrors} from '@/lib/form-utils';
 import {toMonthInputValue} from '@/lib/strings/format';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
@@ -80,12 +81,18 @@ export function ExperienceForm({experience, onSuccess, onCancel}: ExperienceForm
       form.reset();
       onSuccess?.();
     },
+    onError: error => {
+      applyFieldErrors(error, form.setError);
+    },
   });
 
   const updateMutation = useMutation({
     mutationFn: (data: ExperienceFormData) => updateExperience(experience!.id, data),
     onSuccess: () => {
       onSuccess?.();
+    },
+    onError: error => {
+      applyFieldErrors(error, form.setError);
     },
   });
 
@@ -112,6 +119,7 @@ export function ExperienceForm({experience, onSuccess, onCancel}: ExperienceForm
                 </FormControl>
                 <SelectContent>
                   <SelectItem value='work'>Work Experience</SelectItem>
+                  <SelectItem value='project'>Project</SelectItem>
                   <SelectItem value='education'>Education</SelectItem>
                 </SelectContent>
               </Select>
