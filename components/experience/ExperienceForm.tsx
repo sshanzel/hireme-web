@@ -10,6 +10,13 @@ import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {Checkbox} from '@/components/ui/checkbox';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/components/ui/form';
 import {Loader2} from 'lucide-react';
 import type {Experience} from '@/types/experience';
@@ -26,6 +33,7 @@ function toDateString(monthValue: string): string {
 
 function toExperiencePayload(data: ExperienceFormData) {
   return {
+    type: data.type,
     organization: data.organization,
     title: data.title,
     startDate: toDateString(data.startDate),
@@ -54,6 +62,7 @@ export function ExperienceForm({experience, onSuccess, onCancel}: ExperienceForm
   const form = useForm<ExperienceFormData>({
     resolver: zodResolver(experienceSchema),
     defaultValues: {
+      type: experience?.type ?? 'work',
       organization: experience?.organization ?? '',
       title: experience?.title ?? '',
       startDate: toMonthInputValue(experience?.startDate),
@@ -89,6 +98,28 @@ export function ExperienceForm({experience, onSuccess, onCancel}: ExperienceForm
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-4'>
+        <FormField
+          control={form.control}
+          name='type'
+          render={({field}) => (
+            <FormItem>
+              <FormLabel>Type</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder='Select type' />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value='work'>Work Experience</SelectItem>
+                  <SelectItem value='education'>Education</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <div className='grid gap-4 sm:grid-cols-2'>
           <FormField
             control={form.control}
