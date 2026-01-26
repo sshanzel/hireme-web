@@ -29,6 +29,17 @@ export function formatDateRange(startDate: string, endDate: string | null): stri
 }
 
 /**
+ * Convert a date string to YYYY-MM format for month input fields
+ */
+export function toMonthInputValue(dateString: string | null | undefined): string {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  return `${year}-${month}`;
+}
+
+/**
  * Format a date to relative time (e.g., "Today", "Yesterday", "3 days ago")
  */
 export function formatRelativeDate(dateString: string): string {

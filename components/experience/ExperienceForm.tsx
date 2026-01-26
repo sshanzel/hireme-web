@@ -5,6 +5,7 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {useMutation} from '@tanstack/react-query';
 import {experienceSchema, ExperienceFormData} from '@/lib/validations/experience';
 import {apiFetch, endpoints} from '@/lib/api';
+import {toMonthInputValue} from '@/lib/strings/format';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
@@ -19,12 +20,16 @@ interface ExperienceFormProps {
   onCancel?: () => void;
 }
 
+function toDateString(monthValue: string): string {
+  return new Date(monthValue + '-01').toISOString();
+}
+
 function toExperiencePayload(data: ExperienceFormData) {
   return {
     organization: data.organization,
     title: data.title,
-    startDate: data.startDate,
-    endDate: data.isCurrentRole ? null : data.endDate,
+    startDate: toDateString(data.startDate),
+    endDate: data.isCurrentRole ? null : toDateString(data.endDate),
     description: data.description,
   };
 }
@@ -51,8 +56,8 @@ export function ExperienceForm({experience, onSuccess, onCancel}: ExperienceForm
     defaultValues: {
       organization: experience?.organization ?? '',
       title: experience?.title ?? '',
-      startDate: experience?.startDate ?? '',
-      endDate: experience?.endDate ?? '',
+      startDate: toMonthInputValue(experience?.startDate),
+      endDate: toMonthInputValue(experience?.endDate),
       isCurrentRole: experience?.endDate === null,
       description: experience?.description ?? '',
     },
