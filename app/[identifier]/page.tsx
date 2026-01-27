@@ -377,13 +377,14 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                   </p>
 
                   <div className='mt-6 flex flex-wrap justify-center gap-2'>
-                    {QUICK_PROMPTS.map(prompt => (
+                    {QUICK_PROMPTS.map((prompt, index) => (
                       <button
                         key={prompt}
                         type='button'
                         onClick={() => handlePromptClick(prompt)}
                         disabled={!isConnected}
-                        className='cursor-pointer rounded-full border bg-background px-3 py-1.5 text-xs transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50'
+                        className='animate-in fade-in slide-in-from-bottom-2 cursor-pointer rounded-full border bg-background px-3 py-1.5 text-xs transition-colors hover:bg-muted hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50'
+                        style={{animationDelay: `${index * 100}ms`, animationFillMode: 'both'}}
                       >
                         {prompt}
                       </button>
