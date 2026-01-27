@@ -650,7 +650,7 @@ export default function StackPage() {
             <TechCard
               icon={<HardDrive className='h-6 w-6' />}
               title='Cloud Storage'
-              description='Where uploaded CVs live. Eden AI parses them into structured data.'
+              description='Where uploaded CVs live (and deleted, immediately after processing). Eden AI parses them into structured data.'
               tags={['GCS', 'Eden AI', 'CV Parsing']}
             />
             <TechCard
