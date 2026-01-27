@@ -340,7 +340,7 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
           </div>
 
           {/* Chat Section */}
-          <Card className='flex min-h-150 flex-col py-0 lg:col-span-2'>
+          <Card className='flex min-h-150 flex-col py-0 lg:col-span-2 md:max-h-[calc(100vh-8.5rem)] md:sticky md:top-24'>
             <div className='flex shrink-0 items-center justify-between border-b px-4 py-3'>
               <div className='flex items-center gap-2'>
                 <Sparkles className='h-5 w-5 text-primary' />
