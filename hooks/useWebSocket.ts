@@ -1,7 +1,8 @@
 import {Story} from '@/contexts/StoryChatContext';
-import {useEffect, useRef, useState, useCallback} from 'react';
+import {useEffect, useRef, useState, useCallback, useLayoutEffect} from 'react';
 import {getToken} from '@/lib/token';
 import ReconnectingWebSocket from 'reconnecting-websocket';
+import {useIdleTimeout} from './useIdleTimeout';
 
 type MessageType = 'response' | 'error' | 'connected';
 
@@ -58,8 +59,9 @@ export function useWebSocket(
   const socketRef = useRef<ReconnectingWebSocket | null>(null);
   const callbacksRef = useRef(callbacks);
 
-  // eslint-disable-next-line react-hooks/refs
-  callbacksRef.current = callbacks;
+  useLayoutEffect(() => {
+    callbacksRef.current = callbacks;
+  });
 
   useEffect(() => {
     if (!enabled)
@@ -118,6 +120,20 @@ export function useWebSocket(
       ws.close();
     };
   }, [url, enabled]);
+
+  // Disconnect after 5 minutes of tab being hidden to save server resources
+  useIdleTimeout({
+    timeout: 5 * 60 * 1000,
+    enabled,
+    onIdle: () => {
+      socketRef.current?.close();
+    },
+    onActive: () => {
+      if (socketRef.current?.readyState === WebSocket.CLOSED) {
+        socketRef.current.reconnect();
+      }
+    },
+  });
 
   const send = useCallback((data: string): boolean => {
     if (socketRef.current?.readyState === WebSocket.OPEN) {
