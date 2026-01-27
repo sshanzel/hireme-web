@@ -9,7 +9,6 @@ import {
   FileText,
   Zap,
   ArrowRight,
-  Sparkles,
   Radio,
   Cloud,
   HardDrive,
@@ -18,7 +17,6 @@ import {
   Search,
   Brain,
   Upload,
-  Bot,
 } from 'lucide-react';
 import Link from 'next/link';
 import {cn} from '@/lib/utils';
@@ -279,16 +277,6 @@ export default function StackPage() {
                         <p className='text-sm font-semibold'>Cloud Pub/Sub</p>
                         <p className='text-xs text-muted-foreground'>Event-driven messaging</p>
                       </div>
-                    </div>
-                    <div className='flex gap-2 flex-wrap'>
-                      {['cv-uploaded', 'story-completed', 'experience-updated'].map(topic => (
-                        <span
-                          key={topic}
-                          className='rounded-full bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-600'
-                        >
-                          {topic}
-                        </span>
-                      ))}
                     </div>
                   </div>
                 </div>
