@@ -1,6 +1,7 @@
 import {Story} from '@/contexts/StoryChatContext';
 import {useEffect, useRef, useState, useCallback} from 'react';
 import {getToken} from '@/lib/token';
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
 type MessageType = 'response' | 'error' | 'connected';
 
@@ -53,42 +54,29 @@ export function useWebSocket(
   callbacks: UseWebSocketCallbacks,
 ): UseWebSocketReturn {
   const {url, enabled = true} = options;
-
   const [isConnected, setIsConnected] = useState(false);
-  const socketRef = useRef<WebSocket | null>(null);
+  const socketRef = useRef<ReconnectingWebSocket | null>(null);
   const callbacksRef = useRef(callbacks);
 
-  // Keep options ref updated to avoid stale closures
   // eslint-disable-next-line react-hooks/refs
   callbacksRef.current = callbacks;
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled)
+      return () => {
+        socketRef.current?.close();
+      };
 
     const token = getToken();
-    const authUrl = token
-      ? `${url}${url.includes('?') ? '&' : '?'}token=${token}`
-      : url;
+    const authUrl = token ? `${url}${url.includes('?') ? '&' : '?'}token=${token}` : url;
 
-    const cleanupFn = (socket: WebSocket) => {
-      if (socket.readyState === WebSocket.OPEN) {
-        socket.close();
-      }
-    };
-
-    const ref = socketRef.current;
-
-    if (
-      ref &&
-      ref.url === authUrl &&
-      (ref.readyState === WebSocket.OPEN || ref.readyState === WebSocket.CONNECTING)
-    ) {
-      return () => {
-        cleanupFn(ref);
-      };
-    }
-
-    const ws = new WebSocket(authUrl);
+    const ws = new ReconnectingWebSocket(authUrl, [], {
+      maxRetries: 10,
+      connectionTimeout: 5000,
+      maxReconnectionDelay: 10000,
+      minReconnectionDelay: 1000,
+      reconnectionDelayGrowFactor: 1.5,
+    });
 
     ws.onopen = () => {
       setIsConnected(true);
@@ -120,15 +108,14 @@ export function useWebSocket(
       setIsConnected(false);
     };
 
-    ws.onerror = error => {
-      console.error('WebSocket error:', error);
+    ws.onerror = () => {
       callbacksRef.current.onConnectionError?.();
     };
 
     socketRef.current = ws;
 
     return () => {
-      cleanupFn(ws);
+      ws.close();
     };
   }, [url, enabled]);
 
