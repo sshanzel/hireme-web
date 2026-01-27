@@ -218,13 +218,19 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
     <div className='min-h-screen bg-background'>
       {/* Header */}
       <header className='border-b'>
-        <div className='mx-auto flex h-16 max-w-6xl items-center px-4'>
+        <div className='mx-auto flex h-16 max-w-6xl items-center justify-between px-4'>
           <Link
             href='/'
             className='cursor-pointer text-xl font-semibold transition-opacity hover:opacity-80'
           >
             <span className='text-gradient'>HireMe</span>
             <span>.dev</span>
+          </Link>
+          <Link
+            href='/stack'
+            className='text-sm text-muted-foreground transition-colors hover:text-foreground'
+          >
+            Tech Stack
           </Link>
         </div>
       </header>
