@@ -175,10 +175,10 @@ export default function LoginPage() {
             {/* Footer Note */}
             <div className='mt-8 rounded-lg border border-border/50 bg-muted/30 px-4 py-3 text-center'>
               <p className='text-xs text-muted-foreground'>
-                Since I&apos;m footing the bill for the whole infrastructure costs, I locked
-                registration.
+                I&apos;m footing the infrastructure bill hence why registration is locked.
                 <br />
-                Reach out if you&apos;d like access!
+                If you are a job seeker and would like to try it out, please reach out if you&apos;d
+                like access!
               </p>
             </div>
 
