@@ -8,9 +8,10 @@ export interface Message {
 
 interface MessageBubbleProps {
   message: Message;
+  assistantIcon?: React.ReactNode;
 }
 
-export function MessageBubble({message}: MessageBubbleProps) {
+export function MessageBubble({message, assistantIcon}: MessageBubbleProps) {
   const isUser = message.role === 'user';
   const isError = message.role === 'error';
 
@@ -29,7 +30,7 @@ export function MessageBubble({message}: MessageBubbleProps) {
         ) : isError ? (
           <AlertCircle className='h-4 w-4' />
         ) : (
-          <Bot className='h-4 w-4' />
+          assistantIcon ?? <Bot className='h-4 w-4' />
         )}
       </div>
       <div

@@ -236,12 +236,12 @@ export function Chat() {
                 handleSubmit(e);
               }
             }}
-            placeholder='Type your message... (Shift+Enter for new line)'
-            disabled={isLoading}
+            placeholder={!story ? 'Connecting...' : 'Type your message... (Shift+Enter for new line)'}
+            disabled={isLoading || !story}
             rows={1}
             className='max-h-32 min-h-10 resize-none'
           />
-          <Button type='submit' size='icon' disabled={!input.trim() || isLoading}>
+          <Button type='submit' size='icon' disabled={!input.trim() || isLoading || !story}>
             <Send className='h-4 w-4' />
           </Button>
         </div>

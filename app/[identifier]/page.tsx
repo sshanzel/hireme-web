@@ -6,7 +6,7 @@ import {useQuery} from '@tanstack/react-query';
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
-import {Send, Bot, Briefcase, GraduationCap, Sparkles, Github, Linkedin, Twitter, Globe} from 'lucide-react';
+import {Send, Briefcase, GraduationCap, Sparkles, Github, Linkedin, Twitter, Globe, MessageCircle} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {useWebSocket} from '@/hooks/useWebSocket';
 import {CollapsibleList} from '@/components/common/CollapsibleList';
@@ -345,8 +345,8 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
             <div className='flex min-h-0 flex-1 flex-col overflow-auto p-4'>
               {messages.length === 0 && !isTyping ? (
                 <div className='flex flex-1 flex-col items-center justify-center text-center'>
-                  <div className='rounded-full bg-primary/10 p-4'>
-                    <Bot className='h-8 w-8 text-primary' />
+                  <div className='flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-xl font-semibold text-primary'>
+                    {getInitials(profile.name)}
                   </div>
                   <h3 className='mt-4 text-lg font-semibold'>Ask me anything about my career</h3>
                   <p className='mt-2 max-w-md text-sm text-muted-foreground'>
@@ -371,7 +371,13 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
               ) : (
                 <div className='space-y-4'>
                   {messages.map(message => (
-                    <MessageBubble key={message.id} message={message} />
+                    <MessageBubble
+                      key={message.id}
+                      message={message}
+                      assistantIcon={
+                        <span className='text-xs font-semibold'>{getInitials(profile.name)}</span>
+                      }
+                    />
                   ))}
                   {isTyping && <TypingIndicator />}
                   <div ref={messagesEndRef} />
