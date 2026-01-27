@@ -165,10 +165,10 @@ export default function StackPage() {
               Login
             </Link>
             <Link
-              href='/signup'
+              href='/sshanzel'
               className='rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90'
             >
-              Get Started
+              Try it here
             </Link>
           </div>
         </div>
@@ -770,7 +770,7 @@ export default function StackPage() {
             href='/sshanzel'
             className='inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-primary-foreground transition-all hover:opacity-90 hover:shadow-lg hover:shadow-primary/20'
           >
-            Try it on my profile
+            See it in action
             <ArrowRight className='h-4 w-4' />
           </Link>
         </div>
