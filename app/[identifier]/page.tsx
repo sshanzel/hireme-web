@@ -376,20 +376,21 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                     love to tell you more about my journey.
                   </p>
 
-                  <div className='mt-6 flex flex-wrap justify-center gap-2'>
-                    {QUICK_PROMPTS.map((prompt, index) => (
-                      <button
-                        key={prompt}
-                        type='button'
-                        onClick={() => handlePromptClick(prompt)}
-                        disabled={!isConnected}
-                        className='animate-in fade-in slide-in-from-bottom-2 cursor-pointer rounded-full border bg-background px-3 py-1.5 text-xs transition-colors hover:bg-muted hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50'
-                        style={{animationDelay: `${index * 100}ms`, animationFillMode: 'both'}}
-                      >
-                        {prompt}
-                      </button>
-                    ))}
-                  </div>
+                  {isConnected && (
+                    <div className='mt-6 flex flex-wrap justify-center gap-2'>
+                      {QUICK_PROMPTS.map((prompt, index) => (
+                        <button
+                          key={prompt}
+                          type='button'
+                          onClick={() => handlePromptClick(prompt)}
+                          className='animate-in fade-in slide-in-from-bottom-2 cursor-pointer rounded-full border bg-background px-3 py-1.5 text-xs transition-colors hover:bg-muted hover:scale-105'
+                          style={{animationDelay: `${index * 100}ms`, animationFillMode: 'both'}}
+                        >
+                          {prompt}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className='space-y-4'>
