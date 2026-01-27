@@ -6,7 +6,16 @@ import {useQuery} from '@tanstack/react-query';
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
-import {Send, Briefcase, GraduationCap, Sparkles, Github, Linkedin, Twitter, Globe, MessageCircle} from 'lucide-react';
+import {
+  Send,
+  Briefcase,
+  GraduationCap,
+  Sparkles,
+  Github,
+  Linkedin,
+  Twitter,
+  Globe,
+} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {useWebSocket} from '@/hooks/useWebSocket';
 import {CollapsibleList} from '@/components/common/CollapsibleList';
@@ -375,7 +384,10 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                       key={message.id}
                       message={message}
                       assistantIcon={
-                        <span className='text-xs font-semibold'>{getInitials(profile.name)}</span>
+                        <div className='relative'>
+                          <span className='text-xs font-semibold'>{getInitials(profile.name)}</span>
+                          <Sparkles className='absolute -top-1 -right-2.5 h-3 w-3 fill-primary text-primary' />
+                        </div>
                       }
                     />
                   ))}
@@ -402,7 +414,11 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                   rows={1}
                   className='max-h-32 min-h-10 resize-none'
                 />
-                <Button type='submit' size='icon' disabled={!input.trim() || isTyping || !isConnected}>
+                <Button
+                  type='submit'
+                  size='icon'
+                  disabled={!input.trim() || isTyping || !isConnected}
+                >
                   <Send className='h-4 w-4' />
                 </Button>
               </div>
