@@ -29,7 +29,7 @@ import {getInitials, formatDateRange} from '@/lib/strings/format';
 
 interface Message {
   id: string;
-  role: 'user' | 'assistant';
+  role: 'user' | 'assistant' | 'error';
   content: string;
 }
 
@@ -131,7 +131,14 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
         setIsTyping(false);
       },
       onError: message => {
-        console.error('WebSocket error:', message.error);
+        setMessages(prev => [
+          ...prev,
+          {
+            id: Date.now().toString(),
+            role: 'error',
+            content: message.error,
+          },
+        ]);
         setIsTyping(false);
       },
       onConnectionError: () => {
