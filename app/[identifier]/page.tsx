@@ -414,7 +414,16 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                       }
                     />
                   ))}
-                  {isTyping && <TypingIndicator />}
+                  {isTyping && (
+                    <TypingIndicator
+                      icon={
+                        <div className='relative'>
+                          <span className='text-xs font-semibold'>{getInitials(profile.name)}</span>
+                          <Sparkles className='absolute -top-1 -right-2.5 h-3 w-3 fill-primary text-primary' />
+                        </div>
+                      }
+                    />
+                  )}
                   <div ref={messagesEndRef} />
                 </div>
               )}
