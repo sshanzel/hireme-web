@@ -57,8 +57,8 @@ interface PublicProfile {
   id: string;
   name: string;
   username: string | null;
-  title: string | null;
-  bio: string | null;
+  headline: string | null;
+  summary: string | null;
   githubUrl: string | null;
   linkedinUrl: string | null;
   twitterUrl: string | null;
@@ -77,7 +77,7 @@ const fetchPublicProfile = (identifier: string) =>
   apiFetch<PublicProfile>(endpoints.publicProfile(identifier));
 
 function getHeadline(profile: PublicProfile): string | null {
-  if (profile.title) return profile.title;
+  if (profile.headline) return profile.headline;
 
   if (profile.experiences.length === 0) return null;
 
@@ -248,8 +248,8 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                   </div>
                   <h1 className='mt-4 text-xl font-semibold'>{profile.name}</h1>
                   {headline && <p className='text-muted-foreground'>{headline}</p>}
-                  {profile.bio && (
-                    <p className='mt-3 text-sm text-muted-foreground'>{profile.bio}</p>
+                  {profile.summary && (
+                    <p className='mt-3 text-sm text-muted-foreground'>{profile.summary}</p>
                   )}
 
                   {/* Social Links */}
