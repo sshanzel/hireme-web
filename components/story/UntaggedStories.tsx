@@ -44,23 +44,25 @@ export function UntaggedStories({stories}: UntaggedStoriesProps) {
 
   return (
     <>
-      <Card>
-        <CardHeader>
+      <Card className='overflow-hidden border-accent/30 bg-accent/10'>
+        <CardHeader className='border-b border-accent/20 bg-accent/10'>
           <div className='flex items-center gap-2'>
-            <MessageSquareWarning className='h-5 w-5 text-amber-500' />
+            <div className='flex h-9 w-9 items-center justify-center rounded-lg bg-accent/20'>
+              <MessageSquareWarning className='h-5 w-5 text-accent-foreground' />
+            </div>
             <div>
               <CardTitle className='text-base'>Untagged Stories ({stories.length})</CardTitle>
-              <CardDescription>Click a story to open it, then tag it from the chat</CardDescription>
+              <CardDescription>Waiting for a role</CardDescription>
             </div>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className='pt-6'>
           <CollapsibleList
             items={stories}
             maxItems={2}
             keyExtractor={story => story.id}
             renderItem={story => (
-              <div className='group flex items-start gap-2 rounded-md border bg-muted/30 p-3 transition-colors hover:bg-muted/50'>
+              <div className='group flex items-start gap-2 rounded-lg border border-border/70 bg-card/75 p-3 shadow-sm transition-colors hover:border-accent/40 hover:bg-card'>
                 <button
                   type='button'
                   onClick={() => selectStory(story.id)}

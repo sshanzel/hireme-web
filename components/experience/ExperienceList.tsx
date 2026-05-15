@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import {ExperienceForm} from './ExperienceForm';
 import {ExperienceItem} from './ExperienceItem';
-import {Briefcase, Plus} from 'lucide-react';
+import {Briefcase, Plus, Layers3} from 'lucide-react';
 import {useStoryChatContext} from '@/contexts/StoryChatContext';
 import {CollapsibleList} from '@/components/common/CollapsibleList';
 import {ConfirmDialog} from '@/components/common/ConfirmDialog';
@@ -95,12 +95,17 @@ export function ExperienceList({experiences, onMutate}: ExperienceListProps) {
 
   return (
     <>
-      <Card>
-        <CardHeader>
+      <Card className='overflow-hidden'>
+        <CardHeader className='border-b border-border/70 bg-card/90'>
           <div className='flex items-start justify-between'>
-            <div>
-              <CardTitle>Work Experience</CardTitle>
-              <CardDescription>Your professional history</CardDescription>
+            <div className='flex items-start gap-3'>
+              <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-secondary text-secondary-foreground'>
+                <Layers3 className='h-5 w-5' />
+              </div>
+              <div>
+                <CardTitle>Experience library</CardTitle>
+                <CardDescription>Roles, projects, and proof points</CardDescription>
+              </div>
             </div>
             <Button size='sm' onClick={handleAddClick}>
               <Plus className='mr-2 h-4 w-4' />
@@ -108,12 +113,14 @@ export function ExperienceList({experiences, onMutate}: ExperienceListProps) {
             </Button>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className='pt-6'>
           {experiences.length === 0 ? (
-            <div className='flex flex-col items-center justify-center py-8 text-center'>
-              <Briefcase className='h-10 w-10 text-muted-foreground/50' />
-              <p className='mt-4 text-sm text-muted-foreground'>No experiences yet.</p>
-              <p className='text-sm text-muted-foreground'>
+            <div className='flex flex-col items-center justify-center rounded-lg border border-dashed border-border/80 bg-secondary/25 py-10 text-center'>
+              <div className='flex h-12 w-12 items-center justify-center rounded-lg bg-card shadow-sm'>
+                <Briefcase className='h-6 w-6 text-primary' />
+              </div>
+              <p className='mt-4 text-sm font-semibold'>No experiences yet</p>
+              <p className='mt-1 max-w-xs text-sm text-muted-foreground'>
                 Upload your CV or add your work history manually.
               </p>
             </div>

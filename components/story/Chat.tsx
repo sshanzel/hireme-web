@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {Send, MessageSquare, X, Tag} from 'lucide-react';
+import {Send, MessageSquare, X, Tag, Radio, WandSparkles} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {useAuthContext} from '@/contexts/AuthContext';
 import {useWebSocket} from '@/hooks/useWebSocket';
@@ -135,22 +135,30 @@ export function Chat() {
     : 'Tell us a story from your work/project!';
 
   return (
-    <Card className='flex h-full flex-col gap-0 py-0'>
-      <div className='flex items-center justify-between border-b px-4 py-3'>
+    <Card className='flex min-h-[34rem] flex-col gap-0 overflow-hidden py-0 xl:h-full'>
+      <div className='border-b border-border/70 bg-card/90 px-4 py-3'>
+        <div className='flex items-center justify-between gap-3'>
         <div className='flex min-w-0 flex-1 items-center gap-2'>
-          <h3 className='truncate text-sm font-medium'>{title}</h3>
+          <div className='flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm shadow-primary/20'>
+            <WandSparkles className='h-4 w-4' />
+          </div>
+          <div className='min-w-0'>
+            <p className='text-xs font-semibold uppercase text-muted-foreground'>Story builder</p>
+            <h3 className='truncate text-sm font-semibold'>{title}</h3>
+          </div>
           {hasActiveSession && (
             <Button
               variant='ghost'
               size='icon'
-              className='h-6 w-6 shrink-0'
+              className='h-7 w-7 shrink-0'
               onClick={clearSelection}
             >
               <X className='h-3 w-3' />
             </Button>
           )}
         </div>
-        <div className='flex shrink-0 items-center gap-2'>
+        <div className='flex shrink-0 items-center gap-2 rounded-full border border-border/70 bg-background/60 px-2.5 py-1.5'>
+          <Radio className={cn('h-3.5 w-3.5', isConnected ? 'text-primary' : 'text-muted-foreground')} />
           <span
             className={cn(
               'h-2 w-2 rounded-full',
@@ -161,18 +169,19 @@ export function Chat() {
             {isConnected ? 'Connected' : 'Disconnected'}
           </span>
         </div>
+        </div>
       </div>
-      <div className='flex-1 overflow-y-auto p-4'>
+      <div className='min-h-0 flex-1 overflow-y-auto bg-gradient-to-b from-secondary/25 via-transparent to-card/60 p-4'>
         {messages.length === 0 && !isLoading ? (
           <div
             className='flex h-full cursor-text flex-col items-center justify-center text-center'
             onClick={handleEmptyStateClick}
           >
-            <div className='rounded-full bg-muted p-4'>
-              <MessageSquare className='h-8 w-8 text-muted-foreground' />
+            <div className='flex h-16 w-16 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 shadow-sm'>
+              <MessageSquare className='h-8 w-8 text-primary' />
             </div>
-            <h4 className='mt-4 font-medium'>Share a work story</h4>
-            <p className='mt-1 max-w-xs text-sm text-muted-foreground'>
+            <h4 className='mt-4 text-lg font-semibold'>Start with the messy version</h4>
+            <p className='mt-1 max-w-sm text-sm leading-6 text-muted-foreground'>
               Think of a challenge you faced, a win you achieved, or a lesson you learned.
             </p>
             <div className='mt-6 flex flex-wrap justify-center gap-2'>
@@ -181,7 +190,7 @@ export function Chat() {
                   key={prompt}
                   type='button'
                   onClick={() => handlePromptClick(prompt)}
-                  className='rounded-full border bg-background px-3 py-1.5 text-xs transition-colors hover:bg-muted'
+                  className='story-chip'
                 >
                   {prompt}
                 </button>
@@ -200,7 +209,7 @@ export function Chat() {
       </div>
 
       {story?.id && experiences.length > 0 && (
-        <div className='flex items-center gap-3 border-t bg-muted/30 px-4 py-2'>
+        <div className='flex flex-wrap items-center gap-3 border-t border-border/70 bg-secondary/30 px-4 py-2'>
           <div className='flex items-center gap-2 text-sm text-muted-foreground'>
             <Tag className='h-4 w-4' />
             <span>{story.experienceId ? 'Tagged to:' : 'Tag this story:'}</span>
@@ -224,8 +233,8 @@ export function Chat() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className='border-t p-4'>
-        <div className='flex gap-2'>
+      <form onSubmit={handleSubmit} className='border-t border-border/70 bg-card/90 p-4'>
+        <div className='flex gap-2 rounded-lg border border-border/70 bg-background/70 p-2 shadow-inner'>
           <Textarea
             ref={inputRef}
             value={input}
@@ -239,9 +248,9 @@ export function Chat() {
             placeholder={!story ? 'Connecting...' : 'Type your message... (Shift+Enter for new line)'}
             disabled={isLoading || !story}
             rows={1}
-            className='max-h-32 min-h-10 resize-none'
+            className='max-h-32 min-h-10 resize-none border-0 bg-transparent shadow-none focus-visible:ring-0'
           />
-          <Button type='submit' size='icon' disabled={!input.trim() || isLoading || !story}>
+          <Button type='submit' size='icon' className='self-end' disabled={!input.trim() || isLoading || !story}>
             <Send className='h-4 w-4' />
           </Button>
         </div>

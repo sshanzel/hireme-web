@@ -172,6 +172,7 @@ export default function CoachPage() {
           <PageHeader
             title='Career Coach'
             description='Practice interviews and explore your stories with AI assistance.'
+            eyebrow='Rehearsal room'
           />
           <div className='flex gap-2'>
             <Button variant='outline' size='sm' onClick={handleNewChat}>
@@ -204,12 +205,12 @@ export default function CoachPage() {
           </div>
         </div>
 
-        <div className='mt-6 grid min-h-0 flex-1 grid-cols-1 gap-6 pb-6 lg:grid-cols-3'>
+        <div className='mt-2 grid min-h-0 flex-1 grid-cols-1 gap-5 pb-6 lg:grid-cols-3'>
           {/* Chat area - takes 2 columns on desktop */}
-          <Card className='flex min-h-0 flex-col py-0 lg:col-span-2'>
+          <Card className='flex min-h-[34rem] flex-col overflow-hidden py-0 lg:col-span-2 lg:min-h-0'>
             {/* Header with connection status */}
-            <div className='flex shrink-0 items-center justify-end border-b px-4 py-2'>
-              <div className='flex items-center gap-2'>
+            <div className='flex shrink-0 items-center justify-end border-b border-border/70 bg-card/90 px-4 py-3'>
+              <div className='flex items-center gap-2 rounded-full border border-border/70 bg-background/60 px-2.5 py-1.5'>
                 <span
                   className={cn(
                     'h-2 w-2 rounded-full',
@@ -223,10 +224,10 @@ export default function CoachPage() {
             </div>
 
             {/* Messages area */}
-            <div className='flex min-h-0 flex-1 flex-col overflow-auto p-4'>
+            <div className='flex min-h-0 flex-1 flex-col overflow-auto bg-gradient-to-b from-secondary/25 via-transparent to-card/60 p-4'>
               {messages.length === 0 && !isLoading ? (
                 <div className='flex flex-1 flex-col items-center justify-center text-center'>
-                  <div className='rounded-full bg-primary/10 p-4'>
+                  <div className='flex h-16 w-16 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 shadow-sm'>
                     <Sparkles className='h-8 w-8 text-primary' />
                   </div>
                   <h3 className='mt-4 text-lg font-semibold'>Your AI Career Coach</h3>
@@ -241,7 +242,7 @@ export default function CoachPage() {
                         key={prompt}
                         type='button'
                         onClick={() => handlePromptClick(prompt)}
-                        className='rounded-full border bg-background px-3 py-1.5 text-xs transition-colors hover:bg-muted'
+                        className='story-chip'
                       >
                         {prompt}
                       </button>
@@ -260,8 +261,8 @@ export default function CoachPage() {
             </div>
 
             {/* Input area */}
-            <form onSubmit={handleSubmit} className='shrink-0 border-t p-4'>
-              <div className='flex gap-2'>
+            <form onSubmit={handleSubmit} className='shrink-0 border-t border-border/70 bg-card/90 p-4'>
+              <div className='flex gap-2 rounded-lg border border-border/70 bg-background/70 p-2 shadow-inner'>
                 <Textarea
                   ref={inputRef}
                   value={input}
@@ -275,9 +276,9 @@ export default function CoachPage() {
                   placeholder='Ask me about your stories or practice an interview question...'
                   disabled={isLoading}
                   rows={1}
-                  className='max-h-32 min-h-10 resize-none'
+                  className='max-h-32 min-h-10 resize-none border-0 bg-transparent shadow-none focus-visible:ring-0'
                 />
-                <Button type='submit' size='icon' disabled={!input.trim() || isLoading}>
+                <Button type='submit' size='icon' className='self-end' disabled={!input.trim() || isLoading}>
                   <Send className='h-4 w-4' />
                 </Button>
               </div>
@@ -285,8 +286,8 @@ export default function CoachPage() {
           </Card>
 
           {/* Thread history - hidden on mobile, visible on desktop */}
-          <Card className='hidden min-h-0 flex-col lg:flex'>
-            <CardHeader className='shrink-0'>
+          <Card className='hidden min-h-0 flex-col overflow-hidden lg:flex'>
+            <CardHeader className='shrink-0 border-b border-border/70 bg-card/90'>
               <CardTitle className='text-base'>Chat History</CardTitle>
               <CardDescription>Your previous sessions</CardDescription>
             </CardHeader>

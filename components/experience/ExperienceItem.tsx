@@ -48,19 +48,19 @@ export function ExperienceItem({
   const ExperienceIcon = isEducation ? GraduationCap : Briefcase;
 
   return (
-    <div className='rounded-lg border'>
+    <div className='overflow-hidden rounded-lg border border-border/70 bg-card/75 shadow-sm transition-colors hover:border-primary/25'>
       <div className='flex gap-4 p-4'>
-        <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10'>
+        <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/15'>
           <ExperienceIcon className='h-5 w-5 text-primary' />
         </div>
         <div className='min-w-0 flex-1'>
           <div className='flex flex-wrap items-start justify-between gap-x-4 gap-y-1'>
             <div>
               <h4 className='font-medium'>{experience.title}</h4>
-              <p className='text-sm text-muted-foreground'>{experience.organization}</p>
+              <p className='mt-1 text-sm text-muted-foreground'>{experience.organization}</p>
             </div>
-            <div className='flex items-center gap-2'>
-              <span className='text-sm text-muted-foreground'>
+            <div className='flex flex-wrap items-center justify-end gap-2'>
+              <span className='rounded-full border border-border/70 bg-background/60 px-2.5 py-1 text-xs font-medium text-muted-foreground'>
                 {formatDateRange(experience.startDate, experience.endDate)}
               </span>
               <Button variant='ghost' size='icon' className='h-8 w-8' onClick={onEdit}>
@@ -81,7 +81,7 @@ export function ExperienceItem({
               </Button>
             </div>
           </div>
-          <p className='mt-2 text-sm line-clamp-2'>{experience.description}</p>
+          <p className='mt-3 text-sm leading-6 line-clamp-2'>{experience.description}</p>
 
           {showDeleteConfirm && (
             <div className='mt-3 flex items-center gap-2 rounded-lg bg-destructive/10 p-3'>
@@ -97,14 +97,14 @@ export function ExperienceItem({
         </div>
       </div>
 
-      <div className='border-t px-4 py-3'>
+      <div className='border-t border-border/70 bg-secondary/20 px-4 py-3'>
         <button
           type='button'
           onClick={() => setIsStoriesExpanded(!isStoriesExpanded)}
           className='flex w-full items-center justify-between text-left'
         >
           <div className='flex items-center gap-2'>
-            <BookOpen className='h-4 w-4 text-muted-foreground' />
+            <BookOpen className='h-4 w-4 text-primary' />
             <span className='text-sm font-medium'>
               Stories{' '}
               <span className={hasStories ? 'text-primary' : 'text-muted-foreground'}>
@@ -112,7 +112,7 @@ export function ExperienceItem({
               </span>
             </span>
           </div>
-          <span className='text-xs text-muted-foreground'>
+          <span className='rounded-full bg-card/70 px-2 py-1 text-xs font-medium text-muted-foreground'>
             {isStoriesExpanded ? 'Hide' : 'Show'}
           </span>
         </button>
@@ -134,13 +134,10 @@ export function ExperienceItem({
                   />
                 ))
               ) : (
-                <div className='rounded-md border border-dashed bg-muted/20 p-4 text-center'>
-                  <Sparkles className='mx-auto h-6 w-6 text-muted-foreground/50' />
+                <div className='rounded-lg border border-dashed border-border/80 bg-card/60 p-4 text-center'>
+                  <Sparkles className='mx-auto h-6 w-6 text-accent' />
                   <p className='mt-2 text-sm font-medium'>No stories yet</p>
-                  <p className='mt-1 text-xs text-muted-foreground'>
-                    Stories help you remember specific achievements and answer interview questions
-                    like &quot;Tell me about a time when...&quot;
-                  </p>
+                  <p className='mt-1 text-xs text-muted-foreground'>Use chat to attach one.</p>
                   <Button variant='outline' size='sm' className='mt-3'>
                     <Plus className='mr-2 h-3 w-3' />
                     Add a story

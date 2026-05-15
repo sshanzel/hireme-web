@@ -25,6 +25,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {Sparkles} from "lucide-react";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -53,9 +54,12 @@ export default function SignupPage() {
 
   return (
     <GuestRoute>
-      <div className="min-h-screen flex items-center justify-center bg-background px-4">
-        <Card className="w-full max-w-md">
+      <div className="workspace-grid flex min-h-screen items-center justify-center bg-background px-4">
+        <Card className="w-full max-w-md overflow-hidden">
         <CardHeader className="text-center">
+          <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+            <Sparkles className="h-5 w-5 text-primary" />
+          </div>
           <CardTitle className="text-2xl">Create an account</CardTitle>
           <CardDescription>Get started with HireMe.dev</CardDescription>
         </CardHeader>
