@@ -15,6 +15,8 @@ import {
   Linkedin,
   Twitter,
   Globe,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {useWebSocket} from '@/hooks/useWebSocket';
@@ -100,6 +102,7 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isProfileExpanded, setIsProfileExpanded] = useState(false);
   const [selectedExperience, setSelectedExperience] = useState<PublicExperience | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -213,6 +216,18 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
   const hasSocials =
     profile.githubUrl || profile.linkedinUrl || profile.twitterUrl || profile.websiteUrl;
   const headline = getHeadline(profile);
+  const hasProfileDetails = !!profile.bio || !!hasSocials;
+  const profileSummary = (
+    <div className='flex min-w-0 items-center gap-3 text-left'>
+      <div className='flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-base font-semibold text-primary'>
+        {getInitials(profile.name)}
+      </div>
+      <div className='min-w-0'>
+        <h1 className='truncate text-base font-semibold'>{profile.name}</h1>
+        {headline && <p className='truncate text-sm text-muted-foreground'>{headline}</p>}
+      </div>
+    </div>
+  );
 
   return (
     <div className='min-h-screen bg-background'>
@@ -240,65 +255,78 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
           {/* Profile Section */}
           <div className='space-y-6'>
             {/* Profile Card */}
-            <Card>
-              <CardContent className='pt-6'>
-                <div className='flex flex-col items-center text-center'>
-                  <div className='flex h-24 w-24 items-center justify-center rounded-full bg-primary/10 text-3xl font-semibold text-primary'>
-                    {getInitials(profile.name)}
-                  </div>
-                  <h1 className='mt-4 text-xl font-semibold'>{profile.name}</h1>
-                  {headline && <p className='text-muted-foreground'>{headline}</p>}
-                  {profile.bio && (
-                    <p className='mt-3 text-sm text-muted-foreground'>{profile.bio}</p>
+            <Card className='gap-0 overflow-hidden py-0'>
+              {hasProfileDetails ? (
+                <button
+                  type='button'
+                  aria-expanded={isProfileExpanded}
+                  aria-controls='public-profile-details'
+                  onClick={() => setIsProfileExpanded(value => !value)}
+                  className='flex w-full cursor-pointer items-center justify-between gap-3 px-6 py-4 transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+                >
+                  {profileSummary}
+                  {isProfileExpanded ? (
+                    <ChevronUp className='h-4 w-4 shrink-0 text-muted-foreground' />
+                  ) : (
+                    <ChevronDown className='h-4 w-4 shrink-0 text-muted-foreground' />
                   )}
+                </button>
+              ) : (
+                <div className='px-6 py-4'>{profileSummary}</div>
+              )}
 
-                  {/* Social Links */}
-                  {hasSocials && (
-                    <div className='mt-4 flex gap-2'>
-                      {profile.githubUrl && (
-                        <a
-                          href={profile.githubUrl}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          className='flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
-                        >
-                          <Github className='h-4 w-4' />
-                        </a>
-                      )}
-                      {profile.linkedinUrl && (
-                        <a
-                          href={profile.linkedinUrl}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          className='flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
-                        >
-                          <Linkedin className='h-4 w-4' />
-                        </a>
-                      )}
-                      {profile.twitterUrl && (
-                        <a
-                          href={profile.twitterUrl}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          className='flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
-                        >
-                          <Twitter className='h-4 w-4' />
-                        </a>
-                      )}
-                      {profile.websiteUrl && (
-                        <a
-                          href={profile.websiteUrl}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          className='flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
-                        >
-                          <Globe className='h-4 w-4' />
-                        </a>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </CardContent>
+              {hasProfileDetails && isProfileExpanded && (
+                <CardContent id='public-profile-details' className='border-t pb-6 pt-4'>
+                  <div className='space-y-4'>
+                    {profile.bio && <p className='text-sm text-muted-foreground'>{profile.bio}</p>}
+
+                    {hasSocials && (
+                      <div className='flex gap-2'>
+                        {profile.githubUrl && (
+                          <a
+                            href={profile.githubUrl}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
+                          >
+                            <Github className='h-4 w-4' />
+                          </a>
+                        )}
+                        {profile.linkedinUrl && (
+                          <a
+                            href={profile.linkedinUrl}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
+                          >
+                            <Linkedin className='h-4 w-4' />
+                          </a>
+                        )}
+                        {profile.twitterUrl && (
+                          <a
+                            href={profile.twitterUrl}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
+                          >
+                            <Twitter className='h-4 w-4' />
+                          </a>
+                        )}
+                        {profile.websiteUrl && (
+                          <a
+                            href={profile.websiteUrl}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
+                          >
+                            <Globe className='h-4 w-4' />
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              )}
             </Card>
 
             {/* Experience Card */}
