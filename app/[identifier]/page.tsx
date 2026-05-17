@@ -23,6 +23,8 @@ import {
   Twitter,
   Globe,
   ArrowUpRight,
+  Layers3,
+  CalendarRange,
 } from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {useWebSocket} from '@/hooks/useWebSocket';
@@ -96,6 +98,24 @@ function getHeadline(profile: PublicProfile): string | null {
     (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
   );
   return sorted[0].title;
+}
+
+function getCurrentExperience(profile: PublicProfile): PublicExperience | null {
+  return profile.experiences.find(exp => !exp.endDate) ?? null;
+}
+
+function getCareerYears(profile: PublicProfile): number | null {
+  if (profile.experiences.length === 0) return null;
+
+  const timestamps = profile.experiences
+    .map(exp => new Date(exp.startDate).getTime())
+    .filter(timestamp => !Number.isNaN(timestamp));
+
+  if (timestamps.length === 0) return null;
+
+  const earliestStart = Math.min(...timestamps);
+  const diffYears = (Date.now() - earliestStart) / (1000 * 60 * 60 * 24 * 365.25);
+  return Math.max(1, Math.floor(diffYears));
 }
 
 interface PublicProfilePageProps {
@@ -223,6 +243,13 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
     profile.githubUrl || profile.linkedinUrl || profile.twitterUrl || profile.websiteUrl;
   const headline = getHeadline(profile);
   const hasProfileDetails = !!profile.bio || !!hasSocials;
+  const currentExperience = getCurrentExperience(profile);
+  const careerYears = getCareerYears(profile);
+  const workExperiencesCount = profile.experiences.filter(exp => exp.type === 'work').length;
+  const educationCount = profile.experiences.filter(exp => exp.type === 'education').length;
+  const recentEvidence = profile.experiences
+    .filter(exp => exp.description)
+    .slice(0, 3);
   const profileSummary = (
     <div className='flex min-w-0 items-center gap-3 text-left'>
       <div className='flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-primary font-mono text-base font-semibold text-primary-foreground shadow-[4px_4px_0_oklch(0.17_0.023_248_/_0.14)]'>
@@ -322,12 +349,75 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                 </DialogHeader>
 
                 <div className='space-y-6 px-6 pb-6'>
+                  {profile.experiences.length > 0 && (
+                    <section>
+                      <p className='font-mono text-[11px] font-semibold uppercase text-muted-foreground'>
+                        At a glance
+                      </p>
+                      <div className='mt-3 grid gap-2 sm:grid-cols-3'>
+                        {careerYears && (
+                          <div className='rounded-md border border-border/70 bg-background/70 p-3'>
+                            <p className='font-display text-2xl font-semibold'>{careerYears}+ yrs</p>
+                            <p className='font-mono text-[10px] font-semibold uppercase text-muted-foreground'>
+                              Timeline
+                            </p>
+                          </div>
+                        )}
+                        <div className='rounded-md border border-border/70 bg-background/70 p-3'>
+                          <p className='font-display text-2xl font-semibold'>{workExperiencesCount}</p>
+                          <p className='font-mono text-[10px] font-semibold uppercase text-muted-foreground'>
+                            Work roles
+                          </p>
+                        </div>
+                        {currentExperience && (
+                          <div className='rounded-md border border-border/70 bg-background/70 p-3'>
+                            <p className='font-display truncate text-2xl font-semibold'>
+                              {currentExperience.organization}
+                            </p>
+                            <p className='font-mono text-[10px] font-semibold uppercase text-muted-foreground'>
+                              Current
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </section>
+                  )}
+
                   {profile.bio && (
                     <section>
                       <p className='font-mono text-[11px] font-semibold uppercase text-muted-foreground'>
                         Bio
                       </p>
                       <p className='mt-3 text-base leading-8 text-foreground/82'>{profile.bio}</p>
+                    </section>
+                  )}
+
+                  {recentEvidence.length > 0 && (
+                    <section>
+                      <p className='font-mono text-[11px] font-semibold uppercase text-muted-foreground'>
+                        Recent evidence
+                      </p>
+                      <div className='mt-3 space-y-3'>
+                        {recentEvidence.map(exp => (
+                          <button
+                            key={exp.id}
+                            type='button'
+                            onClick={() => {
+                              setSelectedExperience(exp);
+                              setIsProfileDialogOpen(false);
+                            }}
+                            className='block w-full cursor-pointer rounded-md border border-border/70 bg-background/70 p-3 text-left transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:bg-secondary/45'
+                          >
+                            <p className='font-display text-base font-semibold'>{exp.title}</p>
+                            <p className='text-sm text-muted-foreground'>{exp.organization}</p>
+                            {exp.description && (
+                              <p className='mt-2 text-sm leading-6 text-muted-foreground line-clamp-2'>
+                                {exp.description}
+                              </p>
+                            )}
+                          </button>
+                        ))}
+                      </div>
                     </section>
                   )}
 
@@ -389,6 +479,60 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
             </Dialog>
 
             {profile.experiences.length > 0 && (
+              <Card className='gap-0 overflow-hidden py-0'>
+                <CardHeader className='border-b border-border/70 pb-4'>
+                  <div className='flex items-center gap-3'>
+                    <div className='flex h-9 w-9 items-center justify-center rounded-md border border-border/70 bg-secondary text-secondary-foreground'>
+                      <Layers3 className='h-4 w-4' />
+                    </div>
+                    <div>
+                      <CardTitle className='text-base'>Profile signals</CardTitle>
+                      <p className='text-sm text-muted-foreground'>Quick read before you chat</p>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className='grid grid-cols-2 gap-2 pt-4'>
+                  {careerYears && (
+                    <div className='rounded-md border border-border/70 bg-secondary/30 p-3'>
+                      <CalendarRange className='h-4 w-4 text-primary' />
+                      <p className='font-display mt-2 text-xl font-semibold'>{careerYears}+ yrs</p>
+                      <p className='font-mono text-[10px] font-semibold uppercase text-muted-foreground'>
+                        Timeline
+                      </p>
+                    </div>
+                  )}
+                  <div className='rounded-md border border-border/70 bg-secondary/30 p-3'>
+                    <Briefcase className='h-4 w-4 text-primary' />
+                    <p className='font-display mt-2 text-xl font-semibold'>{workExperiencesCount}</p>
+                    <p className='font-mono text-[10px] font-semibold uppercase text-muted-foreground'>
+                      Work roles
+                    </p>
+                  </div>
+                  {educationCount > 0 && (
+                    <div className='rounded-md border border-border/70 bg-secondary/30 p-3'>
+                      <GraduationCap className='h-4 w-4 text-primary' />
+                      <p className='font-display mt-2 text-xl font-semibold'>{educationCount}</p>
+                      <p className='font-mono text-[10px] font-semibold uppercase text-muted-foreground'>
+                        Education
+                      </p>
+                    </div>
+                  )}
+                  {currentExperience && (
+                    <div className='rounded-md border border-border/70 bg-secondary/30 p-3'>
+                      <Sparkles className='h-4 w-4 text-primary' />
+                      <p className='font-display mt-2 truncate text-xl font-semibold'>
+                        {currentExperience.organization}
+                      </p>
+                      <p className='font-mono text-[10px] font-semibold uppercase text-muted-foreground'>
+                        Current
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {profile.experiences.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle className='text-base'>Evidence trail</CardTitle>
@@ -425,7 +569,7 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
             )}
           </div>
 
-          <Card className='paper-texture flex min-h-[36rem] min-w-0 flex-col overflow-hidden py-0 md:sticky md:top-24 md:h-[calc(100vh-7rem)] md:max-h-[56rem]'>
+          <Card className='paper-texture flex min-h-[34rem] min-w-0 flex-col overflow-hidden py-0 md:sticky md:top-24 md:h-[clamp(34rem,calc(100dvh-14rem),44rem)]'>
             <div className='relative flex shrink-0 items-center justify-between border-b px-4 py-3'>
               <div className='flex items-center gap-2'>
                 <Sparkles className='h-5 w-5 text-primary' />
@@ -460,6 +604,23 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                     Curious about my experience, projects, or skills? Go ahead and ask - I&apos;d
                     love to tell you more about my journey.
                   </p>
+                  <div className='mt-4 flex flex-wrap justify-center gap-2'>
+                    {careerYears && (
+                      <span className='rounded-md border border-border/70 bg-card/85 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase text-muted-foreground'>
+                        {careerYears}+ years
+                      </span>
+                    )}
+                    {profile.experiences.length > 0 && (
+                      <span className='rounded-md border border-border/70 bg-card/85 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase text-muted-foreground'>
+                        {profile.experiences.length} evidence points
+                      </span>
+                    )}
+                    {currentExperience && (
+                      <span className='rounded-md border border-border/70 bg-card/85 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase text-muted-foreground'>
+                        {currentExperience.organization}
+                      </span>
+                    )}
+                  </div>
 
                   <div className='mt-6 flex flex-wrap justify-center gap-2'>
                     {QUICK_PROMPTS.map((prompt, index) => (
