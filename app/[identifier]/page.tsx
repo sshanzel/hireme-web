@@ -7,6 +7,13 @@ import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
   Send,
   Briefcase,
   GraduationCap,
@@ -15,8 +22,7 @@ import {
   Linkedin,
   Twitter,
   Globe,
-  ChevronDown,
-  ChevronUp,
+  ArrowUpRight,
 } from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {useWebSocket} from '@/hooks/useWebSocket';
@@ -102,7 +108,7 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [isProfileExpanded, setIsProfileExpanded] = useState(false);
+  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [selectedExperience, setSelectedExperience] = useState<PublicExperience | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -267,37 +273,79 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
               {hasProfileDetails ? (
                 <button
                   type='button'
-                  aria-expanded={isProfileExpanded}
-                  aria-controls='public-profile-details'
-                  onClick={() => setIsProfileExpanded(value => !value)}
+                  aria-haspopup='dialog'
+                  onClick={() => setIsProfileDialogOpen(true)}
                   className='flex w-full cursor-pointer items-center justify-between gap-3 px-6 py-4 transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
                 >
                   {profileSummary}
-                  {isProfileExpanded ? (
-                    <ChevronUp className='h-4 w-4 shrink-0 text-muted-foreground' />
-                  ) : (
-                    <ChevronDown className='h-4 w-4 shrink-0 text-muted-foreground' />
-                  )}
+                  <ArrowUpRight className='h-4 w-4 shrink-0 text-muted-foreground' />
                 </button>
               ) : (
                 <div className='px-6 py-4'>{profileSummary}</div>
               )}
 
-              {hasProfileDetails && isProfileExpanded && (
-                <CardContent id='public-profile-details' className='border-t pb-6 pt-4'>
-                  <div className='space-y-4'>
-                    {profile.bio && <p className='text-sm text-muted-foreground'>{profile.bio}</p>}
+              {hasProfileDetails && (
+                <CardContent className='border-t pb-5 pt-4'>
+                  {profile.bio && (
+                    <p className='text-sm leading-6 text-muted-foreground line-clamp-3'>
+                      {profile.bio}
+                    </p>
+                  )}
+                  <button
+                    type='button'
+                    onClick={() => setIsProfileDialogOpen(true)}
+                    className='mt-4 inline-flex cursor-pointer items-center gap-2 rounded-md border border-border/70 bg-secondary/45 px-3 py-1.5 text-xs font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:bg-secondary'
+                  >
+                    Read full profile
+                    <ArrowUpRight className='h-3.5 w-3.5' />
+                  </button>
+                </CardContent>
+              )}
+            </Card>
 
-                    {hasSocials && (
-                      <div className='flex gap-2'>
+            <Dialog open={isProfileDialogOpen} onOpenChange={setIsProfileDialogOpen}>
+              <DialogContent className='studio-panel max-h-[85vh] max-w-2xl overflow-y-auto rounded-lg bg-card p-0'>
+                <DialogHeader className='border-b border-border/70 px-6 py-5'>
+                  <div className='flex items-start gap-4 pr-8 text-left'>
+                    <div className='flex h-16 w-16 shrink-0 items-center justify-center rounded-md bg-primary font-mono text-xl font-semibold text-primary-foreground shadow-[5px_5px_0_oklch(0.17_0.023_248_/_0.14)]'>
+                      {getInitials(profile.name)}
+                    </div>
+                    <div className='min-w-0'>
+                      <DialogTitle className='font-display text-3xl font-semibold leading-tight'>
+                        {profile.name}
+                      </DialogTitle>
+                      {headline && (
+                        <DialogDescription className='mt-1 text-base'>{headline}</DialogDescription>
+                      )}
+                    </div>
+                  </div>
+                </DialogHeader>
+
+                <div className='space-y-6 px-6 pb-6'>
+                  {profile.bio && (
+                    <section>
+                      <p className='font-mono text-[11px] font-semibold uppercase text-muted-foreground'>
+                        Bio
+                      </p>
+                      <p className='mt-3 text-base leading-8 text-foreground/82'>{profile.bio}</p>
+                    </section>
+                  )}
+
+                  {hasSocials && (
+                    <section>
+                      <p className='font-mono text-[11px] font-semibold uppercase text-muted-foreground'>
+                        Connect
+                      </p>
+                      <div className='mt-3 flex flex-wrap gap-2'>
                         {profile.githubUrl && (
                           <a
                             href={profile.githubUrl}
                             target='_blank'
                             rel='noopener noreferrer'
-                            className='flex h-9 w-9 items-center justify-center rounded-md border border-border/70 bg-muted text-muted-foreground transition-all hover:-translate-y-0.5 hover:bg-primary/10 hover:text-primary'
+                            className='inline-flex items-center gap-2 rounded-md border border-border/70 bg-background/70 px-3 py-2 text-sm font-semibold transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:bg-secondary/60'
                           >
                             <Github className='h-4 w-4' />
+                            GitHub
                           </a>
                         )}
                         {profile.linkedinUrl && (
@@ -305,9 +353,10 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                             href={profile.linkedinUrl}
                             target='_blank'
                             rel='noopener noreferrer'
-                            className='flex h-9 w-9 items-center justify-center rounded-md border border-border/70 bg-muted text-muted-foreground transition-all hover:-translate-y-0.5 hover:bg-primary/10 hover:text-primary'
+                            className='inline-flex items-center gap-2 rounded-md border border-border/70 bg-background/70 px-3 py-2 text-sm font-semibold transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:bg-secondary/60'
                           >
                             <Linkedin className='h-4 w-4' />
+                            LinkedIn
                           </a>
                         )}
                         {profile.twitterUrl && (
@@ -315,9 +364,10 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                             href={profile.twitterUrl}
                             target='_blank'
                             rel='noopener noreferrer'
-                            className='flex h-9 w-9 items-center justify-center rounded-md border border-border/70 bg-muted text-muted-foreground transition-all hover:-translate-y-0.5 hover:bg-primary/10 hover:text-primary'
+                            className='inline-flex items-center gap-2 rounded-md border border-border/70 bg-background/70 px-3 py-2 text-sm font-semibold transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:bg-secondary/60'
                           >
                             <Twitter className='h-4 w-4' />
+                            X / Twitter
                           </a>
                         )}
                         {profile.websiteUrl && (
@@ -325,17 +375,18 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                             href={profile.websiteUrl}
                             target='_blank'
                             rel='noopener noreferrer'
-                            className='flex h-9 w-9 items-center justify-center rounded-md border border-border/70 bg-muted text-muted-foreground transition-all hover:-translate-y-0.5 hover:bg-primary/10 hover:text-primary'
+                            className='inline-flex items-center gap-2 rounded-md border border-border/70 bg-background/70 px-3 py-2 text-sm font-semibold transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:bg-secondary/60'
                           >
                             <Globe className='h-4 w-4' />
+                            Website
                           </a>
                         )}
                       </div>
-                    )}
-                  </div>
-                </CardContent>
-              )}
-            </Card>
+                    </section>
+                  )}
+                </div>
+              </DialogContent>
+            </Dialog>
 
             {profile.experiences.length > 0 && (
               <Card>
