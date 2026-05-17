@@ -98,6 +98,29 @@ function getHeadline(profile: PublicProfile): string | null {
   return sorted[0].title;
 }
 
+function getSortedExperiences(profile: PublicProfile): PublicExperience[] {
+  return [...profile.experiences].sort(
+    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
+  );
+}
+
+function getCurrentExperience(profile: PublicProfile): PublicExperience | null {
+  const sortedExperiences = getSortedExperiences(profile);
+  return sortedExperiences.find(exp => !exp.endDate) ?? sortedExperiences[0] ?? null;
+}
+
+function getCareerYears(profile: PublicProfile): number | null {
+  const timestamps = profile.experiences
+    .map(exp => new Date(exp.startDate).getTime())
+    .filter(timestamp => !Number.isNaN(timestamp));
+
+  if (timestamps.length === 0) return null;
+
+  const earliestStart = Math.min(...timestamps);
+  const diffYears = (Date.now() - earliestStart) / (1000 * 60 * 60 * 24 * 365.25);
+  return Math.max(1, Math.floor(diffYears));
+}
+
 interface PublicProfilePageProps {
   params: Promise<{identifier: string}>;
 }
@@ -223,6 +246,11 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
     profile.githubUrl || profile.linkedinUrl || profile.twitterUrl || profile.websiteUrl;
   const headline = getHeadline(profile);
   const hasProfileDetails = !!profile.bio || !!hasSocials;
+  const sortedExperiences = getSortedExperiences(profile);
+  const currentExperience = getCurrentExperience(profile);
+  const careerYears = getCareerYears(profile);
+  const workExperiencesCount = profile.experiences.filter(exp => exp.type === 'work').length;
+  const educationCount = profile.experiences.filter(exp => exp.type === 'education').length;
   const profileSummary = (
     <div className='flex min-w-0 items-center gap-3 text-left'>
       <div className='flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-primary font-mono text-base font-semibold text-primary-foreground shadow-[4px_4px_0_oklch(0.17_0.023_248_/_0.14)]'>
@@ -322,12 +350,96 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                 </DialogHeader>
 
                 <div className='space-y-6 px-6 pb-6'>
+                  {profile.experiences.length > 0 && (
+                    <section>
+                      <p className='font-mono text-[11px] font-semibold uppercase text-muted-foreground'>
+                        Structured details
+                      </p>
+                      <div className='mt-3 grid gap-2 sm:grid-cols-3'>
+                        {currentExperience && (
+                          <div className='rounded-md border border-border/70 bg-background/70 p-3'>
+                            <p className='text-xs text-muted-foreground'>Current / latest</p>
+                            <p className='font-display mt-1 truncate text-lg font-semibold'>
+                              {currentExperience.organization}
+                            </p>
+                          </div>
+                        )}
+                        <div className='rounded-md border border-border/70 bg-background/70 p-3'>
+                          <p className='text-xs text-muted-foreground'>Work roles</p>
+                          <p className='font-display mt-1 text-lg font-semibold'>
+                            {workExperiencesCount}
+                          </p>
+                        </div>
+                        <div className='rounded-md border border-border/70 bg-background/70 p-3'>
+                          <p className='text-xs text-muted-foreground'>Timeline</p>
+                          <p className='font-display mt-1 text-lg font-semibold'>
+                            {careerYears ? `${careerYears}+ years` : `${profile.experiences.length} entries`}
+                          </p>
+                        </div>
+                        {educationCount > 0 && (
+                          <div className='rounded-md border border-border/70 bg-background/70 p-3'>
+                            <p className='text-xs text-muted-foreground'>Education</p>
+                            <p className='font-display mt-1 text-lg font-semibold'>{educationCount}</p>
+                          </div>
+                        )}
+                      </div>
+                    </section>
+                  )}
+
                   {profile.bio && (
                     <section>
                       <p className='font-mono text-[11px] font-semibold uppercase text-muted-foreground'>
                         Bio
                       </p>
                       <p className='mt-3 text-base leading-8 text-foreground/82'>{profile.bio}</p>
+                    </section>
+                  )}
+
+                  {sortedExperiences.length > 0 && (
+                    <section>
+                      <p className='font-mono text-[11px] font-semibold uppercase text-muted-foreground'>
+                        Experience timeline
+                      </p>
+                      <div className='mt-3 space-y-3'>
+                        {sortedExperiences.map(exp => {
+                          const ExperienceIcon =
+                            exp.type === 'education' ? GraduationCap : Briefcase;
+
+                          return (
+                            <button
+                              key={exp.id}
+                              type='button'
+                              onClick={() => {
+                                setSelectedExperience(exp);
+                                setIsProfileDialogOpen(false);
+                              }}
+                              className='group flex w-full cursor-pointer gap-3 rounded-md border border-border/70 bg-background/70 p-3 text-left transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:bg-secondary/45'
+                            >
+                              <div className='mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground group-hover:text-primary'>
+                                <ExperienceIcon className='h-4 w-4' />
+                              </div>
+                              <div className='min-w-0 flex-1'>
+                                <div className='flex flex-wrap items-start justify-between gap-2'>
+                                  <div className='min-w-0'>
+                                    <p className='font-display text-base font-semibold'>
+                                      {exp.title}
+                                    </p>
+                                    <p className='text-sm text-muted-foreground'>{exp.organization}</p>
+                                  </div>
+                                  <span className='rounded-md border border-border/70 bg-card/80 px-2 py-1 font-mono text-[10px] font-semibold uppercase text-muted-foreground'>
+                                    {formatDateRange(exp.startDate, exp.endDate)}
+                                  </span>
+                                </div>
+                                {exp.description && (
+                                  <p className='mt-2 text-sm leading-6 text-muted-foreground line-clamp-3'>
+                                    {exp.description}
+                                  </p>
+                                )}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
                     </section>
                   )}
 
