@@ -30,3 +30,18 @@ When writing code, you MUST follow these principles:
 - Use arrow functions when declaring a function inside a component.
 - Consider a11y, for example, anything clickable if you hover, cursor pointer must change.
 - Always use the function `cn` when merging classnames.
+- When adding delete actions, always require user confirmation before deleting. Use a confirmation dialog or inline confirmation UI.
+
+---
+
+## Future Improvements
+
+### RAG Context Diversity (Backend)
+
+The bio chat tends to reuse the same stories/contexts across different questions in a conversation. With limited user stories, the same relevant chunks keep getting retrieved for semantically related questions (e.g., "strengths" and "initiative" both pull the same daily.dev story).
+
+**Potential solutions:**
+1. Track used contexts in the conversation and deprioritize them in subsequent retrievals
+2. Add a "diversity" factor to retrieval scoring - if a chunk was recently used, lower its relevance score
+3. Have the AI acknowledge reuse naturally: "As I mentioned earlier with daily.dev..." to make it feel intentional
+4. Consider conversation history when building the retrieval query to encourage variety
