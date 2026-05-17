@@ -1,0 +1,56 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F6F0E3"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect x="64" y="64" width="1072" height="502" rx="28" fill="#FBF8F0" stroke="#D8CCB7" stroke-width="2"/>
+  <rect x="64" y="64" width="1072" height="502" rx="28" fill="url(#warm)"/>
+
+  <g transform="translate(104 102)">
+    <rect width="98" height="98" rx="22" fill="#073A5A"/>
+    <rect x="12" y="12" width="74" height="74" rx="14" fill="#083F63"/>
+    <path d="M31 30v42M68 30v42M34 51h31" stroke="#FAF4E8" stroke-width="10" stroke-linecap="round"/>
+    <path d="M66 13h20v20M68 31l18-18" stroke="#D17B42" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <text x="228" y="128" fill="#111827" font-family="Fraunces, Georgia, serif" font-size="46" font-weight="700">HireMe.dev</text>
+  <text x="229" y="164" fill="#4B5563" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="17" font-weight="700" letter-spacing="1.8">CAREER STORY STUDIO</text>
+
+  <text x="104" y="284" fill="#111827" font-family="Fraunces, Georgia, serif" font-size="68" font-weight="700">Your work history,</text>
+  <text x="104" y="354" fill="#111827" font-family="Fraunces, Georgia, serif" font-size="68" font-weight="700">ready to answer.</text>
+  <text x="108" y="410" fill="#4B5563" font-family="IBM Plex Sans, Arial, sans-serif" font-size="23" font-weight="500">Document experience, rehearse interviews,</text>
+  <text x="108" y="442" fill="#4B5563" font-family="IBM Plex Sans, Arial, sans-serif" font-size="23" font-weight="500">and publish a grounded public profile.</text>
+
+  <g font-family="IBM Plex Mono, ui-monospace, monospace" font-size="16" font-weight="700" letter-spacing=".6">
+    <rect x="104" y="488" width="226" height="44" rx="10" fill="#EFE6D5" stroke="#D8CCB7"/>
+    <text x="126" y="516" fill="#073A5A">EVIDENCE-FIRST</text>
+    <rect x="348" y="488" width="196" height="44" rx="10" fill="#EFE6D5" stroke="#D8CCB7"/>
+    <text x="370" y="516" fill="#073A5A">RAG COACHING</text>
+    <rect x="562" y="488" width="216" height="44" rx="10" fill="#EFE6D5" stroke="#D8CCB7"/>
+    <text x="584" y="516" fill="#073A5A">PUBLIC BIO CHAT</text>
+  </g>
+
+  <g transform="translate(800 118)">
+    <rect width="276" height="356" rx="22" fill="#FFFFFF" stroke="#D8CCB7" stroke-width="2"/>
+    <rect x="24" y="28" width="72" height="72" rx="16" fill="#073A5A"/>
+    <text x="43" y="74" fill="#FAF4E8" font-family="IBM Plex Sans, Arial, sans-serif" font-size="28" font-weight="700">LH</text>
+    <text x="116" y="55" fill="#111827" font-family="Fraunces, Georgia, serif" font-size="26" font-weight="700">Public profile</text>
+    <text x="116" y="83" fill="#4B5563" font-family="IBM Plex Sans, Arial, sans-serif" font-size="17">Ask about real work</text>
+    <line x1="24" y1="124" x2="252" y2="124" stroke="#D8CCB7"/>
+    <rect x="24" y="154" width="228" height="54" rx="12" fill="#F6F0E3" stroke="#D8CCB7"/>
+    <text x="42" y="187" fill="#111827" font-family="IBM Plex Sans, Arial, sans-serif" font-size="17" font-weight="700">What did you build?</text>
+    <rect x="24" y="224" width="190" height="54" rx="12" fill="#073A5A"/>
+    <text x="42" y="257" fill="#FAF4E8" font-family="IBM Plex Sans, Arial, sans-serif" font-size="17" font-weight="700">Grounded answer...</text>
+    <rect x="24" y="304" width="228" height="28" rx="8" fill="#EFE6D5"/>
+    <rect x="24" y="304" width="138" height="28" rx="8" fill="#D17B42"/>
+  </g>
+
+  <defs>
+    <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse">
+      <circle cx="8" cy="8" r="2" fill="#0F2638" fill-opacity=".08"/>
+    </pattern>
+    <linearGradient id="warm" x1="64" y1="64" x2="1136" y2="566" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity=".72"/>
+      <stop offset=".54" stop-color="#FFFFFF" stop-opacity=".2"/>
+      <stop offset="1" stop-color="#EEDDBA" stop-opacity=".42"/>
+    </linearGradient>
+  </defs>
+</svg>

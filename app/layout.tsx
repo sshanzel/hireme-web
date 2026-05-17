@@ -51,7 +51,7 @@ export const metadata: Metadata = {
       'Document your career experiences, let AI help you articulate your journey, and create a portfolio that speaks for itself.',
     images: [
       {
-        url: '/og-image.jpg',
+        url: '/og-image.png',
         width: 1200,
         height: 630,
         alt: 'HireMe.dev - Your Career Story, Powered by AI',
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     title: 'HireMe.dev - Your Career Story, Powered by AI',
     description:
       'Document your career experiences, let AI help you articulate your journey, and create a portfolio that speaks for itself.',
-    images: ['/og-image.jpg'],
+    images: ['/og-image.png'],
   },
   robots: {
     index: false,
