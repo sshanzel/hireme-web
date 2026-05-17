@@ -21,7 +21,7 @@ export function MessageBubble({message, assistantIcon}: MessageBubbleProps) {
     <div className={cn('flex gap-3', isUser && 'flex-row-reverse')}>
       <div
         className={cn(
-          'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm',
+          'flex h-8 w-8 shrink-0 items-center justify-center rounded-md shadow-sm',
           isUser && 'bg-primary text-primary-foreground shadow-primary/20',
           isError && 'bg-destructive/10 text-destructive',
           !isUser && !isError && 'border border-border/70 bg-card text-primary',
@@ -37,11 +37,11 @@ export function MessageBubble({message, assistantIcon}: MessageBubbleProps) {
       </div>
       <div
         className={cn(
-          'max-w-[82%] rounded-lg px-3.5 py-2.5 text-sm leading-6 shadow-sm',
-          isUser && 'whitespace-pre-wrap bg-primary text-primary-foreground shadow-primary/15',
+          'max-w-[82%] rounded-md px-3.5 py-2.5 text-sm leading-6 shadow-sm',
+          isUser && 'whitespace-pre-wrap bg-primary text-primary-foreground shadow-[3px_3px_0_oklch(0.17_0.023_248_/_0.14)]',
           isError && 'whitespace-pre-wrap border border-destructive/20 bg-destructive/10 text-destructive',
           isAssistant &&
-            'prose prose-sm prose-neutral max-w-none border border-border/70 bg-card/90 dark:prose-invert',
+            'prose prose-sm prose-neutral max-w-none border border-border/70 bg-card/92 dark:prose-invert',
         )}
       >
         {isAssistant ? (

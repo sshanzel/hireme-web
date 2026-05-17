@@ -99,7 +99,7 @@ export function ExperienceList({experiences, onMutate}: ExperienceListProps) {
         <CardHeader className='border-b border-border/70 bg-card/90'>
           <div className='flex items-start justify-between'>
             <div className='flex items-start gap-3'>
-              <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-secondary text-secondary-foreground'>
+              <div className='flex h-10 w-10 items-center justify-center rounded-md border border-border/70 bg-secondary text-secondary-foreground'>
                 <Layers3 className='h-5 w-5' />
               </div>
               <div>
@@ -115,11 +115,11 @@ export function ExperienceList({experiences, onMutate}: ExperienceListProps) {
         </CardHeader>
         <CardContent className='pt-6'>
           {experiences.length === 0 ? (
-            <div className='flex flex-col items-center justify-center rounded-lg border border-dashed border-border/80 bg-secondary/25 py-10 text-center'>
-              <div className='flex h-12 w-12 items-center justify-center rounded-lg bg-card shadow-sm'>
+            <div className='flex flex-col items-center justify-center rounded-md border border-dashed border-border/80 bg-secondary/25 py-10 text-center'>
+              <div className='flex h-12 w-12 items-center justify-center rounded-md bg-card shadow-sm'>
                 <Briefcase className='h-6 w-6 text-primary' />
               </div>
-              <p className='mt-4 text-sm font-semibold'>No experiences yet</p>
+              <p className='font-display mt-4 text-lg font-semibold'>No experiences yet</p>
               <p className='mt-1 max-w-xs text-sm text-muted-foreground'>
                 Upload your CV or add your work history manually.
               </p>

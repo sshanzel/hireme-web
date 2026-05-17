@@ -12,15 +12,15 @@ interface StoryItemProps {
 
 export function StoryItem({story, onClick, onDelete, isDeleting}: StoryItemProps) {
   return (
-    <div className='group flex items-start gap-2 rounded-md border bg-muted/30 p-3 transition-colors hover:bg-muted/50'>
+    <div className='group flex items-start gap-2 rounded-md border border-border/70 bg-muted/30 p-3 transition-all hover:-translate-y-0.5 hover:bg-muted/50'>
       <button type='button' onClick={onClick} className='min-w-0 flex-1 text-left'>
         <div className='flex items-start justify-between gap-2'>
-          <h5 className='text-sm font-medium line-clamp-1'>{story.title || 'Untitled Story'}</h5>
+          <h5 className='font-display text-sm font-semibold line-clamp-1'>{story.title || 'Untitled Story'}</h5>
           <div className='flex shrink-0 items-center gap-1'>
             {story.tags?.slice(0, 2).map(tag => (
               <span
                 key={tag}
-                className='inline-flex shrink-0 items-center whitespace-nowrap rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary'
+                className='inline-flex shrink-0 items-center whitespace-nowrap rounded-md bg-primary/10 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase text-primary'
               >
                 {tag}
               </span>

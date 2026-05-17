@@ -27,21 +27,21 @@ export default function HomePage() {
             description='Shape raw work memories into clear, useful stories before the interview clock starts ticking.'
             eyebrow='Story desk'
           />
-          <div className='grid grid-cols-3 gap-2 lg:w-[26rem]'>
-            <div className='rounded-lg border border-border/70 bg-card/80 p-3 shadow-sm'>
+          <div className='grid grid-cols-3 gap-2 lg:w-[28rem]'>
+            <div className='ledger-card p-3'>
               <BriefcaseBusiness className='h-4 w-4 text-primary' />
-              <p className='mt-2 text-xl font-semibold'>{experiencesCount}</p>
-              <p className='text-xs text-muted-foreground'>Roles</p>
+              <p className='font-display mt-2 text-2xl font-semibold'>{experiencesCount}</p>
+              <p className='font-mono text-[11px] font-semibold uppercase text-muted-foreground'>Roles</p>
             </div>
-            <div className='rounded-lg border border-border/70 bg-card/80 p-3 shadow-sm'>
+            <div className='ledger-card p-3'>
               <BookOpen className='h-4 w-4 text-accent' />
-              <p className='mt-2 text-xl font-semibold'>{storiesCount}</p>
-              <p className='text-xs text-muted-foreground'>Stories</p>
+              <p className='font-display mt-2 text-2xl font-semibold'>{storiesCount}</p>
+              <p className='font-mono text-[11px] font-semibold uppercase text-muted-foreground'>Stories</p>
             </div>
-            <div className='rounded-lg border border-border/70 bg-card/80 p-3 shadow-sm'>
+            <div className='ledger-card p-3'>
               <MessageSquareText className='h-4 w-4 text-chart-4' />
-              <p className='mt-2 text-xl font-semibold'>{untaggedCount}</p>
-              <p className='text-xs text-muted-foreground'>Loose</p>
+              <p className='font-display mt-2 text-2xl font-semibold'>{untaggedCount}</p>
+              <p className='font-mono text-[11px] font-semibold uppercase text-muted-foreground'>Loose</p>
             </div>
           </div>
         </div>

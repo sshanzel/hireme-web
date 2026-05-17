@@ -6,12 +6,15 @@ interface PageHeaderProps {
 
 export function PageHeader({title, description, eyebrow = 'Workspace'}: PageHeaderProps) {
   return (
-    <div className="mb-6 flex flex-col gap-2">
-      <div className="flex w-fit items-center gap-2 rounded-full border border-primary/15 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase text-primary">
+    <div className="mb-6 flex flex-col gap-3">
+      <div className="eyebrow-label">
         <span className="h-1.5 w-1.5 rounded-full bg-accent" />
         {eyebrow}
       </div>
-      <h1 className="text-3xl font-semibold text-foreground">{title}</h1>
+      <h1 className="font-display max-w-3xl text-4xl font-semibold leading-[0.98] text-foreground md:text-5xl">
+        {title}
+      </h1>
+      <div className="ink-rule h-px w-28" />
       {description && (
         <p className="max-w-2xl text-sm leading-6 text-muted-foreground">{description}</p>
       )}

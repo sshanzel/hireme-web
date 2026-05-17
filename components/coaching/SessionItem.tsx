@@ -30,14 +30,14 @@ export function SessionItem({session, isActive, onClick, onDelete}: SessionItemP
       onClick={onClick}
       onKeyDown={handleKeyDown}
       className={cn(
-        'group flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-        isActive && 'bg-muted',
+        'group flex w-full cursor-pointer items-center gap-3 rounded-md border border-transparent px-3 py-2 text-left text-sm transition-all hover:-translate-y-0.5 hover:border-border/70 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        isActive && 'border-primary/25 bg-muted',
       )}
     >
       <MessageCircle className='h-4 w-4 shrink-0 text-muted-foreground' />
       <div className='min-w-0 flex-1'>
-        <p className='truncate font-medium'>{session.title || 'Untitled session'}</p>
-        <p className='text-xs text-muted-foreground'>{formatRelativeDate(session.updatedAt)}</p>
+        <p className='font-display truncate font-semibold'>{session.title || 'Untitled session'}</p>
+        <p className='font-mono text-[10px] font-semibold uppercase text-muted-foreground'>{formatRelativeDate(session.updatedAt)}</p>
       </div>
       {onDelete && (
         <button

@@ -135,16 +135,16 @@ export function Chat() {
     : 'Tell us a story from your work/project!';
 
   return (
-    <Card className='flex min-h-[34rem] flex-col gap-0 overflow-hidden py-0 xl:h-full'>
-      <div className='border-b border-border/70 bg-card/90 px-4 py-3'>
+    <Card className='paper-texture flex min-h-[34rem] flex-col gap-0 overflow-hidden py-0 xl:h-full'>
+      <div className='relative border-b border-border/70 bg-card/88 px-4 py-3'>
         <div className='flex items-center justify-between gap-3'>
         <div className='flex min-w-0 flex-1 items-center gap-2'>
-          <div className='flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm shadow-primary/20'>
+          <div className='flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-[3px_3px_0_oklch(0.17_0.023_248_/_0.16)]'>
             <WandSparkles className='h-4 w-4' />
           </div>
           <div className='min-w-0'>
-            <p className='text-xs font-semibold uppercase text-muted-foreground'>Story builder</p>
-            <h3 className='truncate text-sm font-semibold'>{title}</h3>
+            <p className='font-mono text-[11px] font-semibold uppercase text-muted-foreground'>Story builder</p>
+            <h3 className='font-display truncate text-base font-semibold'>{title}</h3>
           </div>
           {hasActiveSession && (
             <Button
@@ -157,30 +157,30 @@ export function Chat() {
             </Button>
           )}
         </div>
-        <div className='flex shrink-0 items-center gap-2 rounded-full border border-border/70 bg-background/60 px-2.5 py-1.5'>
+        <div className='flex shrink-0 items-center gap-2 rounded-md border border-border/70 bg-background/60 px-2.5 py-1.5'>
           <Radio className={cn('h-3.5 w-3.5', isConnected ? 'text-primary' : 'text-muted-foreground')} />
           <span
             className={cn(
-              'h-2 w-2 rounded-full',
+              'status-dot',
               isConnected ? 'bg-green-500' : 'bg-muted-foreground/50',
             )}
           />
-          <span className='text-xs text-muted-foreground'>
+          <span className='font-mono text-[11px] font-semibold uppercase text-muted-foreground'>
             {isConnected ? 'Connected' : 'Disconnected'}
           </span>
         </div>
         </div>
       </div>
-      <div className='min-h-0 flex-1 overflow-y-auto bg-gradient-to-b from-secondary/25 via-transparent to-card/60 p-4'>
+      <div className='relative min-h-0 flex-1 overflow-y-auto bg-gradient-to-b from-secondary/30 via-card/20 to-card/70 p-4'>
         {messages.length === 0 && !isLoading ? (
           <div
             className='flex h-full cursor-text flex-col items-center justify-center text-center'
             onClick={handleEmptyStateClick}
           >
-            <div className='flex h-16 w-16 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 shadow-sm'>
+            <div className='flex h-16 w-16 items-center justify-center rounded-md border border-primary/20 bg-primary/10 shadow-[5px_5px_0_oklch(0.31_0.085_238_/_0.11)]'>
               <MessageSquare className='h-8 w-8 text-primary' />
             </div>
-            <h4 className='mt-4 text-lg font-semibold'>Start with the messy version</h4>
+            <h4 className='font-display mt-4 text-2xl font-semibold'>Start with the messy version</h4>
             <p className='mt-1 max-w-sm text-sm leading-6 text-muted-foreground'>
               Think of a challenge you faced, a win you achieved, or a lesson you learned.
             </p>
@@ -209,7 +209,7 @@ export function Chat() {
       </div>
 
       {story?.id && experiences.length > 0 && (
-        <div className='flex flex-wrap items-center gap-3 border-t border-border/70 bg-secondary/30 px-4 py-2'>
+        <div className='flex flex-wrap items-center gap-3 border-t border-border/70 bg-secondary/35 px-4 py-2'>
           <div className='flex items-center gap-2 text-sm text-muted-foreground'>
             <Tag className='h-4 w-4' />
             <span>{story.experienceId ? 'Tagged to:' : 'Tag this story:'}</span>
@@ -233,8 +233,8 @@ export function Chat() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className='border-t border-border/70 bg-card/90 p-4'>
-        <div className='flex gap-2 rounded-lg border border-border/70 bg-background/70 p-2 shadow-inner'>
+      <form onSubmit={handleSubmit} className='relative border-t border-border/70 bg-card/90 p-4'>
+        <div className='flex gap-2 rounded-md border border-border/70 bg-background/75 p-2 shadow-inner'>
           <Textarea
             ref={inputRef}
             value={input}

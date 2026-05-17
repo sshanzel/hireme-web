@@ -47,7 +47,7 @@ export function UntaggedStories({stories}: UntaggedStoriesProps) {
       <Card className='overflow-hidden border-accent/30 bg-accent/10'>
         <CardHeader className='border-b border-accent/20 bg-accent/10'>
           <div className='flex items-center gap-2'>
-            <div className='flex h-9 w-9 items-center justify-center rounded-lg bg-accent/20'>
+            <div className='flex h-9 w-9 items-center justify-center rounded-md bg-accent/20'>
               <MessageSquareWarning className='h-5 w-5 text-accent-foreground' />
             </div>
             <div>
@@ -62,13 +62,13 @@ export function UntaggedStories({stories}: UntaggedStoriesProps) {
             maxItems={2}
             keyExtractor={story => story.id}
             renderItem={story => (
-              <div className='group flex items-start gap-2 rounded-lg border border-border/70 bg-card/75 p-3 shadow-sm transition-colors hover:border-accent/40 hover:bg-card'>
+              <div className='group flex items-start gap-2 rounded-md border border-border/70 bg-card/75 p-3 shadow-sm transition-all hover:-translate-y-0.5 hover:border-accent/40 hover:bg-card'>
                 <button
                   type='button'
                   onClick={() => selectStory(story.id)}
                   className='min-w-0 flex-1 cursor-pointer text-left'
                 >
-                  <h5 className='text-sm font-medium line-clamp-1'>{story.title || 'Untitled Story'}</h5>
+                  <h5 className='font-display text-sm font-semibold line-clamp-1'>{story.title || 'Untitled Story'}</h5>
                   <p className='mt-1 text-xs text-muted-foreground line-clamp-2'>{story.impact}</p>
                 </button>
                 <button

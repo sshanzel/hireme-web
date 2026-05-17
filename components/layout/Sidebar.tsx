@@ -39,18 +39,18 @@ export function Sidebar() {
 
   return (
     <>
-    <aside className="hidden h-screen w-[17.5rem] shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-2xl shadow-primary/10 md:flex">
-      <div className="flex h-[4.5rem] items-center border-b border-sidebar-border/80 px-5">
+    <aside className="hidden h-screen w-[18.5rem] shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-2xl shadow-primary/10 md:flex">
+      <div className="flex h-[4.75rem] items-center border-b border-sidebar-border/80 px-5">
         <Link href="/" className="group flex cursor-pointer items-center gap-3 transition-opacity hover:opacity-90">
-          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-sidebar-primary text-sm font-black text-sidebar-primary-foreground shadow-lg shadow-black/15">
+          <span className="flex h-10 w-10 items-center justify-center rounded-md bg-sidebar-primary font-mono text-sm font-black text-sidebar-primary-foreground shadow-[4px_4px_0_rgba(0,0,0,0.24)]">
             HM
           </span>
           <span className="flex flex-col leading-none">
-            <span className="text-lg font-semibold">
+            <span className="font-display text-xl font-semibold">
               <span className="text-gradient">HireMe</span>
               <span className="text-sidebar-foreground">.dev</span>
             </span>
-            <span className="mt-1 text-[11px] font-medium text-sidebar-foreground/55">
+            <span className="mt-1 font-mono text-[10px] font-semibold uppercase text-sidebar-foreground/55">
               Career story studio
             </span>
           </span>
@@ -64,10 +64,10 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                'group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all',
+                'group relative flex items-center gap-3 rounded-md border px-3 py-2.5 text-sm font-semibold transition-all hover:-translate-y-0.5',
                 isActive
-                  ? 'bg-sidebar-accent text-sidebar-accent-foreground shadow-lg shadow-black/10'
-                  : 'text-sidebar-foreground/72 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground'
+                  ? 'border-sidebar-primary/40 bg-sidebar-accent text-sidebar-accent-foreground shadow-[4px_4px_0_rgba(0,0,0,0.18)]'
+                  : 'border-transparent text-sidebar-foreground/72 hover:border-sidebar-border hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground'
               )}
             >
               <span
@@ -87,6 +87,9 @@ export function Sidebar() {
           <Sparkles className="h-4 w-4 text-sidebar-primary" />
           Ready for rehearsal
         </div>
+        <p className="mt-2 text-xs leading-5 text-sidebar-foreground/58">
+          Draft the rough version here. Polish happens after the truth is on the page.
+        </p>
       </div>
     </aside>
     <nav className="fixed inset-x-3 bottom-3 z-40 grid grid-cols-4 rounded-lg border border-sidebar-border/70 bg-sidebar/95 p-1 text-sidebar-foreground shadow-2xl shadow-black/20 backdrop-blur md:hidden">

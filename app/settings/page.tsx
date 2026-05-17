@@ -24,9 +24,12 @@ export default function SettingsPage() {
 
   return (
     <AppLayout>
-      <PageHeader title='Settings' description='Manage your account settings.' />
+      <PageHeader
+        title='Settings'
+        description='Tune the public version of you: headline, profile links, and the account details behind the studio.'
+      />
 
-      <div className='max-w-2xl space-y-6'>
+      <div className='grid max-w-5xl gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]'>
         <Card>
           <CardHeader>
             <CardTitle>Profile</CardTitle>
@@ -47,15 +50,15 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className='h-fit'>
           <CardHeader>
             <CardTitle>Account</CardTitle>
             <CardDescription>Your account information.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div>
-              <label className='text-sm font-medium'>Email</label>
-              <p className='text-sm text-muted-foreground'>{user.email}</p>
+            <div className='rounded-md border border-border/70 bg-secondary/30 p-3'>
+              <label className='font-mono text-[11px] font-semibold uppercase text-muted-foreground'>Email</label>
+              <p className='mt-1 break-all text-sm font-semibold'>{user.email}</p>
             </div>
           </CardContent>
         </Card>

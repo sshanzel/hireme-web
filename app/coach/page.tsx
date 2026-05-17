@@ -207,30 +207,32 @@ export default function CoachPage() {
 
         <div className='mt-2 grid min-h-0 flex-1 grid-cols-1 gap-5 pb-6 lg:grid-cols-3'>
           {/* Chat area - takes 2 columns on desktop */}
-          <Card className='flex min-h-[34rem] flex-col overflow-hidden py-0 lg:col-span-2 lg:min-h-0'>
-            {/* Header with connection status */}
-            <div className='flex shrink-0 items-center justify-end border-b border-border/70 bg-card/90 px-4 py-3'>
-              <div className='flex items-center gap-2 rounded-full border border-border/70 bg-background/60 px-2.5 py-1.5'>
+          <Card className='paper-texture flex min-h-[34rem] flex-col overflow-hidden py-0 lg:col-span-2 lg:min-h-0'>
+            <div className='relative flex shrink-0 items-center justify-between border-b border-border/70 bg-card/90 px-4 py-3'>
+              <div>
+                <p className='font-mono text-[11px] font-semibold uppercase text-muted-foreground'>Live rehearsal</p>
+                <h2 className='font-display text-lg font-semibold'>Interview room</h2>
+              </div>
+              <div className='flex items-center gap-2 rounded-md border border-border/70 bg-background/60 px-2.5 py-1.5'>
                 <span
                   className={cn(
-                    'h-2 w-2 rounded-full',
+                    'status-dot',
                     isConnected ? 'bg-green-500' : 'bg-muted-foreground/50',
                   )}
                 />
-                <span className='text-xs text-muted-foreground'>
+                <span className='font-mono text-[11px] font-semibold uppercase text-muted-foreground'>
                   {isConnected ? 'Connected' : 'Disconnected'}
                 </span>
               </div>
             </div>
 
-            {/* Messages area */}
-            <div className='flex min-h-0 flex-1 flex-col overflow-auto bg-gradient-to-b from-secondary/25 via-transparent to-card/60 p-4'>
+            <div className='relative flex min-h-0 flex-1 flex-col overflow-auto bg-gradient-to-b from-secondary/30 via-transparent to-card/70 p-4'>
               {messages.length === 0 && !isLoading ? (
                 <div className='flex flex-1 flex-col items-center justify-center text-center'>
-                  <div className='flex h-16 w-16 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 shadow-sm'>
+                  <div className='flex h-16 w-16 items-center justify-center rounded-md border border-primary/20 bg-primary/10 shadow-[5px_5px_0_oklch(0.31_0.085_238_/_0.11)]'>
                     <Sparkles className='h-8 w-8 text-primary' />
                   </div>
-                  <h3 className='mt-4 text-lg font-semibold'>Your AI Career Coach</h3>
+                  <h3 className='font-display mt-4 text-2xl font-semibold'>Your AI Career Coach</h3>
                   <p className='mt-2 max-w-md text-sm text-muted-foreground'>
                     Ask me anything about your career stories, practice behavioral interviews, or
                     get help preparing answers using the STAR method.
@@ -260,9 +262,8 @@ export default function CoachPage() {
               )}
             </div>
 
-            {/* Input area */}
-            <form onSubmit={handleSubmit} className='shrink-0 border-t border-border/70 bg-card/90 p-4'>
-              <div className='flex gap-2 rounded-lg border border-border/70 bg-background/70 p-2 shadow-inner'>
+            <form onSubmit={handleSubmit} className='relative shrink-0 border-t border-border/70 bg-card/90 p-4'>
+              <div className='flex gap-2 rounded-md border border-border/70 bg-background/70 p-2 shadow-inner'>
                 <Textarea
                   ref={inputRef}
                   value={input}
@@ -285,7 +286,6 @@ export default function CoachPage() {
             </form>
           </Card>
 
-          {/* Thread history - hidden on mobile, visible on desktop */}
           <Card className='hidden min-h-0 flex-col overflow-hidden lg:flex'>
             <CardHeader className='shrink-0 border-b border-border/70 bg-card/90'>
               <CardTitle className='text-base'>Chat History</CardTitle>

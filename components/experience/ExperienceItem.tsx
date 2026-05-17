@@ -48,19 +48,19 @@ export function ExperienceItem({
   const ExperienceIcon = isEducation ? GraduationCap : Briefcase;
 
   return (
-    <div className='overflow-hidden rounded-lg border border-border/70 bg-card/75 shadow-sm transition-colors hover:border-primary/25'>
+    <div className='ledger-card overflow-hidden'>
       <div className='flex gap-4 p-4'>
-        <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/15'>
+        <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary/10 ring-1 ring-primary/15'>
           <ExperienceIcon className='h-5 w-5 text-primary' />
         </div>
         <div className='min-w-0 flex-1'>
           <div className='flex flex-wrap items-start justify-between gap-x-4 gap-y-1'>
             <div>
-              <h4 className='font-medium'>{experience.title}</h4>
+              <h4 className='font-display text-lg font-semibold'>{experience.title}</h4>
               <p className='mt-1 text-sm text-muted-foreground'>{experience.organization}</p>
             </div>
             <div className='flex flex-wrap items-center justify-end gap-2'>
-              <span className='rounded-full border border-border/70 bg-background/60 px-2.5 py-1 text-xs font-medium text-muted-foreground'>
+              <span className='rounded-md border border-border/70 bg-background/60 px-2.5 py-1 font-mono text-[11px] font-semibold uppercase text-muted-foreground'>
                 {formatDateRange(experience.startDate, experience.endDate)}
               </span>
               <Button variant='ghost' size='icon' className='h-8 w-8' onClick={onEdit}>
@@ -84,7 +84,7 @@ export function ExperienceItem({
           <p className='mt-3 text-sm leading-6 line-clamp-2'>{experience.description}</p>
 
           {showDeleteConfirm && (
-            <div className='mt-3 flex items-center gap-2 rounded-lg bg-destructive/10 p-3'>
+            <div className='mt-3 flex items-center gap-2 rounded-md border border-destructive/20 bg-destructive/10 p-3'>
               <p className='flex-1 text-sm text-destructive'>Delete this experience?</p>
               <Button variant='ghost' size='sm' onClick={handleCancelDelete}>
                 Cancel
@@ -97,7 +97,7 @@ export function ExperienceItem({
         </div>
       </div>
 
-      <div className='border-t border-border/70 bg-secondary/20 px-4 py-3'>
+      <div className='border-t border-border/70 bg-secondary/24 px-4 py-3'>
         <button
           type='button'
           onClick={() => setIsStoriesExpanded(!isStoriesExpanded)}
@@ -112,7 +112,7 @@ export function ExperienceItem({
               </span>
             </span>
           </div>
-          <span className='rounded-full bg-card/70 px-2 py-1 text-xs font-medium text-muted-foreground'>
+          <span className='rounded-md border border-border/60 bg-card/70 px-2 py-1 font-mono text-[11px] font-semibold uppercase text-muted-foreground'>
             {isStoriesExpanded ? 'Hide' : 'Show'}
           </span>
         </button>
@@ -134,9 +134,9 @@ export function ExperienceItem({
                   />
                 ))
               ) : (
-                <div className='rounded-lg border border-dashed border-border/80 bg-card/60 p-4 text-center'>
+                <div className='rounded-md border border-dashed border-border/80 bg-card/60 p-4 text-center'>
                   <Sparkles className='mx-auto h-6 w-6 text-accent' />
-                  <p className='mt-2 text-sm font-medium'>No stories yet</p>
+                  <p className='font-display mt-2 text-base font-semibold'>No stories yet</p>
                   <p className='mt-1 text-xs text-muted-foreground'>Use chat to attach one.</p>
                   <Button variant='outline' size='sm' className='mt-3'>
                     <Plus className='mr-2 h-3 w-3' />

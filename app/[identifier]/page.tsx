@@ -219,42 +219,50 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
   const hasProfileDetails = !!profile.bio || !!hasSocials;
   const profileSummary = (
     <div className='flex min-w-0 items-center gap-3 text-left'>
-      <div className='flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-base font-semibold text-primary'>
+      <div className='flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-primary font-mono text-base font-semibold text-primary-foreground shadow-[4px_4px_0_oklch(0.17_0.023_248_/_0.14)]'>
         {getInitials(profile.name)}
       </div>
       <div className='min-w-0'>
-        <h1 className='truncate text-base font-semibold'>{profile.name}</h1>
+        <h1 className='font-display truncate text-lg font-semibold'>{profile.name}</h1>
         {headline && <p className='truncate text-sm text-muted-foreground'>{headline}</p>}
       </div>
     </div>
   );
 
   return (
-    <div className='min-h-screen bg-background'>
-      {/* Header */}
-      <header className='border-b'>
+    <div className='workspace-grid min-h-screen bg-background'>
+      <header className='paper-texture relative overflow-hidden border-b border-border/70 bg-card/72 backdrop-blur-xl'>
         <div className='mx-auto flex h-16 max-w-6xl items-center justify-between px-4'>
           <Link
             href='/'
-            className='cursor-pointer text-xl font-semibold transition-opacity hover:opacity-80'
+            className='font-display relative cursor-pointer text-xl font-semibold transition-opacity hover:opacity-80'
           >
             <span className='text-gradient'>HireMe</span>
             <span>.dev</span>
           </Link>
           <Link
             href='/stack'
-            className='text-sm text-muted-foreground transition-colors hover:text-foreground'
+            className='relative rounded-md border border-border/70 bg-card/80 px-3 py-1.5 text-sm font-semibold text-muted-foreground transition-all hover:-translate-y-0.5 hover:text-foreground'
           >
             Tech Stack
           </Link>
         </div>
       </header>
 
-      <main className='mx-auto max-w-6xl px-4 py-8'>
+      <main className='mx-auto max-w-6xl px-4 py-8 md:py-10'>
+        <div className='mb-8 max-w-3xl'>
+          <div className='eyebrow-label'>Interactive candidate dossier</div>
+          <h2 className='font-display mt-3 text-5xl font-semibold leading-[0.98] md:text-6xl'>
+            Ask the work history directly.
+          </h2>
+          <p className='mt-4 max-w-2xl text-sm leading-6 text-muted-foreground'>
+            This profile is built from documented projects and career stories, so the chat stays close
+            to the evidence instead of drifting into generic resume talk.
+          </p>
+        </div>
+
         <div className='grid gap-6 lg:grid-cols-3'>
-          {/* Profile Section */}
           <div className='space-y-6'>
-            {/* Profile Card */}
             <Card className='gap-0 overflow-hidden py-0'>
               {hasProfileDetails ? (
                 <button
@@ -287,7 +295,7 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                             href={profile.githubUrl}
                             target='_blank'
                             rel='noopener noreferrer'
-                            className='flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
+                            className='flex h-9 w-9 items-center justify-center rounded-md border border-border/70 bg-muted text-muted-foreground transition-all hover:-translate-y-0.5 hover:bg-primary/10 hover:text-primary'
                           >
                             <Github className='h-4 w-4' />
                           </a>
@@ -297,7 +305,7 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                             href={profile.linkedinUrl}
                             target='_blank'
                             rel='noopener noreferrer'
-                            className='flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
+                            className='flex h-9 w-9 items-center justify-center rounded-md border border-border/70 bg-muted text-muted-foreground transition-all hover:-translate-y-0.5 hover:bg-primary/10 hover:text-primary'
                           >
                             <Linkedin className='h-4 w-4' />
                           </a>
@@ -307,7 +315,7 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                             href={profile.twitterUrl}
                             target='_blank'
                             rel='noopener noreferrer'
-                            className='flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
+                            className='flex h-9 w-9 items-center justify-center rounded-md border border-border/70 bg-muted text-muted-foreground transition-all hover:-translate-y-0.5 hover:bg-primary/10 hover:text-primary'
                           >
                             <Twitter className='h-4 w-4' />
                           </a>
@@ -317,7 +325,7 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                             href={profile.websiteUrl}
                             target='_blank'
                             rel='noopener noreferrer'
-                            className='flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
+                            className='flex h-9 w-9 items-center justify-center rounded-md border border-border/70 bg-muted text-muted-foreground transition-all hover:-translate-y-0.5 hover:bg-primary/10 hover:text-primary'
                           >
                             <Globe className='h-4 w-4' />
                           </a>
@@ -329,11 +337,10 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
               )}
             </Card>
 
-            {/* Experience Card */}
             {profile.experiences.length > 0 && (
               <Card>
                 <CardHeader>
-                  <CardTitle className='text-base'>Experience</CardTitle>
+                  <CardTitle className='text-base'>Evidence trail</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CollapsibleList
@@ -346,15 +353,15 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                         <button
                           type='button'
                           onClick={() => setSelectedExperience(exp)}
-                          className='flex w-full cursor-pointer gap-3 rounded-lg p-2 text-left transition-colors hover:bg-muted'
+                          className='flex w-full cursor-pointer gap-3 rounded-md border border-transparent p-2 text-left transition-all hover:-translate-y-0.5 hover:border-border/70 hover:bg-muted'
                         >
-                          <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted'>
+                          <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-muted'>
                             <ExperienceIcon className='h-5 w-5' />
                           </div>
                           <div className='min-w-0 flex-1'>
-                            <p className='font-medium'>{exp.title}</p>
+                            <p className='font-display font-semibold'>{exp.title}</p>
                             <p className='text-sm text-muted-foreground'>{exp.organization}</p>
-                            <p className='text-xs text-muted-foreground'>
+                            <p className='font-mono text-[10px] font-semibold uppercase text-muted-foreground'>
                               {formatDateRange(exp.startDate, exp.endDate)}
                             </p>
                           </div>
@@ -367,38 +374,37 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
             )}
           </div>
 
-          {/* Chat Section */}
-          <Card className='flex min-h-150 flex-col py-0 lg:col-span-2 md:max-h-[calc(100vh-8.5rem)] md:sticky md:top-24'>
-            <div className='flex shrink-0 items-center justify-between border-b px-4 py-3'>
+          <Card className='paper-texture flex min-h-150 flex-col overflow-hidden py-0 lg:col-span-2 md:max-h-[calc(100vh-8.5rem)] md:sticky md:top-24'>
+            <div className='relative flex shrink-0 items-center justify-between border-b px-4 py-3'>
               <div className='flex items-center gap-2'>
                 <Sparkles className='h-5 w-5 text-primary' />
                 <div>
-                  <h2 className='font-medium'>Let&apos;s chat</h2>
-                  <p className='text-xs text-muted-foreground'>
+                  <h2 className='font-display text-lg font-semibold'>Let&apos;s chat</h2>
+                  <p className='font-mono text-[10px] font-semibold uppercase text-muted-foreground'>
                     Powered by AI, trained on my experiences
                   </p>
                 </div>
               </div>
-              <div className='flex items-center gap-2'>
+              <div className='flex items-center gap-2 rounded-md border border-border/70 bg-background/60 px-2.5 py-1.5'>
                 <span
                   className={cn(
-                    'h-2 w-2 rounded-full',
+                    'status-dot',
                     isConnected ? 'bg-green-500' : 'bg-muted-foreground',
                   )}
                 />
-                <span className='text-xs text-muted-foreground'>
+                <span className='font-mono text-[10px] font-semibold uppercase text-muted-foreground'>
                   {isConnected ? 'Connected' : 'Connecting...'}
                 </span>
               </div>
             </div>
 
-            <div className='flex min-h-0 flex-1 flex-col overflow-auto p-4'>
+            <div className='relative flex min-h-0 flex-1 flex-col overflow-auto bg-gradient-to-b from-secondary/25 via-transparent to-card/70 p-4'>
               {messages.length === 0 && !isTyping ? (
                 <div className='flex flex-1 flex-col items-center justify-center text-center'>
-                  <div className='flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-xl font-semibold text-primary'>
+                  <div className='flex h-16 w-16 items-center justify-center rounded-md bg-primary font-mono text-xl font-semibold text-primary-foreground shadow-[5px_5px_0_oklch(0.17_0.023_248_/_0.14)]'>
                     {getInitials(profile.name)}
                   </div>
-                  <h3 className='mt-4 text-lg font-semibold'>Ask me anything about my career</h3>
+                  <h3 className='font-display mt-4 text-2xl font-semibold'>Ask me anything about my career</h3>
                   <p className='mt-2 max-w-md text-sm text-muted-foreground'>
                     Curious about my experience, projects, or skills? Go ahead and ask - I&apos;d
                     love to tell you more about my journey.
@@ -412,7 +418,7 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                         onClick={() => handlePromptClick(prompt)}
                         disabled={!isConnected}
                         className={cn(
-                          'rounded-full border px-3 py-1.5 text-xs transition-all duration-300',
+                          'rounded-md border px-3 py-1.5 text-xs font-semibold transition-all duration-300',
                           isConnected
                             ? 'animate-in zoom-in-95 fade-in cursor-pointer bg-background hover:bg-muted hover:scale-105'
                             : 'cursor-not-allowed bg-muted/50 text-muted-foreground/50',
@@ -457,8 +463,8 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
               )}
             </div>
 
-            <form onSubmit={handleSubmit} className='shrink-0 border-t p-4'>
-              <div className='flex gap-2'>
+            <form onSubmit={handleSubmit} className='relative shrink-0 border-t bg-card/90 p-4'>
+              <div className='flex gap-2 rounded-md border border-border/70 bg-background/75 p-2 shadow-inner'>
                 <Textarea
                   ref={inputRef}
                   value={input}
@@ -472,7 +478,7 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
                   placeholder={isConnected ? 'Ask me anything...' : 'Connecting...'}
                   disabled={isTyping || !isConnected}
                   rows={1}
-                  className='max-h-32 min-h-10 resize-none'
+                  className='max-h-32 min-h-10 resize-none border-0 bg-transparent shadow-none focus-visible:ring-0'
                 />
                 <Button
                   type='submit'

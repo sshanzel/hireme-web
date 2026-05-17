@@ -33,22 +33,22 @@ function TechCard({icon, title, description, tags, className}: TechCardProps) {
   return (
     <div
       className={cn(
-        'group relative overflow-hidden rounded-2xl border border-border/50 bg-card p-6 transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5',
+        'studio-panel group relative overflow-hidden rounded-lg p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30',
         className,
       )}
     >
       <div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
       <div className='relative'>
-        <div className='mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110'>
+        <div className='mb-4 flex h-12 w-12 items-center justify-center rounded-md border border-border/70 bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110'>
           {icon}
         </div>
-        <h3 className='mb-2 text-lg font-semibold'>{title}</h3>
-        <p className='mb-4 text-sm text-muted-foreground leading-relaxed'>{description}</p>
+        <h3 className='font-display mb-2 text-xl font-semibold'>{title}</h3>
+        <p className='mb-4 text-sm leading-relaxed text-muted-foreground'>{description}</p>
         <div className='flex flex-wrap gap-2'>
           {tags.map(tag => (
             <span
               key={tag}
-              className='rounded-full bg-secondary px-2.5 py-1 text-xs font-medium text-secondary-foreground'
+              className='rounded-md bg-secondary px-2.5 py-1 font-mono text-[10px] font-semibold uppercase text-secondary-foreground'
             >
               {tag}
             </span>
@@ -101,17 +101,17 @@ function ArchitectureNode({
   return (
     <div
       className={cn(
-        'flex flex-col items-center gap-2 rounded-xl border p-4 transition-all duration-300 hover:scale-105',
+        'flex flex-col items-center gap-2 rounded-lg border p-4 text-center transition-all duration-300 hover:-translate-y-1',
         variants[variant],
         className,
       )}
     >
-      <div className={cn('flex h-10 w-10 items-center justify-center rounded-lg', iconBg[variant])}>
+      <div className={cn('flex h-10 w-10 items-center justify-center rounded-md', iconBg[variant])}>
         {icon}
       </div>
-      <span className='text-sm font-medium text-center'>{label}</span>
+      <span className='font-display text-center text-sm font-semibold'>{label}</span>
       {sublabel && (
-        <span className={cn('text-xs text-center', sublabelColor[variant])}>{sublabel}</span>
+        <span className={cn('text-center text-xs', sublabelColor[variant])}>{sublabel}</span>
       )}
     </div>
   );
@@ -140,7 +140,7 @@ function SectionLabel({
   };
   return (
     <div className='mb-4 text-center'>
-      <span className={cn('text-xs font-medium uppercase tracking-wider', colors[color])}>
+      <span className={cn('font-mono text-[11px] font-semibold uppercase', colors[color])}>
         {children}
       </span>
     </div>
@@ -149,24 +149,23 @@ function SectionLabel({
 
 export default function StackPage() {
   return (
-    <div className='min-h-screen bg-background'>
-      {/* Navigation */}
-      <nav className='sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg'>
+    <div className='workspace-grid min-h-screen bg-background'>
+      <nav className='paper-texture sticky top-0 z-50 overflow-hidden border-b border-border/70 bg-card/72 backdrop-blur-xl'>
         <div className='mx-auto flex h-16 max-w-6xl items-center justify-between px-6'>
-          <Link href='/' className='text-xl font-semibold transition-opacity hover:opacity-80'>
+          <Link href='/' className='font-display relative text-xl font-semibold transition-opacity hover:opacity-80'>
             <span className='text-gradient'>HireMe</span>
             <span>.dev</span>
           </Link>
-          <div className='flex items-center gap-6'>
+          <div className='relative flex items-center gap-4'>
             <Link
               href='/login'
-              className='text-sm text-muted-foreground transition-colors hover:text-foreground'
+              className='text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground'
             >
               Login
             </Link>
             <Link
               href='/sshanzel'
-              className='rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90'
+              className='rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-[0_2px_0_oklch(0.17_0.023_248)] transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_0_oklch(0.17_0.023_248)]'
             >
               Try it here
             </Link>
@@ -174,29 +173,16 @@ export default function StackPage() {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <section className='relative overflow-hidden border-b border-border/50'>
-        {/* Background Pattern */}
-        <div className='absolute inset-0 opacity-30'>
-          <div
-            className='absolute inset-0'
-            style={{
-              backgroundImage: `radial-gradient(circle at 1px 1px, var(--color-border) 1px, transparent 0)`,
-              backgroundSize: '40px 40px',
-            }}
-          />
-        </div>
-        <div className='absolute -top-40 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl' />
-
-        <div className='relative mx-auto max-w-6xl px-6 py-24 text-center'>
-          <div className='mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm text-primary'>
+        <div className='relative mx-auto max-w-6xl px-6 py-20 md:py-24'>
+          <div className='eyebrow-label mb-4'>
             <Brain className='h-4 w-4' />
             <span>A Learning Project</span>
           </div>
-          <h1 className='mb-6 text-5xl font-bold tracking-tight md:text-6xl'>
+          <h1 className='font-display mb-6 max-w-3xl text-6xl font-semibold leading-[0.94] md:text-7xl'>
             Tech <span className='text-gradient'>Stack</span>
           </h1>
-          <p className='mx-auto max-w-2xl text-lg text-muted-foreground leading-relaxed'>
+          <p className='max-w-2xl text-lg leading-relaxed text-muted-foreground'>
             I&apos;m probably late to the RAG party, but I wanted to understand the basics of how it
             actually works instead of just reading about it. So I built this, an AI that can coach
             you about your career, but only using your own stories and experiences. No generic
@@ -205,11 +191,10 @@ export default function StackPage() {
         </div>
       </section>
 
-      {/* Architecture Diagram */}
       <section className='border-b border-border/50 py-20'>
         <div className='mx-auto max-w-6xl px-6'>
-          <div className='mb-12 text-center'>
-            <h2 className='mb-4 text-3xl font-bold'>System Architecture</h2>
+          <div className='mb-12'>
+            <h2 className='font-display mb-4 text-4xl font-semibold'>System Architecture</h2>
             <p className='text-muted-foreground'>
               The bird&apos;s eye view. Nothing too fancy - just enough moving parts to make it
               interesting.
@@ -218,7 +203,7 @@ export default function StackPage() {
 
           {/* Desktop Architecture Diagram */}
           <div className='hidden lg:block'>
-            <div className='relative rounded-2xl border border-border/50 bg-card/50 p-8'>
+            <div className='studio-panel relative rounded-lg p-8'>
               {/* Row 1: Clients */}
               <SectionLabel>Clients</SectionLabel>
               <div className='mb-6 flex justify-center gap-8'>
@@ -239,14 +224,14 @@ export default function StackPage() {
               <VerticalFlow />
 
               {/* GCP Section */}
-              <div className='rounded-xl border border-blue-500/20 bg-blue-500/5 p-6 mb-6'>
+              <div className='mb-6 rounded-lg border border-blue-500/20 bg-blue-500/5 p-6'>
                 <SectionLabel color='gcp'>Google Cloud Platform</SectionLabel>
 
                 {/* Cloud Run API */}
                 <div className='mb-6 flex justify-center'>
-                  <div className='rounded-xl border border-blue-500/30 bg-card p-4'>
+                  <div className='rounded-lg border border-blue-500/30 bg-card p-4'>
                     <div className='flex items-center gap-3 mb-3'>
-                      <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20 text-blue-600'>
+                      <div className='flex h-8 w-8 items-center justify-center rounded-md bg-blue-500/20 text-blue-600'>
                         <Server className='h-4 w-4' />
                       </div>
                       <div>
@@ -268,9 +253,9 @@ export default function StackPage() {
 
                 {/* Pub/Sub */}
                 <div className='mb-6 flex justify-center'>
-                  <div className='rounded-xl border border-blue-500/30 bg-card p-4'>
+                  <div className='rounded-lg border border-blue-500/30 bg-card p-4'>
                     <div className='flex items-center gap-3 mb-3'>
-                      <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20 text-blue-600'>
+                      <div className='flex h-8 w-8 items-center justify-center rounded-md bg-blue-500/20 text-blue-600'>
                         <Radio className='h-4 w-4' />
                       </div>
                       <div>
@@ -285,9 +270,9 @@ export default function StackPage() {
 
                 {/* Cloud Run Worker + Storage */}
                 <div className='flex justify-center gap-6'>
-                  <div className='rounded-xl border border-blue-500/30 bg-card p-4'>
+                  <div className='rounded-lg border border-blue-500/30 bg-card p-4'>
                     <div className='flex items-center gap-3 mb-2'>
-                      <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20 text-blue-600'>
+                      <div className='flex h-8 w-8 items-center justify-center rounded-md bg-blue-500/20 text-blue-600'>
                         <Zap className='h-4 w-4' />
                       </div>
                       <div>
@@ -335,9 +320,9 @@ export default function StackPage() {
               {/* Database */}
               <SectionLabel>Database</SectionLabel>
               <div className='flex justify-center'>
-                <div className='rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4'>
+                <div className='rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-4'>
                   <div className='flex items-center gap-3'>
-                    <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-600'>
+                    <div className='flex h-10 w-10 items-center justify-center rounded-md bg-emerald-500/20 text-emerald-600'>
                       <Database className='h-5 w-5' />
                     </div>
                     <div>
@@ -348,15 +333,11 @@ export default function StackPage() {
                 </div>
               </div>
 
-              {/* Decorative elements */}
-              <div className='absolute left-4 top-4 h-20 w-20 rounded-full bg-primary/5 blur-2xl' />
-              <div className='absolute bottom-4 right-4 h-32 w-32 rounded-full bg-blue-500/5 blur-2xl' />
             </div>
           </div>
 
-          {/* Mobile Architecture (Simplified) */}
           <div className='lg:hidden'>
-            <div className='space-y-4 rounded-2xl border border-border/50 bg-card/50 p-6'>
+            <div className='studio-panel space-y-4 rounded-lg p-6'>
               <ArchitectureNode
                 icon={<Globe className='h-5 w-5' />}
                 label='Frontend'
@@ -427,14 +408,13 @@ export default function StackPage() {
         </div>
       </section>
 
-      {/* RAG Pipeline Section */}
-      <section className='border-b border-border/50 py-20 bg-gradient-to-b from-primary/5 to-transparent'>
+      <section className='border-b border-border/50 bg-secondary/25 py-20'>
         <div className='mx-auto max-w-6xl px-6'>
           <div className='mb-12 text-center'>
-            <div className='mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary'>
+            <div className='eyebrow-label mb-4'>
               The Whole Point
             </div>
-            <h2 className='mb-4 text-3xl font-bold'>RAG Pipeline</h2>
+            <h2 className='font-display mb-4 text-4xl font-semibold'>RAG Pipeline</h2>
             <p className='mx-auto max-w-2xl text-muted-foreground'>
               This is the heart of the project. The idea is simple: when someone asks the AI a
               question, it doesn&apos;t make things up. It searches through your actual stories and
@@ -444,10 +424,9 @@ export default function StackPage() {
           </div>
 
           <div className='grid gap-8 lg:grid-cols-2'>
-            {/* Ingestion Pipeline */}
-            <div className='rounded-2xl border border-border/50 bg-card p-6'>
+            <div className='studio-panel rounded-lg p-6'>
               <div className='mb-4 flex items-center gap-3'>
-                <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600'>
+                <div className='flex h-10 w-10 items-center justify-center rounded-md bg-blue-500/10 text-blue-600'>
                   <Upload className='h-5 w-5' />
                 </div>
                 <div>
@@ -507,10 +486,9 @@ export default function StackPage() {
               </div>
             </div>
 
-            {/* Retrieval Pipeline */}
-            <div className='rounded-2xl border border-border/50 bg-card p-6'>
+            <div className='studio-panel rounded-lg p-6'>
               <div className='mb-4 flex items-center gap-3'>
-                <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600'>
+                <div className='flex h-10 w-10 items-center justify-center rounded-md bg-emerald-500/10 text-emerald-600'>
                   <Search className='h-5 w-5' />
                 </div>
                 <div>
@@ -571,9 +549,8 @@ export default function StackPage() {
             </div>
           </div>
 
-          {/* AI Models */}
-          <div className='mt-8 rounded-2xl border border-border/50 bg-card p-6'>
-            <h3 className='mb-1 font-semibold'>Models I&apos;m Using</h3>
+          <div className='studio-panel mt-8 rounded-lg p-6'>
+            <h3 className='font-display mb-1 text-xl font-semibold'>Models I&apos;m Using</h3>
             <p className='mb-4 text-sm text-muted-foreground'>
               Went with gpt-4o-mini for most things. Fast enough, cheap enough, good enough.
             </p>
@@ -599,11 +576,10 @@ export default function StackPage() {
         </div>
       </section>
 
-      {/* Tech Stack Cards */}
       <section className='py-20'>
         <div className='mx-auto max-w-6xl px-6'>
-          <div className='mb-12 text-center'>
-            <h2 className='mb-4 text-3xl font-bold'>The Boring Parts</h2>
+          <div className='mb-12'>
+            <h2 className='font-display mb-4 text-4xl font-semibold'>The Boring Parts</h2>
             <p className='text-muted-foreground'>
               Standard stuff, really. TypeScript everywhere, serverless so I don&apos;t pay when
               nobody&apos;s using it.
@@ -669,19 +645,18 @@ export default function StackPage() {
         </div>
       </section>
 
-      {/* Data Flow Section */}
       <section className='border-t border-border/50 bg-secondary/30 py-20'>
         <div className='mx-auto max-w-6xl px-6'>
-          <div className='mb-12 text-center'>
-            <h2 className='mb-4 text-3xl font-bold'>How Things Actually Work</h2>
+          <div className='mb-12'>
+            <h2 className='font-display mb-4 text-4xl font-semibold'>How Things Actually Work</h2>
             <p className='text-muted-foreground'>
               Three main flows. Each one taught me something new about async processing.
             </p>
           </div>
 
           <div className='grid gap-6 md:grid-cols-3'>
-            <div className='rounded-2xl border border-border/50 bg-card p-6'>
-              <div className='mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary'>
+            <div className='studio-panel rounded-lg p-6'>
+              <div className='mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary'>
                 <FileText className='h-5 w-5' />
               </div>
               <h3 className='mb-2 font-semibold'>CV Upload & Processing</h3>
@@ -705,8 +680,8 @@ export default function StackPage() {
               </ol>
             </div>
 
-            <div className='rounded-2xl border border-border/50 bg-card p-6'>
-              <div className='mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary'>
+            <div className='studio-panel rounded-lg p-6'>
+              <div className='mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary'>
                 <MessageSquare className='h-5 w-5' />
               </div>
               <h3 className='mb-2 font-semibold'>AI Story Creation</h3>
@@ -730,8 +705,8 @@ export default function StackPage() {
               </ol>
             </div>
 
-            <div className='rounded-2xl border border-border/50 bg-card p-6'>
-              <div className='mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary'>
+            <div className='studio-panel rounded-lg p-6'>
+              <div className='mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary'>
                 <Globe className='h-5 w-5' />
               </div>
               <h3 className='mb-2 font-semibold'>Public Bio Chat</h3>
@@ -758,17 +733,16 @@ export default function StackPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className='border-t border-border/50 bg-gradient-to-b from-primary/5 to-transparent py-20'>
+      <section className='border-t border-border/50 py-20'>
         <div className='mx-auto max-w-2xl px-6 text-center'>
-          <h2 className='mb-4 text-3xl font-bold'>Want to see it in action?</h2>
+          <h2 className='font-display mb-4 text-4xl font-semibold'>Want to see it in action?</h2>
           <p className='mb-8 text-muted-foreground'>
             Check out how the RAG pipeline answers questions based on real experiences and stories.
             Try asking about projects, skills, or career history.
           </p>
           <Link
             href='/sshanzel'
-            className='inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-primary-foreground transition-all hover:opacity-90 hover:shadow-lg hover:shadow-primary/20'
+            className='inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-[0_2px_0_oklch(0.17_0.023_248)] transition-all hover:-translate-y-0.5 hover:shadow-[0_4px_0_oklch(0.17_0.023_248)]'
           >
             See it in action
             <ArrowRight className='h-4 w-4' />
