@@ -230,9 +230,9 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
   );
 
   return (
-    <div className='workspace-grid min-h-screen bg-background'>
+    <div className='workspace-grid min-h-screen overflow-x-clip bg-background'>
       <header className='paper-texture relative overflow-hidden border-b border-border/70 bg-card/72 backdrop-blur-xl'>
-        <div className='mx-auto flex h-16 max-w-6xl items-center justify-between px-4'>
+        <div className='mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4'>
           <Link
             href='/'
             className='font-display relative cursor-pointer text-xl font-semibold transition-opacity hover:opacity-80'
@@ -249,7 +249,7 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
         </div>
       </header>
 
-      <main className='mx-auto max-w-6xl px-4 py-8 md:py-10'>
+      <main className='mx-auto w-full max-w-6xl px-4 py-8 md:py-10'>
         <div className='mb-8 max-w-3xl'>
           <div className='eyebrow-label'>Interactive candidate dossier</div>
           <h2 className='font-display mt-3 text-5xl font-semibold leading-[0.98] md:text-6xl'>
@@ -261,8 +261,8 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
           </p>
         </div>
 
-        <div className='grid gap-6 lg:grid-cols-3'>
-          <div className='space-y-6'>
+        <div className='grid min-w-0 items-start gap-6 lg:grid-cols-[minmax(18rem,26.5rem)_minmax(0,1fr)]'>
+          <div className='min-w-0 space-y-6'>
             <Card className='gap-0 overflow-hidden py-0'>
               {hasProfileDetails ? (
                 <button
@@ -374,7 +374,7 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
             )}
           </div>
 
-          <Card className='paper-texture flex min-h-150 flex-col overflow-hidden py-0 lg:col-span-2 md:max-h-[calc(100vh-8.5rem)] md:sticky md:top-24'>
+          <Card className='paper-texture flex min-h-[36rem] min-w-0 flex-col overflow-hidden py-0 md:sticky md:top-24 md:h-[calc(100vh-7rem)] md:max-h-[56rem]'>
             <div className='relative flex shrink-0 items-center justify-between border-b px-4 py-3'>
               <div className='flex items-center gap-2'>
                 <Sparkles className='h-5 w-5 text-primary' />
