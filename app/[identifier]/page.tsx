@@ -30,7 +30,6 @@ import {CollapsibleList} from '@/components/common/CollapsibleList';
 import {MessageBubble} from '@/components/chat/MessageBubble';
 import {TypingIndicator} from '@/components/chat/TypingIndicator';
 import {ExperienceModal} from '@/components/experience/ExperienceModal';
-import {LoadingSpinner} from '@/components/common/LoadingSpinner';
 import {apiFetch, endpoints} from '@/lib/api';
 import {WS_URL} from '@/lib/config';
 import {getInitials, formatDateRange} from '@/lib/strings/format';
@@ -119,6 +118,144 @@ function getCareerYears(profile: PublicProfile): number | null {
   const earliestStart = Math.min(...timestamps);
   const diffYears = (Date.now() - earliestStart) / (1000 * 60 * 60 * 24 * 365.25);
   return Math.max(1, Math.floor(diffYears));
+}
+
+interface SkeletonBlockProps {
+  className?: string;
+}
+
+const SkeletonBlock = ({className}: SkeletonBlockProps) => (
+  <div className={cn('rounded-md bg-muted/70', className)} />
+);
+
+function PublicProfileSkeleton() {
+  const evidenceItems = Array.from({length: 3}, (_, index) => index);
+  const promptRows = ['w-28', 'w-36', 'w-44', 'w-40'];
+
+  return (
+    <div className='workspace-grid min-h-screen overflow-x-clip bg-background' aria-busy='true'>
+      <header className='paper-texture relative overflow-hidden border-b border-border/70 bg-card/72 backdrop-blur-xl'>
+        <div className='mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4'>
+          <Link
+            href='/'
+            className='font-display relative cursor-pointer text-xl font-semibold transition-opacity hover:opacity-80'
+          >
+            <span className='text-gradient'>HireMe</span>
+            <span>.dev</span>
+          </Link>
+          <Link
+            href='/stack'
+            className='relative rounded-md border border-border/70 bg-card/80 px-3 py-1.5 text-sm font-semibold text-muted-foreground transition-all hover:-translate-y-0.5 hover:text-foreground'
+          >
+            Tech Stack
+          </Link>
+        </div>
+      </header>
+
+      <main className='mx-auto w-full max-w-6xl px-4 py-8 md:py-10'>
+        <div className='mb-8 max-w-3xl animate-pulse'>
+          <SkeletonBlock className='h-7 w-52 border border-border/70 bg-secondary/70' />
+          <div className='mt-4 space-y-3'>
+            <SkeletonBlock className='h-14 w-full max-w-xl bg-foreground/12 md:h-16' />
+            <SkeletonBlock className='h-14 w-3/4 max-w-lg bg-foreground/12 md:h-16' />
+          </div>
+          <div className='mt-5 max-w-2xl space-y-2'>
+            <SkeletonBlock className='h-4 w-full' />
+            <SkeletonBlock className='h-4 w-4/5' />
+          </div>
+        </div>
+
+        <div className='grid min-w-0 items-start gap-6 lg:grid-cols-[minmax(18rem,26.5rem)_minmax(0,1fr)]'>
+          <div className='min-w-0 space-y-6'>
+            <Card className='gap-0 overflow-hidden py-0'>
+              <div className='flex items-center justify-between gap-3 px-6 py-4'>
+                <div className='flex min-w-0 items-center gap-3'>
+                  <SkeletonBlock className='h-12 w-12 shrink-0 bg-primary/20 shadow-[4px_4px_0_oklch(0.17_0.023_248_/_0.08)]' />
+                  <div className='min-w-0 flex-1 animate-pulse space-y-2'>
+                    <SkeletonBlock className='h-5 w-44 max-w-full bg-foreground/12' />
+                    <SkeletonBlock className='h-4 w-36 max-w-full' />
+                  </div>
+                </div>
+                <SkeletonBlock className='h-4 w-4 shrink-0' />
+              </div>
+
+              <CardContent className='border-t pb-5 pt-4'>
+                <div className='animate-pulse space-y-2'>
+                  <SkeletonBlock className='h-4 w-full' />
+                  <SkeletonBlock className='h-4 w-11/12' />
+                  <SkeletonBlock className='h-4 w-7/12' />
+                </div>
+                <SkeletonBlock className='mt-4 h-9 w-36 animate-pulse border border-border/70 bg-secondary/60' />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <SkeletonBlock className='h-6 w-32 animate-pulse bg-foreground/12' />
+              </CardHeader>
+              <CardContent className='space-y-4'>
+                {evidenceItems.map(item => (
+                  <div key={item} className='flex gap-3 rounded-md p-2'>
+                    <SkeletonBlock className='h-10 w-10 shrink-0 animate-pulse' />
+                    <div className='min-w-0 flex-1 animate-pulse space-y-2'>
+                      <SkeletonBlock className='h-5 w-4/5 bg-foreground/12' />
+                      <SkeletonBlock className='h-4 w-1/2' />
+                      <SkeletonBlock className='h-3 w-28' />
+                    </div>
+                  </div>
+                ))}
+                <div className='flex justify-center pt-1'>
+                  <SkeletonBlock className='h-6 w-32 animate-pulse' />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card className='paper-texture flex h-[34rem] min-w-0 flex-col overflow-hidden py-0 lg:sticky lg:top-4 lg:h-[clamp(30rem,calc(100dvh-2rem),42rem)]'>
+            <div className='relative flex shrink-0 items-center justify-between border-b px-4 py-3'>
+              <div className='flex min-w-0 items-center gap-2'>
+                <Sparkles className='h-5 w-5 text-primary/60' />
+                <div className='min-w-0 animate-pulse space-y-2'>
+                  <SkeletonBlock className='h-5 w-24 bg-foreground/12' />
+                  <SkeletonBlock className='h-3 w-36 max-w-full sm:w-56' />
+                </div>
+              </div>
+              <SkeletonBlock className='h-9 w-20 shrink-0 animate-pulse border border-border/70 bg-background/70 sm:w-28' />
+            </div>
+
+            <div className='relative flex min-h-0 flex-1 flex-col overflow-hidden bg-gradient-to-b from-secondary/25 via-transparent to-card/70 p-4'>
+              <div className='flex flex-1 flex-col items-center justify-center text-center'>
+                <SkeletonBlock className='h-16 w-16 animate-pulse bg-primary/20 shadow-[5px_5px_0_oklch(0.17_0.023_248_/_0.08)]' />
+                <div className='mt-5 w-full max-w-md animate-pulse space-y-3'>
+                  <SkeletonBlock className='mx-auto h-7 w-72 max-w-full bg-foreground/12' />
+                  <SkeletonBlock className='mx-auto h-4 w-full' />
+                  <SkeletonBlock className='mx-auto h-4 w-4/5' />
+                </div>
+                <div className='mt-6 flex max-w-xl flex-wrap justify-center gap-2'>
+                  {promptRows.map(width => (
+                    <SkeletonBlock
+                      key={width}
+                      className={cn(
+                        'h-8 animate-pulse border border-border/70 bg-background/70',
+                        width,
+                      )}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className='relative shrink-0 border-t bg-card/90 p-4'>
+              <div className='flex gap-2 rounded-md border border-border/70 bg-background/75 p-2 shadow-inner'>
+                <SkeletonBlock className='h-10 min-w-0 flex-1 animate-pulse bg-muted/55' />
+                <SkeletonBlock className='h-10 w-10 shrink-0 animate-pulse bg-primary/25' />
+              </div>
+            </div>
+          </Card>
+        </div>
+      </main>
+    </div>
+  );
 }
 
 interface PublicProfilePageProps {
@@ -224,11 +361,7 @@ export default function PublicProfilePage({params}: PublicProfilePageProps) {
   };
 
   if (isLoading) {
-    return (
-      <div className='flex min-h-screen items-center justify-center bg-background'>
-        <LoadingSpinner size='lg' />
-      </div>
-    );
+    return <PublicProfileSkeleton />;
   }
 
   if (error || !profile) {
